@@ -29,7 +29,7 @@ public class Startup {
 			public void run() {
 				try {
 					Startup window = new Startup();
-					window.frmFrutstandsSafeCracker.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -42,6 +42,7 @@ public class Startup {
 	 */
 	public Startup() {
 		initialize();
+		frmFrutstandsSafeCracker.setVisible(true);
 	}
 
 	/**

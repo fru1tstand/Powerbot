@@ -15,23 +15,16 @@ public class RoguesDenSafeCracker extends PollingScript<ClientContext> {
 		System.out.println("Starting Rogue's Den Safecracker by Fru1tstand");
 		super.start();
 	}
-
-
-
+	
 	@Override
 	public void stop() {
 		System.out.println("Stopping Rogue's Den Safecracker by Fru1tstand");
 		super.stop();
 	}
-
-
-
+	
 	@Override
 	public void poll() {
 		// TODO Auto-generated method stub
 		
 	}
-
-	
-
 }

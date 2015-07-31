@@ -11,15 +11,24 @@ import javax.swing.JComboBox;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import java.awt.List;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
+import me.fru1t.common.Strings;
+import me.fru1t.rsbot.common.food.AllFood;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.awt.event.ActionEvent;
 public class Startup {
 
 	private JFrame frmFrutstandsSafeCracker;
+	private final Settings settings;
+	private final Callable<?> callback;
 
 	/**
 	 * Launch the application.
@@ -28,8 +37,13 @@ public class Startup {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Startup window = new Startup();
-					
+					new Startup(new Settings(), new Callable<Integer>() {
+						@Override
+						public Integer call() throws Exception {
+							System.out.println("ILY");
+							return 0;
+						}
+					});
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -40,9 +54,11 @@ public class Startup {
 	/**
 	 * Create the application.
 	 */
-	public Startup() {
+	public Startup(Settings settings, Callable<?> callback) {
 		initialize();
 		frmFrutstandsSafeCracker.setVisible(true);
+		this.settings = settings;
+		this.callback = callback;
 	}
 
 	/**
@@ -68,47 +84,37 @@ public class Startup {
 		lblNewLabel.setBounds(20, 35, 364, 14);
 		frmFrutstandsSafeCracker.getContentPane().add(lblNewLabel);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setForeground(Color.CYAN);
-		comboBox.setToolTipText("Select food and click add to add it to the list of food you want consumed during safecracking");
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Anchovies", "Tacos"}));
-		comboBox.setFont(new Font("Calibri", Font.PLAIN, 14));
-		comboBox.setBackground(Color.DARK_GRAY);
-		comboBox.setBounds(20, 52, 244, 20);
-		frmFrutstandsSafeCracker.getContentPane().add(comboBox);
+		JComboBox<Enum<AllFood>> foodSelector = new JComboBox<Enum<AllFood>>();
+		foodSelector.setForeground(Color.BLACK);
+		foodSelector.setToolTipText("Select food and click add to add it to the list of food you want consumed during safecracking");
+		foodSelector.setModel(new DefaultComboBoxModel<Enum<AllFood>>(AllFood.values()));
+		foodSelector.setFont(new Font("Calibri", Font.PLAIN, 14));
+		foodSelector.setBackground(Color.WHITE);
+		foodSelector.setBounds(20, 52, 244, 20);
+		frmFrutstandsSafeCracker.getContentPane().add(foodSelector);
 		
 		JButton addBtn = new JButton("+");
-		addBtn.setForeground(Color.CYAN);
+		addBtn.setForeground(Color.BLACK);
 		addBtn.setToolTipText("Add the selected food to the list");
-		addBtn.setBackground(Color.DARK_GRAY);
+		addBtn.setBackground(Color.WHITE);
 		addBtn.setFont(new Font("Calibri", Font.PLAIN, 16));
 		addBtn.setBounds(274, 52, 45, 20);
 		frmFrutstandsSafeCracker.getContentPane().add(addBtn);
 		
 		JButton rmBtn = new JButton("-");
-		rmBtn.setForeground(Color.CYAN);
+		rmBtn.setForeground(Color.BLACK);
 		rmBtn.setToolTipText("Remove the selected food from the list");
 		rmBtn.setFont(new Font("Calibri", Font.PLAIN, 16));
-		rmBtn.setBackground(Color.DARK_GRAY);
+		rmBtn.setBackground(Color.WHITE);
 		rmBtn.setBounds(329, 52, 45, 20);
 		frmFrutstandsSafeCracker.getContentPane().add(rmBtn);
 		
-		List foodList = new List();
-		foodList.setMultipleSelections(false);
+		java.awt.List foodList = new java.awt.List();
+		foodList.setMultipleMode(false);
 		foodList.setForeground(Color.CYAN);
 		foodList.setFont(new Font("Calibri", Font.PLAIN, 14));
 		foodList.setBackground(Color.BLACK);
 		foodList.setBounds(20, 78, 354, 107);
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
-		foodList.add("asdf");
 		
 		frmFrutstandsSafeCracker.getContentPane().add(foodList);
 		
@@ -130,11 +136,11 @@ public class Startup {
 		lblThisSettingOn.setBounds(20, 294, 364, 14);
 		frmFrutstandsSafeCracker.getContentPane().add(lblThisSettingOn);
 		
-		JComboBox preferredSafe = new JComboBox();
+		JComboBox<Enum<Safe>> preferredSafe = new JComboBox<Enum<Safe>>();
 		preferredSafe.setFont(new Font("Calibri", Font.PLAIN, 14));
-		preferredSafe.setModel(new DefaultComboBoxModel(new String[] {"Automatic", "South West", "North West", "South East", "North East"}));
-		preferredSafe.setForeground(Color.CYAN);
-		preferredSafe.setBackground(Color.DARK_GRAY);
+		preferredSafe.setModel(new DefaultComboBoxModel<Enum<Safe>>(Safe.values()));
+		preferredSafe.setForeground(Color.BLACK);
+		preferredSafe.setBackground(Color.WHITE);
 		preferredSafe.setBounds(20, 312, 354, 20);
 		frmFrutstandsSafeCracker.getContentPane().add(preferredSafe);
 		
@@ -177,12 +183,12 @@ public class Startup {
 		foodAmount.setBounds(292, 216, 82, 37);
 		frmFrutstandsSafeCracker.getContentPane().add(foodAmount);
 		
-		JButton btnStart = new JButton("Start!");
-		btnStart.setForeground(Color.CYAN);
-		btnStart.setBackground(Color.DARK_GRAY);
-		btnStart.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnStart.setBounds(20, 392, 110, 23);
-		frmFrutstandsSafeCracker.getContentPane().add(btnStart);
+		JButton startBtn = new JButton("Start!");
+		startBtn.setForeground(Color.BLACK);
+		startBtn.setBackground(Color.WHITE);
+		startBtn.setFont(new Font("Calibri", Font.PLAIN, 16));
+		startBtn.setBounds(20, 392, 110, 23);
+		frmFrutstandsSafeCracker.getContentPane().add(startBtn);
 		
 		JLabel lblQuestionsCommentsWant = new JLabel("Questions? Comments? Feature requests?");
 		lblQuestionsCommentsWant.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -211,5 +217,36 @@ public class Startup {
 		lblThisScriptIs.setFont(new Font("Calibri", Font.PLAIN, 11));
 		lblThisScriptIs.setBounds(20, 390, 354, 14);
 		frmFrutstandsSafeCracker.getContentPane().add(lblThisScriptIs);
+		
+		{
+			addBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Enum<AllFood> selectedFood = (Enum<AllFood>) foodSelector.getSelectedItem();
+					List<String> itemList = new ArrayList<String>(Arrays.asList(foodList.getItems()));
+					if (!itemList.contains(selectedFood.name()))
+						foodList.add(selectedFood.name()); 
+				}
+			});
+			rmBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					String selectedFood = foodList.getSelectedItem();
+					if (!Strings.isWhitespaceEmptyOrNull(selectedFood))
+						foodList.remove(selectedFood);
+				}
+			});
+			startBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					settings.setFoods(foods);
+					try {
+						callback.call();
+					} catch (Exception e1) {
+						System.out.println("This should really be a compiler error.");
+					}
+				}
+			});
+		}
 	}
 }

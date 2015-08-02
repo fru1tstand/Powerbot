@@ -13,10 +13,19 @@ import me.fru1t.rsbot.framework.Script;
 import me.fru1t.rsbot.safecracker.Persona;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
-import me.fru1t.rsbot.safecracker.actions.CrackSafe;
+import me.fru1t.rsbot.safecracker.actions.SafeCrack;
 
 @Manifest(name = "Rogue's Den Safe Cracker", description = "Cracks safes in Rogue's Den")
 public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings, Persona> {
+	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
+	public static final int SAFE_OBJECT_ID = 7235;
+	public static final int SAFE_OPENED_OBJECT_ID = 64296;
+	public static final int SAFE_SPIKES_OBJECT_ID = 7227;
+	public static final int PLAYER_CRACK_ANIMATION = 15576;
+	public static final int PLAYER_CRACK_PRE_HURT_ANIMATION = 15575;
+	public static final int PLAYER_HURTING_ANIMATION = 18353;
+	public static final String MENU_CRACK_ACTIVE_TEXT = "Crack";
+	
 	public enum State {
 		// Other
 		UNKNOWN,
@@ -32,8 +41,6 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 		SAFE_EAT
 	}
 	
-	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
-	public static final int SAFE_OBJECT_ID = 7235;
 	public enum Safe {
 		AUTOMATIC(null, null),
 		SW(new Tile(3041, 4957), new Tile(3041, 4956)),
@@ -73,11 +80,16 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 
 	@Override
 	protected Map<
-			RoguesDenSafeCracker.State,
+			State,
 			Class<? extends Action<ClientContext, ?, Settings, Persona>>> getActionMap() {
-		Map<State, Class<? extends Action<ClientContext, ?, Settings, Persona>>> stateMap =
+		Map<State, Class<? extends Action<ClientContext, ?, Settings, Persona>>> stateMap = 
 				new HashMap<>();
-		stateMap.put(State.SAFE_CRACK, CrackSafe.class);
+		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
 		return stateMap;
+	}
+	
+	@Override
+	protected State getResetState() {
+		return State.UNKNOWN;
 	}
 }

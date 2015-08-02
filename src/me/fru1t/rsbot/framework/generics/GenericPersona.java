@@ -15,5 +15,8 @@ public abstract class GenericPersona<C extends ClientContext<?>, T extends Gener
 		return script;
 	}
 	
+	/**
+	 * Called when the script is ready to be run (settings, ctx, etc are all set)
+	 */
 	protected abstract void init();
 }

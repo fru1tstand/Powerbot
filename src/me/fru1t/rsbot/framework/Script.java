@@ -20,7 +20,7 @@ public abstract class Script<
 		P extends GenericPersona<C, T>> extends PollingScript<C> {
 	private static final int STATUS_HISTORY_SIZE = 20;
 	private static final boolean SHOW_CONSOLE_MESSAGES = true;
-	
+	private static final int CONSECUTIVE_FAILURE_RESET_THRESHOLD = 20;
 	private final Stack<String> statusStack;
 	private final Map<ST, Action<C, ?, T, P>> scriptActions;
 	public final T settings;
@@ -28,6 +28,7 @@ public abstract class Script<
 	public final C ctx;
 	private ST currentState;
 	private ST lastState;
+	private int consecutiveFailures;
 	
 	/**
 	 * Simple constructor which sets empty class fields.
@@ -40,6 +41,7 @@ public abstract class Script<
 		this.ctx = super.ctx;
 		this.currentState = null;
 		this.lastState = null;
+		this.consecutiveFailures = 0;
 	}
 
 	@Override
@@ -55,7 +57,14 @@ public abstract class Script<
 			return;
 		}
 		
-		scriptActions.get(state()).run();
+		if (!scriptActions.get(state()).run()) {
+			consecutiveFailures++;
+		} else {
+			consecutiveFailures = 0;
+		}
+		if (consecutiveFailures > CONSECUTIVE_FAILURE_RESET_THRESHOLD) {
+			updateState(getResetState());
+		}
 	}
 	
 	@Override
@@ -195,4 +204,9 @@ public abstract class Script<
 	 * Synonymous to {@link #start()}
 	 */
 	protected abstract void init();
+	
+	/**
+	 * @return The reset state for the script if something goes horribly wrong.
+	 */
+	protected abstract ST getResetState();
 }

@@ -31,6 +31,7 @@ public abstract class Action<
 	
 	/**
 	 * The action to perform.
+	 * @return If the run completed successfully.
 	 */
-	public abstract void run();
+	public abstract boolean run();
 }

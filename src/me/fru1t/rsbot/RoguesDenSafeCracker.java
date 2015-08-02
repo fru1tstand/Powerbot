@@ -1,30 +1,83 @@
 package me.fru1t.rsbot;
 
-import org.powerbot.script.PollingScript;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.powerbot.script.Locatable;
 import org.powerbot.script.Script.Manifest;
+import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 
-import me.fru1t.rsbot.safecracker.Startup;
+import me.fru1t.rsbot.framework.Action;
+import me.fru1t.rsbot.framework.Script;
+import me.fru1t.rsbot.safecracker.Persona;
+import me.fru1t.rsbot.safecracker.Settings;
+import me.fru1t.rsbot.safecracker.StartupForm;
+import me.fru1t.rsbot.safecracker.actions.CrackSafe;
 
 @Manifest(name = "Rogue's Den Safe Cracker", description = "Cracks safes in Rogue's Den")
-public class RoguesDenSafeCracker extends PollingScript<ClientContext> {
+public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings, Persona> {
+	public enum State {
+		// Other
+		UNKNOWN,
+		
+		// Bank
+		BANK_WALK,
+		BANK_OPEN,
+		BANK_INTERACT,
+		
+		// Safe cracking
+		SAFE_WALK,
+		SAFE_CRACK,
+		SAFE_EAT
+	}
+	
+	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
+	public static final int SAFE_OBJECT_ID = 7235;
+	public enum Safe {
+		AUTOMATIC(null, null),
+		SW(new Tile(3041, 4957), new Tile(3041, 4956)),
+		SE(new Tile(3043, 4957), new Tile(3043, 4956)),
+		NW(new Tile(3041, 4962), new Tile(3041, 4963)),
+		NE(new Tile(3043, 4962), new Tile(3043, 4963));
+		
+		public final Tile location;
+		public final Tile playerLocation;
+		private Safe(Tile location, Tile playerLocation) {
+			this.location = location;
+			this.playerLocation = playerLocation;
+		}
+		
+		/**
+		 * Returns the corresponding Safe Enum from the given Locatable.
+		 * @param l
+		 * @return The Safe object corresponding to the Locatable, or null if one is not found.
+		 */
+		// @Nullable
+		public static Safe fromLocation(Locatable l) {
+			for (Safe safe : Safe.values())
+				if (safe.location.equals(l.tile()))
+					return safe;
+			return null;
+		}
+	}
+
+	public RoguesDenSafeCracker() {
+		super(new Settings(), new Persona());
+	}
+	
+	@Override
+	public void init() {
+		showStartupForm(StartupForm.class);
+	}
 
 	@Override
-	public void start() {
-		new Startup();
-		System.out.println("Starting Rogue's Den Safecracker by Fru1tstand");
-		super.start();
-	}
-	
-	@Override
-	public void stop() {
-		System.out.println("Stopping Rogue's Den Safecracker by Fru1tstand");
-		super.stop();
-	}
-	
-	@Override
-	public void poll() {
-		// TODO Auto-generated method stub
-		
+	protected Map<
+			RoguesDenSafeCracker.State,
+			Class<? extends Action<ClientContext, ?, Settings, Persona>>> getActionMap() {
+		Map<State, Class<? extends Action<ClientContext, ?, Settings, Persona>>> stateMap =
+				new HashMap<>();
+		stateMap.put(State.SAFE_CRACK, CrackSafe.class);
+		return stateMap;
 	}
 }

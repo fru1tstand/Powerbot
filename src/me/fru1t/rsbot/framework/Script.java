@@ -46,18 +46,22 @@ public abstract class Script<
 
 	@Override
 	public void poll() {
-		if (settings == null || scriptActions.size() == 0 || persona == null)
+		if (currentState == null
+				|| settings == null
+				|| scriptActions.size() == 0
+				|| persona == null) {
 			return;
+		}
 		
-		if (!scriptActions.containsKey(state())) {
+		if (!scriptActions.containsKey(currentState)) {
 			updateStatus(String.format(
-					"Unhandled state '%s'. Please spam Fru1tstand with this error",
-					state().name()));
+					"Please spam Fru1tstand with this error: Unhandled state '%s'.",
+					currentState.name()));
 			stop();
 			return;
 		}
 		
-		if (!scriptActions.get(state()).run()) {
+		if (!scriptActions.get(currentState).run()) {
 			consecutiveFailures++;
 		} else {
 			consecutiveFailures = 0;
@@ -137,9 +141,11 @@ public abstract class Script<
 			System.out.println("Could not create script action.");
 			e.printStackTrace();
 		}
-		
 		this.settings.replace(settings);
 		this.persona.setScript(this);
+		
+		// Set ready
+		updateState(getResetState());
 	}
 	
 	// *** Status methods
@@ -170,6 +176,7 @@ public abstract class Script<
 		return (Stack<String>) statusStack.clone();
 	}
 	
+	// *** State methods
 	/**
 	 * Sets the current state to the passed new state
 	 * @param newState
@@ -179,18 +186,17 @@ public abstract class Script<
 		this.currentState = newState;
 	}
 	
-	// *** State methods
 	/**
 	 * @return The current state
 	 */
-	public ST state() {
+	public ST getCurrentState() {
 		return currentState;
 	}
 	
 	/**
 	 * @return The previous state
 	 */
-	public ST lastState() {
+	public ST getLastState() {
 		return lastState;
 	}
 	

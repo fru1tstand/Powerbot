@@ -10,6 +10,7 @@ public class Settings extends GenericSettings {
 	private List<AllFood> foods;
 	private boolean isBankStyleConstant;
 	private RoguesDenSafeCracker.Safe preferredSafe;
+	private int currentFoodPointer;
 	
 	/**
 	 * Simple constructor which sets default values to class fields.
@@ -18,6 +19,20 @@ public class Settings extends GenericSettings {
 		this.foods = null;
 		this.isBankStyleConstant = false;
 		this.preferredSafe = null;
+		this.currentFoodPointer = 0;
+	}
+	
+	/**
+	 * Increments the food pointer and returns if there is more food queued in the foodlist.
+	 * @return
+	 */
+	public boolean ranOutOfFood() {
+		currentFoodPointer++;
+		return currentFoodPointer >= foods.size();
+	}
+	
+	public AllFood getCurrentFood() {
+		return foods.get(currentFoodPointer);
 	}
 	
 	/**

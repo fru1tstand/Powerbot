@@ -12,6 +12,21 @@ import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.framework.generics.GenericPersona;
 import me.fru1t.rsbot.utils.Timer;
 
+/**
+ * Theory:
+ * Scripts are written to follow a very strict core set of actions. On top of this, the programming
+ * behind it aims to be 100% accurate. This has led to easy, easy detection, as herds of accounts
+ * are following an easily discernible pattern and interact with the Runescape world with ~100%
+ * accuracy. Bottom line: scripts are too afraid to make mistakes and script writers are too lazy
+ * to scatter the script's footprint. 
+ * 
+ * Persona^tm aims to throw in more humanistic traits to the script in the form of
+ * attentiveness, clumsiness, impatience, etc. Each Persona has its own set of characteristics, but
+ * also more importantly, has its own unique set of ideologies and methods to complete a specific
+ * task. This scatters the deep footprint of a single traditional script to thousands of randomly
+ * generated footprints of a Persona driven script. More footprints equals harder to detect equals
+ * less bans equals GOOD.
+ */
 public class Persona extends GenericPersona<ClientContext, Settings> {
 	private static final int MAX_FOCUS = 100;
 	private static final int MIN_FOCUS = 0;
@@ -21,12 +36,6 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 	 */
 	private int attention;
 	private int clumsy;
-
-	public Persona() {
-		EatMethod[] eatMethods = EatMethod.values();
-		eatHealthThreshold_eatMethod = eatMethods[Random.nextInt(0, eatMethods.length)];
-		eatHealthThreshold_eatToFull = Random.nextInt(0, 100) < 50;
-	}
 	
 	// TODO: Create algo that models attention and clumsiness that is sinusoidally dependent over
 	// time.
@@ -34,8 +43,9 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 		this.attention = 100;
 		this.clumsy = 0;
 		
+		healingThreshold_setup();
+		
 		backpackFillCountBeforeBanking(true);
-		eatHealthThreshold(true);
 		safeToCrack(true);
 		smartClick();
 		safeMisclick();
@@ -92,12 +102,19 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 		return backpackFillCountBeforeBanking_storedValue;
 	}
 	
-	public enum EatMethod { LOW_HP, CUTOFF_HP, N_FOOD }
-	private static final int eatHealthThreshold_HARD_LOWER_LIMIT = 300;
-	private final EatMethod eatHealthThreshold_eatMethod;
-	private final boolean eatHealthThreshold_eatToFull;
-	private int eatHealthThreshold_helper;
-	private int eatHealthThreshold_storedValue;
+	
+	private enum EatMethod { LOWEST_POSSIBLE, FOOD_ORIENTED, RANDOM }
+	private static final int healingThreshold_IS_CONSTANT_PROB = 25;
+	private static final int healingThreshold_LOWEST_MIN = 110;
+	private static final int healingThreshold_LOWEST_MAX = 300;
+	private static final int healingThreshold_ALGO_LOWEST_PROB = 10;
+	private static final int healingThreshold_ALGO_FOOD_PROB = 50;
+	private static final double healingThreshold_FOOD_VAR_MIN = 0.5;
+	private static final double healingThreshold_FOOD_VAR_MAX = 5;
+	private static final int healingThreshold_ABS_MIN = 500;
+	private EatMethod healingThreshold_eatMethod;
+	private boolean healingThreshold_isConstant;
+	private int healingThreshold_storedValue;
 	/**
 	 * Description:
 	 * Eating habits may vary from person to person. Several of these include eating when hp
@@ -105,18 +122,25 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 	 * below what the food item heals, eating when hp falls below a specific threshold, etc.
 	 * 
 	 * Trigger:
-	 * Food eaten
+	 * Food eat event
 	 * 
-	 * Algorithm:
-	 * [100, max_hp - food_heal_amt]
-	 * LOW_HP - Threshold is very low HP ~[10-50%] w/ hard limit [HARD_LOWER_LIMIT, FOOD)
-	 * CUTOFF_HP - Threshold is constant ~[60-90%] w/ hard limit [HARD_LOWER_LIMIT, FOOD)
-	 * N_FOOD - Threshold is about what N number of food would heal w/ hard limit
-	 * [HARD_LOWER_LIMIT, N Food)
+	 * Configure:
+	 * (Algorithm never changes within a single script run)
+	 * NEVER (NEVER_CONFIGURE)% || ALWAYS (100 - NEVER_CONFIGURE)%
 	 * 
-	 * Consider:
-	 * The food may heal more than the max hp causing hard lower limit to always trigger. This may
-	 * introduce a detectable pattern.
+	 * Algorithms:
+	 * "Lowest Possible" - Random [LOWEST_MIN, LOWEST_MAX] HP
+	 * 		ALGO_LOWEST_PROB% Probability
+	 * 		Force enabled when food healing > player's max HP
+	 * 
+	 * "Food Oriented" - Unimodal skewed left (tends to heal closer to 100%) from the normal dist
+	 * N(maxHealHealth, random(FOOD_VAR_MIN, FOOD_VAR_MAX)). Anything not contained within the
+	 * range (ABS_MIN, maxHealHealth) is rerolled, creating a skew. With variance at least 0.5,
+	 * exact mean will never be chosen > 60% of the time.
+	 * 		ALGO_FOOD_PROB% Probability
+	 * 
+	 * "Random" - Plain ol' random range [ABS_MIN, MAX_HP - FOOD_HEAL]
+	 * 		(100 - lowest - food)% Probability
 	 * 
 	 * Justification:
 	 * People have different eating habits. Some are fatter than others. 
@@ -124,35 +148,69 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 	 * @param didTrigger
 	 * @return The HP threshold to eat at.
 	 */
-	public int eatHealthThreshold(boolean didTrigger) {
-		if (didTrigger || eatHealthThreshold_storedValue == 0) {
-			// Temporary: Simply random between 40-90%
-			eatHealthThreshold_helper = Random.nextInt(40, 90);
-			eatHealthThreshold_storedValue = (int)
-					(eatHealthThreshold_helper / 100.0 * script().ctx.combatBar.health());
-				
-			// TODO: Implement correct + Add food data in AllFoods
-//			switch(eatHealthThreshold_eatMethod) {
-//			case LOW_HP:
-//				eatHealthThreshold_helper = 2;
-//				break;
-//			case CUTOFF_HP:
-//				break;
-//			case N_FOOD:
-//				break;
-//			default:
-//				break;
-//			}
+	public int healingThreshold(boolean didTrigger) {
+		if (didTrigger && !healingThreshold_isConstant) {
+			int foodHealAmt = script().settings.getCurrentFood().healAmount;
+			int maxHealHealth = script().ctx.combatBar.maximumHealth() - foodHealAmt;
+			switch (healingThreshold_eatMethod) {
+			case LOWEST_POSSIBLE:
+				healingThreshold_storedValue =
+						Random.nextInt(healingThreshold_LOWEST_MIN, healingThreshold_LOWEST_MAX);
+				break;
+			case RANDOM:
+				healingThreshold_storedValue =
+						Random.nextInt(healingThreshold_ABS_MIN, maxHealHealth);
+				break;
+			case FOOD_ORIENTED:
+			default:
+				healingThreshold_storedValue = 0;
+				// Theoretically this could go on forever...
+				while (healingThreshold_storedValue > maxHealHealth
+						|| healingThreshold_storedValue < healingThreshold_ABS_MIN) {
+					healingThreshold_storedValue = Random.nextGaussian(
+							healingThreshold_ABS_MIN,
+							maxHealHealth, // Anything larger is floored to this and rerolled
+							maxHealHealth,
+							(int) Math.sqrt(Random.nextDouble(
+									healingThreshold_FOOD_VAR_MIN,
+									healingThreshold_FOOD_VAR_MAX)));
+				}
+				break;
+			}
 		}
-		return Math.max(eatHealthThreshold_HARD_LOWER_LIMIT, eatHealthThreshold_storedValue);
+		return healingThreshold_storedValue;
 	}
 	
 	/**
-	 * @return If the player should eat until full HP
+	 * Sets up healingThreshold. Should only ever be called once.
 	 */
-	public boolean eatToFull() {
-		return eatHealthThreshold_eatToFull;
+	public void healingThreshold_setup() {
+		healingThreshold_eatMethod = EatMethod.RANDOM;
+		int rnd = Random.nextInt(0, 100);
+		if (rnd < healingThreshold_ALGO_LOWEST_PROB)
+			healingThreshold_eatMethod = EatMethod.LOWEST_POSSIBLE;
+		else if (rnd < healingThreshold_ALGO_LOWEST_PROB + healingThreshold_ALGO_FOOD_PROB)
+			healingThreshold_eatMethod = EatMethod.FOOD_ORIENTED;
+		
+		if (script().settings.getCurrentFood().healAmount > script().ctx.combatBar.maximumHealth())
+			healingThreshold_eatMethod = EatMethod.LOWEST_POSSIBLE;
+		
+		healingThreshold_isConstant = false;
+		healingThreshold(true); // Set before isConstant
+		rnd = Random.nextInt(0, 100);
+		if (rnd < healingThreshold_IS_CONSTANT_PROB)
+			healingThreshold_isConstant = true;
 	}
+	
+	/**
+	 * Description:
+	 * Sometimes people are happy to just eat 1 food. Others, not so much.
+	 * @return
+	 */
+	public int foodToConsume() {
+		return 0;
+	}
+	
 	
 	private static final int safeToCrack_RANDOM_SAFE_PROBABILITY = 27;
 	private static final RoguesDenSafeCracker.Safe[] safeToCrack_ALL_SAFES = {
@@ -264,6 +322,7 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 		return true;
 	}
 	
+	
 	private static final int safeMisclick_ABS_MIN = 0;
 	private static final int safeMisclick_ABS_MAX = 120;
 	private static final int safeMisclick_MAX_VAR = 15;
@@ -320,6 +379,7 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 		return Random.nextInt(0, misclickInstantRecovery_UPPER_BOUND) <= getFocus();
 	}
 	
+	
 	private static final int safeClickCount_MAX_CLICKS = 5;
 	private static final int safeClickCount_ENABLE_PROBABILITY = 25;
 	private boolean safeClickCount_isEnabled;
@@ -375,6 +435,6 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 				safeClickCount_MIN_CLICK_DELAY,
 				safeClickCount_MAX_CLICK_DELAY,
 				safeClickCount_mean,
-				safeClickCount_variance);
+				Math.sqrt(safeClickCount_variance));
 	}
 }

@@ -24,6 +24,10 @@ public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Setti
 	@Override
 	public boolean run() {
 		// Bank run?
+		// TODO: Add - Gamble (interact even when inventory is full)
+		// TODO: Add - Eat food to open inventory space
+		// Things to consider: More likely to gamble or eat to clear inventory when near a new
+		// level?
 		if (script.ctx.backpack.count() 
 				== script.persona.backpackFillCountBeforeBanking(false)) {
 			script.persona.backpackFillCountBeforeBanking(true);
@@ -31,8 +35,8 @@ public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Setti
 			return true;
 		}
 		// Health low?
-		if (script.ctx.combatBar.health() < script.persona.eatHealthThreshold(false)) {
-			script.persona.eatHealthThreshold(true);
+		if (script.ctx.combatBar.health() < script.persona.healingThreshold(false)) {
+			script.persona.healingThreshold(true);
 			script.updateState(RoguesDenSafeCracker.State.SAFE_EAT);
 			return true;
 		}
@@ -77,7 +81,7 @@ public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Setti
 			return false;
 		}
 		
-		// TODO: Add human movement
+		// TODO: Add human factor
 		
 		// Waiting for the player to interact
 		if (!Condition.wait(new Callable<Boolean>() {
@@ -89,7 +93,7 @@ public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Setti
 		}, 100, 10)) // 1000 ms
 			return false;
 		
-		// TODO: Add human movement
+		// TODO: Add human factor
 		
 		// Waiting for the player to success or fail
 		Timer safecrackAnimationTimer = new Timer(script.ctx, 2000);
@@ -109,7 +113,7 @@ public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Setti
 		}, safecrackAnimationTimer, 150)) // "2000 ms"
 			return false;
 		
-		// TODO: Add human movement
+		// TODO: Add human factor
 		
 		// Wait for safe reset
 		if (!Condition.wait(new Callable<Boolean>() {

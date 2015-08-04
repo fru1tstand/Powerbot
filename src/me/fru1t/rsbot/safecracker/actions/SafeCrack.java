@@ -28,7 +28,7 @@ public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Setti
 		// TODO: Add - Eat food to open inventory space
 		// Things to consider: More likely to gamble or eat to clear inventory when near a new
 		// level?
-		if (script.ctx.backpack.count() 
+		if (script.ctx.backpack.select().count() 
 				== script.persona.backpackFillCountBeforeBanking(false)) {
 			script.persona.backpackFillCountBeforeBanking(true);
 			script.updateState(RoguesDenSafeCracker.State.BANK_WALK);
@@ -71,7 +71,7 @@ public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Setti
 		while (impatientClicking > 1 // First click already happened
 				&& script.ctx.menu.items()[0].equals(RoguesDenSafeCracker.MENU_CRACK_ACTIVE_TEXT)) {
 			script.ctx.input.click(true);
-			Condition.sleep(script.persona.safeClickCountDelay());
+			Condition.sleep(script.persona.clickSpamDelay());
 		}
 		
 		// Safety check

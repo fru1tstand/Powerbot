@@ -44,6 +44,8 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 		this.clumsy = 0;
 		
 		healingThreshold_setup();
+		clickSpamDelay_setup();
+		impatientEatClickCount_setup();
 		
 		backpackFillCountBeforeBanking(true);
 		safeToCrack(true);
@@ -180,11 +182,7 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 		}
 		return healingThreshold_storedValue;
 	}
-	
-	/**
-	 * Sets up healingThreshold. Should only ever be called once.
-	 */
-	public void healingThreshold_setup() {
+	private void healingThreshold_setup() {
 		healingThreshold_eatMethod = EatMethod.RANDOM;
 		int rnd = Random.nextInt(0, 100);
 		if (rnd < healingThreshold_ALGO_LOWEST_PROB)
@@ -383,12 +381,6 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 	private static final int safeClickCount_MAX_CLICKS = 5;
 	private static final int safeClickCount_ENABLE_PROBABILITY = 25;
 	private boolean safeClickCount_isEnabled;
-	private double safeClickCount_variance;
-	private int safeClickCount_mean;
-	private static final int safeClickCount_MIN_CLICK_DELAY = 50; // ms
-	private static final int safeClickCount_MAX_CLICK_DELAY = 300; // ms
-	private static final double safeClickCount_MAX_VAR = 0.8;
-	private static final double safeClickCount_MIN_VAR = 0.15;
 	private static final int safeClickCount_MAX_MEAN = 175;
 	/**
 	 * Description:
@@ -398,9 +390,7 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 	 * Never (script start)
 	 * 
 	 * Algorithm:
-	 * Number of clicks is [1, MAX_CLICKS] where each value is equally weighted random. The delay
-	 * between the clicks is a normal distribution with randomly chosen mean of
-	 * [MIN_CLICK_DELAY, MAX_MEAN] and a randomly chosen variance of [MIN_VAR, MAX_VAR]
+	 * Number of clicks is [1, MAX_CLICKS] where each value is equally weighted random. 
 	 * 
 	 * Justification:
 	 * Someone sporadically clicking will not know how many times they've clicked (or care to
@@ -417,24 +407,87 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 		if (didTrigger) {
 			safeClickCount_isEnabled = 
 					(Random.nextInt(0, 100) > safeClickCount_ENABLE_PROBABILITY);
-			safeClickCount_variance =
-					Random.nextDouble(safeClickCount_MIN_VAR, safeClickCount_MAX_VAR);
-			safeClickCount_mean = Random.nextInt(1, safeClickCount_MAX_MEAN);
 		}
 		if (!safeClickCount_isEnabled)
 			return 1;
 		return Random.nextInt(1, safeClickCount_MAX_CLICKS);
 	}
 	
+	
+	private static final int clickSpamDelay_MIN_CLICK_DELAY = 50; // ms
+	private static final int clickSpamDelay_MAX_CLICK_DELAY = 300; // ms
+	private static final double clickSpamDelay_MAX_VAR = 0.8;
+	private static final double clickSpamDelay_MIN_VAR = 0.15;
+	private double clickSpamDelay_variance;
+	private int clickSpamDelay_mean;
 	/**
-	 * @see #safeClickCount(boolean)
+	 * Description:
+	 * There's a delay between click spamming
+	 * 
+	 * Algorithm:
+	 * Normal distribution with randomly chosen mean of [MIN_CLICK_DELAY, MAX_MEAN] and a randomly
+	 * chosen variance of [MIN_VAR, MAX_VAR]
 	 * @return The delay between clicks
 	 */
-	public int safeClickCountDelay() {
+	public int clickSpamDelay() {
 		return Random.nextGaussian(
-				safeClickCount_MIN_CLICK_DELAY,
-				safeClickCount_MAX_CLICK_DELAY,
-				safeClickCount_mean,
-				Math.sqrt(safeClickCount_variance));
+				clickSpamDelay_MIN_CLICK_DELAY,
+				clickSpamDelay_MAX_CLICK_DELAY,
+				clickSpamDelay_mean,
+				Math.sqrt(clickSpamDelay_variance));
+	}
+	private void clickSpamDelay_setup() {
+		clickSpamDelay_variance = Random.nextDouble(clickSpamDelay_MIN_VAR, clickSpamDelay_MAX_VAR);
+		clickSpamDelay_mean = Random.nextInt(1, safeClickCount_MAX_MEAN);
+	}
+	
+	
+	private static final int impatientEatClickCount_OFF_PROB = 80;
+	private static final int impatientEatClickCount_MIN_RND_CLICKS = 1;
+	private static final int impatientEatClickCount_MAX_RND_CLICKS = 4;
+	private static final int impatientEatClickCount_ON_NORM_PROB = 30;
+	private static final double impatientEatClickCount_ON_MIN_VAR = 0.5;
+	private static final double impatientEatClickCount_ON_MAX_VAR = 1.0;
+	private static final int impatientEatClickCount_ON_NORM_MEAN = 2;
+	private boolean impatientEatClickCount_isEnabled;
+	private double impatientEatClickCount_normVariance;
+	/**
+	 * Description:
+	 * Sometimes people like spam clicking food until it's eaten. This is that.
+	 * 
+	 * Trigger:
+	 * Each food item eaten
+	 * 
+	 * Algorithm:
+	 * "Off" - Never spams (returns 1)
+	 * 		OFF_PROB% probability
+	 * "On" - ON_NORM_PROB% chance of Norm(2, const rand[ON_MIN_VAR, ON_MAX_VAR])
+	 * 		  (100 - ON_NORM_PROB)% chance of 1
+	 * 		(100 - OFF_PROB)% probability
+	 * 
+	 * Justification:
+	 * Some people like spam clicking, others don't. Those that do spam click, often don't spam
+	 * click 100% of the time. 
+	 * 
+	 * Consider: Spam clickers may fall back to not spam clicking after some time.
+	 * @return Number of times to click a food item.
+	 */
+	public int impatientEatClickCount() {
+		if (!impatientEatClickCount_isEnabled
+				|| Random.nextInt(0, 100) > impatientEatClickCount_ON_NORM_PROB) {
+			return 1;
+		}
+		return Random.nextGaussian(
+				impatientEatClickCount_MIN_RND_CLICKS,
+				impatientEatClickCount_MAX_RND_CLICKS,
+				impatientEatClickCount_ON_NORM_MEAN,
+				impatientEatClickCount_normVariance);
+	}
+	private void impatientEatClickCount_setup() {
+		impatientEatClickCount_isEnabled =
+				(Random.nextInt(0, 100) > impatientEatClickCount_OFF_PROB);
+		impatientEatClickCount_normVariance = Random.nextDouble(
+				impatientEatClickCount_ON_MIN_VAR,
+				impatientEatClickCount_ON_MAX_VAR);
 	}
 }

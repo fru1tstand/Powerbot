@@ -10,13 +10,12 @@ import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.rsbot.framework.Action;
 import me.fru1t.rsbot.framework.Script;
-import me.fru1t.rsbot.safecracker.Persona;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
 import me.fru1t.rsbot.safecracker.actions.SafeCrack;
 
 @Manifest(name = "Rogue's Den Safe Cracker", description = "Cracks safes in Rogue's Den")
-public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings, Persona> {
+public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings> {
 	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
 	public static final int SAFE_OBJECT_ID = 7235;
 	public static final int SAFE_OPENED_OBJECT_ID = 64296;
@@ -70,7 +69,7 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	}
 
 	public RoguesDenSafeCracker() {
-		super(new Settings(), new Persona());
+		super(new Settings());
 	}
 	
 	@Override
@@ -81,8 +80,8 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	@Override
 	protected Map<
 			State,
-			Class<? extends Action<ClientContext, ?, Settings, Persona>>> getActionMap() {
-		Map<State, Class<? extends Action<ClientContext, ?, Settings, Persona>>> stateMap = 
+			Class<? extends Action<ClientContext, ?, Settings>>> getActionMap() {
+		Map<State, Class<? extends Action<ClientContext, ?, Settings>>> stateMap = 
 				new HashMap<>();
 		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
 		return stateMap;

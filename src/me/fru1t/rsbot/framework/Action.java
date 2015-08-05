@@ -2,7 +2,6 @@ package me.fru1t.rsbot.framework;
 
 import org.powerbot.script.ClientContext;
 
-import me.fru1t.rsbot.framework.generics.GenericPersona;
 import me.fru1t.rsbot.framework.generics.GenericSettings;
 
 /**
@@ -12,13 +11,11 @@ import me.fru1t.rsbot.framework.generics.GenericSettings;
  * @param <C> The ClientContext version
  * @param <S> The script that's running
  * @param <T> The Settings type
- * @param <P> The Persona in charge
  */
 public abstract class Action<
 		C extends ClientContext<?>,
-		S extends Script<C, ?, T, P>,
-		T extends GenericSettings,
-		P extends GenericPersona<C, T>> {
+		S extends Script<C, ?, T>,
+		T extends GenericSettings> {
 	protected final S script;
 	
 	/**

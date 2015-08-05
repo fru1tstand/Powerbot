@@ -13,7 +13,7 @@ import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.utils.Condition;
 import me.fru1t.rsbot.utils.Timer;
 
-public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Settings, Persona> {
+public class SafeCrack extends Action<ClientContext, RoguesDenSafeCracker, Settings> {
 	private GameObject cachedSafeToCrack;
 	
 	public SafeCrack(RoguesDenSafeCracker script) {

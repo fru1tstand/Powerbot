@@ -12,21 +12,7 @@ import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.framework.generics.GenericPersona;
 import me.fru1t.rsbot.utils.Timer;
 
-/**
- * Theory:
- * Scripts are written to follow a very strict core set of actions. On top of this, the programming
- * behind it aims to be 100% accurate. This has led to easy, easy detection, as herds of accounts
- * are following an easily discernible pattern and interact with the Runescape world with ~100%
- * accuracy. Bottom line: scripts are too afraid to make mistakes and script writers are too lazy
- * to scatter the script's footprint. 
- * 
- * Persona^tm aims to throw in more humanistic traits to the script in the form of
- * attentiveness, clumsiness, impatience, etc. Each Persona has its own set of characteristics, but
- * also more importantly, has its own unique set of ideologies and methods to complete a specific
- * task. This scatters the deep footprint of a single traditional script to thousands of randomly
- * generated footprints of a Persona driven script. More footprints equals harder to detect equals
- * less bans equals GOOD.
- */
+
 public class Persona extends GenericPersona<ClientContext, Settings> {
 	private static final int MAX_FOCUS = 100;
 	private static final int MIN_FOCUS = 0;
@@ -62,143 +48,10 @@ public class Persona extends GenericPersona<ClientContext, Settings> {
 	}
 	
 	
-	private static final int backpackFillCountBeforeBanking_NOT_28_PROBABILITY = 15;
-	private static final int backpackFillCountBeforeBanking_MIN_VALUE = 14;
-	private static final int backpackFillCountBeforeBanking_MIN_FOCUS_CUTOFF = 50;
-	private int backpackFillCountBeforeBanking_storedValue;
-	/**
-	 * Description:
-	 * A normal person will wait until the inventory is full (count 28), but on occasion a person
-	 * may haphazardly bank without a full inventory.
-	 * 
-	 * Trigger:
-	 * Bank Cycle
-	 * 
-	 * Algorithm:
-	 * [MIN_VALUE, 28] The chance the value will not be 28 is cumulatively
-	 * [0, NOT_28_PROBABILITY]% correlated linearly on focus with a lower bound of
-	 * CORRELATION_MAX_VALUE. When not 28, each valid value is given equal weight.
-	 * 
-	 * Justification:
-	 * A person is lesser likely to randomly bank when not clumsy and more attentive. If a random
-	 * banking event does occur, the count of items in the inventory is probably not skewed in
-	 * either direction.
-	 * 
-	 * @param didTrigger If set to true, calculates a new number
-	 * @return The number of items in the backpack before banking
-	 */
-	public int backpackFillCountBeforeBanking(boolean didTrigger) {
-		if (didTrigger || backpackFillCountBeforeBanking_storedValue == 0) {
-			backpackFillCountBeforeBanking_storedValue = 28;
-			if (getFocus() < backpackFillCountBeforeBanking_MIN_FOCUS_CUTOFF) {
-				int linearPercent = (int) 1.0
-						* backpackFillCountBeforeBanking_NOT_28_PROBABILITY
-						/ (MAX_FOCUS - backpackFillCountBeforeBanking_MIN_FOCUS_CUTOFF)
-						* getFocus();
-				if (Random.nextInt(0, 100) <= linearPercent) {
-					backpackFillCountBeforeBanking_storedValue =
-							Random.nextInt(backpackFillCountBeforeBanking_MIN_VALUE, 29);
-				}
-			}
-		}
-		return backpackFillCountBeforeBanking_storedValue;
-	}
+
 	
 	
-	private enum EatMethod { LOWEST_POSSIBLE, FOOD_ORIENTED, RANDOM }
-	private static final int healingThreshold_IS_CONSTANT_PROB = 25;
-	private static final int healingThreshold_LOWEST_MIN = 110;
-	private static final int healingThreshold_LOWEST_MAX = 300;
-	private static final int healingThreshold_ALGO_LOWEST_PROB = 10;
-	private static final int healingThreshold_ALGO_FOOD_PROB = 50;
-	private static final double healingThreshold_FOOD_VAR_MIN = 0.5;
-	private static final double healingThreshold_FOOD_VAR_MAX = 5;
-	private static final int healingThreshold_ABS_MIN = 500;
-	private EatMethod healingThreshold_eatMethod;
-	private boolean healingThreshold_isConstant;
-	private int healingThreshold_storedValue;
-	/**
-	 * Description:
-	 * Eating habits may vary from person to person. Several of these include eating when hp
-	 * reaches as low as possible without dying then fully healing, eating whenever health drops
-	 * below what the food item heals, eating when hp falls below a specific threshold, etc.
-	 * 
-	 * Trigger:
-	 * Food eat event
-	 * 
-	 * Configure:
-	 * (Algorithm never changes within a single script run)
-	 * NEVER (NEVER_CONFIGURE)% || ALWAYS (100 - NEVER_CONFIGURE)%
-	 * 
-	 * Algorithms:
-	 * "Lowest Possible" - Random [LOWEST_MIN, LOWEST_MAX] HP
-	 * 		ALGO_LOWEST_PROB% Probability
-	 * 		Force enabled when food healing > player's max HP
-	 * 
-	 * "Food Oriented" - Unimodal skewed left (tends to heal closer to 100%) from the normal dist
-	 * N(maxHealHealth, random(FOOD_VAR_MIN, FOOD_VAR_MAX)). Anything not contained within the
-	 * range (ABS_MIN, maxHealHealth) is rerolled, creating a skew. With variance at least 0.5,
-	 * exact mean will never be chosen > 60% of the time.
-	 * 		ALGO_FOOD_PROB% Probability
-	 * 
-	 * "Random" - Plain ol' random range [ABS_MIN, MAX_HP - FOOD_HEAL]
-	 * 		(100 - lowest - food)% Probability
-	 * 
-	 * Justification:
-	 * People have different eating habits. Some are fatter than others. 
-	 * 
-	 * @param didTrigger
-	 * @return The HP threshold to eat at.
-	 */
-	public int healingThreshold(boolean didTrigger) {
-		if (didTrigger && !healingThreshold_isConstant) {
-			int foodHealAmt = script().settings.getCurrentFood().healAmount;
-			int maxHealHealth = script().ctx.combatBar.maximumHealth() - foodHealAmt;
-			switch (healingThreshold_eatMethod) {
-			case LOWEST_POSSIBLE:
-				healingThreshold_storedValue =
-						Random.nextInt(healingThreshold_LOWEST_MIN, healingThreshold_LOWEST_MAX);
-				break;
-			case RANDOM:
-				healingThreshold_storedValue =
-						Random.nextInt(healingThreshold_ABS_MIN, maxHealHealth);
-				break;
-			case FOOD_ORIENTED:
-			default:
-				healingThreshold_storedValue = 0;
-				// Theoretically this could go on forever...
-				while (healingThreshold_storedValue > maxHealHealth
-						|| healingThreshold_storedValue < healingThreshold_ABS_MIN) {
-					healingThreshold_storedValue = Random.nextGaussian(
-							healingThreshold_ABS_MIN,
-							maxHealHealth, // Anything larger is floored to this and rerolled
-							maxHealHealth,
-							(int) Math.sqrt(Random.nextDouble(
-									healingThreshold_FOOD_VAR_MIN,
-									healingThreshold_FOOD_VAR_MAX)));
-				}
-				break;
-			}
-		}
-		return healingThreshold_storedValue;
-	}
-	private void healingThreshold_setup() {
-		healingThreshold_eatMethod = EatMethod.RANDOM;
-		int rnd = Random.nextInt(0, 100);
-		if (rnd < healingThreshold_ALGO_LOWEST_PROB)
-			healingThreshold_eatMethod = EatMethod.LOWEST_POSSIBLE;
-		else if (rnd < healingThreshold_ALGO_LOWEST_PROB + healingThreshold_ALGO_FOOD_PROB)
-			healingThreshold_eatMethod = EatMethod.FOOD_ORIENTED;
-		
-		if (script().settings.getCurrentFood().healAmount > script().ctx.combatBar.maximumHealth())
-			healingThreshold_eatMethod = EatMethod.LOWEST_POSSIBLE;
-		
-		healingThreshold_isConstant = false;
-		healingThreshold(true); // Set before isConstant
-		rnd = Random.nextInt(0, 100);
-		if (rnd < healingThreshold_IS_CONSTANT_PROB)
-			healingThreshold_isConstant = true;
-	}
+
 	
 	/**
 	 * Description:

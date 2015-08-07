@@ -23,9 +23,11 @@ public abstract class Script<
 	private final Map<ST, Action<C, ?, T>> scriptActions;
 	public final T settings;
 	public final C ctx;
+	public final Persona persona;
 	private ST currentState;
 	private ST lastState;
 	private int consecutiveFailures;
+	
 	
 	/**
 	 * Creates a new empty script
@@ -33,6 +35,7 @@ public abstract class Script<
 	protected Script(T settings) {
 		this.scriptActions = new HashMap<>();
 		this.statusStack = new Stack<>();
+		this.persona = new Persona();
 		this.settings = settings;
 		this.ctx = super.ctx;
 		this.currentState = null;

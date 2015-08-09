@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotates the respective {field, method, parameter} as nullable, so YOU SHOULD PERFORM A 
- * NULL CHECK BEFORE USING IT.
+ * Denotes the given {field, method, parameter} as nullable, meaning YOU SHOULD CHECK THE OUTPUT
+ * BEFORE USING IT.
  */
 @Retention(RetentionPolicy.CLASS)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})

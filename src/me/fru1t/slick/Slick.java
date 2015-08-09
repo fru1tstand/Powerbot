@@ -7,6 +7,8 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.fru1t.annotations.Inject;
+
 /**
  * Slick: Simple Lightweight dependency InjeCtion frameworK
  * 

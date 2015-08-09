@@ -89,13 +89,28 @@ public class Slick {
 		Class<?>[] constructorRequirements = injectableConstructor.getParameterTypes();
 		Object[] constructorFulfillments = new Object[constructorRequirements.length];
 		for (int i = 0; i < constructorRequirements.length; i++) {
-			if (!providedInstances.containsKey(constructorRequirements[i])) {
-				throw new SlickException(String.format(
-						"%s requires an unprovided dependency: %s.",
-						type.getName(),
-						constructorRequirements[i].getName()));
+			constructorFulfillments[i] = null;
+			
+			// Find directly in provides
+			if (providedInstances.containsKey(constructorRequirements[i])) {
+				constructorFulfillments[i] = providedInstances.get(constructorRequirements[i]);
 			}
-			constructorFulfillments[i] = providedInstances.get(constructorRequirements[i]);
+			
+			// Find assignable
+			if (constructorFulfillments[i] == null) {
+				for (Map.Entry<Class<?>, Object> entry : providedInstances.entrySet()) {
+					if (entry.getKey().isAssignableFrom(constructorRequirements[i])) {
+						constructorFulfillments[i] = entry.getValue();
+						break;
+					}
+				}
+			}
+			
+			// Lastly, try recursive injection
+			if (constructorFulfillments[i] == null) {
+				// This will either retrieve the required object or throw an exception.
+				constructorFulfillments[i] = get(constructorRequirements[i]);
+			}
 		}
 
 		try {

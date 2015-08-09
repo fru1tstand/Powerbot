@@ -4,14 +4,14 @@ package me.fru1t.rsbot.framework;
  * Contains methods to quantify certain behaviors. Used in {@link Action}s to determine how the
  * player should interact with the Runescape world.
  * 
- * Theory:
+ * <p>Theory:
  * Scripts are written to follow a very strict core set of actions. On top of this, the programming
  * behind it aims to be 100% accurate. This has led to easy, easy detection, as herds of accounts
  * are following an easily discernible pattern and interact with the Runescape world with ~100%
  * accuracy. Bottom line: scripts are too afraid to make mistakes and script writers are too lazy
  * to scatter the script's footprint. 
  * 
- * Persona^tm aims to throw in more humanistic traits to the script in the form of
+ * <p>Persona^tm aims to throw in more humanistic traits to the script in the form of
  * attentiveness, clumsiness, impatience, etc. Each Persona has its own set of characteristics, but
  * also more importantly, has its own unique set of ideologies and methods to complete a specific
  * task. This scatters the deep footprint of a single traditional script to thousands of randomly

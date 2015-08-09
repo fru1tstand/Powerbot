@@ -14,6 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
+import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.food.AllFood;
 import me.fru1t.rsbot.framework.SettingsCallback;
@@ -32,6 +33,7 @@ public class StartupForm extends GenericStartupForm<Settings> {
 	/**
 	 * Create the application.
 	 */
+	@Inject
 	public StartupForm(SettingsCallback<Settings> callback) {
 		super(callback);
 		

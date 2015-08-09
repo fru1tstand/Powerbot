@@ -13,15 +13,10 @@ import me.fru1t.rsbot.framework.generics.GenericPersona;
 import me.fru1t.rsbot.utils.Timer;
 
 
-public class Persona extends GenericPersona<ClientContext, Settings> {
+public class Persona {
 	private static final int MAX_FOCUS = 100;
 	private static final int MIN_FOCUS = 0;
-	
-	/**
-	 * These values are used arbitrarily and range from 0 to 100, inclusive on both ends.
-	 */
-	private int attention;
-	private int clumsy;
+
 	
 	// TODO: Create algo that models attention and clumsiness that is sinusoidally dependent over
 	// time.

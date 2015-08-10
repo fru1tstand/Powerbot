@@ -41,7 +41,7 @@ public class Settings extends GenericSettings {
 	
 	@Override
 	public boolean isValid() {
-		return foods != null && preferredSafe != null;
+		return foods != null && foods.size() != 0 && preferredSafe != null;
 	}
 	
 	/**

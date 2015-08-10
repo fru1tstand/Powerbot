@@ -16,8 +16,8 @@ import me.fru1t.annotations.Inject;
  * none of the setup, all of the errors. Only supports constructor injections (versus member
  * injection). But hey, it's "easy to use".
  * 
- * <p>**Does not map interfaces to implementations** Maybe a todo? This functionality is not needed
- * for its current application.
+ * <p>**Does not map interfaces to implementations** Maybe a todo? Inversion of control is not
+ * needed for the current usage of Slick so this was left out.
  */
 public class Slick {
 	private final Map<Class<?>, Object> providedInstances;

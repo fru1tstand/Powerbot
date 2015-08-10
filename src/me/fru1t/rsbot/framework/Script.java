@@ -112,6 +112,8 @@ public abstract class Script<
 			@Override
 			public void call(T settings) {
 				setSettings(settings);
+				setUpActions();
+				scriptReady();
 			}
 		});
 		
@@ -124,6 +126,8 @@ public abstract class Script<
 	 */
 	protected final void setSettings(T settings) {
 		if (!settings.isValid()) {
+			// TODO: Generate a more user friendly response. Sometimes !isValid is a user-specific
+			// error.
 			throw new RuntimeException(String.format(
 					"%s: Something about the settings was not right. "
 							+ "Please post this error in the forum along with your settings so "
@@ -131,7 +135,7 @@ public abstract class Script<
 					getClass().getAnnotation(Manifest.class).name()));
 		}
 		slick.provide(settings.getClass(), settings);
-		status.update("Settings set.");
+		status.update("Settings have been set.");
 	}
 	
 	/**
@@ -139,7 +143,7 @@ public abstract class Script<
 	 * set, and all dependencies that each Action may have are provided to the slick instance.
 	 */
 	protected final void setUpActions() {
-		status.update("Preparing script for run...");
+		status.update("Preparing script to run...");
 		for (Map.Entry<ST, Class<? extends Action>> entry : getActionMap().entrySet()) {
 			scriptActions.put(entry.getKey(), slick.get(entry.getValue()));
 		}

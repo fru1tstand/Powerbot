@@ -3,7 +3,6 @@ package me.fru1t.slick;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,14 +44,6 @@ public class Slick {
 	 * @return An instance of the class.
 	 */
 	public <T> T get(Class<T> type) {
-		// Abstract or interface
-		if ((type.getModifiers() & (Modifier.ABSTRACT | Modifier.INTERFACE)) > 0) {
-			throw new SlickException(String.format(
-					"Slick does not handle the inversion of control style injection attempted "
-					+ "when given '%s'.",
-					type.getName()));
-		}
-		
 		// grab the class's constructors
 		@SuppressWarnings("unchecked") // We're guaranteed this array is of type Constructor<T>
 		Constructor<T>[] constructors = (Constructor<T>[]) type.getConstructors();
@@ -67,7 +58,7 @@ public class Slick {
 		for (Constructor<T> constructor : constructors) {
 			Annotation[] annotations = constructor.getAnnotations();
 			for (Annotation annotation : annotations) {
-				if (!annotation.getClass().equals(Inject.class)) {
+				if (!annotation.annotationType().equals(Inject.class)) {
 					continue;
 				}
 				if (injectableConstructor != null) {
@@ -99,7 +90,7 @@ public class Slick {
 			// Find assignable
 			if (constructorFulfillments[i] == null) {
 				for (Map.Entry<Class<?>, Object> entry : providedInstances.entrySet()) {
-					if (entry.getKey().isAssignableFrom(constructorRequirements[i])) {
+					if (constructorRequirements[i].isAssignableFrom(entry.getKey())) {
 						constructorFulfillments[i] = entry.getValue();
 						break;
 					}
@@ -119,7 +110,9 @@ public class Slick {
 				| IllegalAccessException
 				| IllegalArgumentException
 				| InvocationTargetException e) {
-			throw new SlickException(e.getMessage());
+			throw new SlickException(
+					String.format("Failed to instantiate %s", type.getName()), 
+					e.getCause());
 		}
 	}
 }

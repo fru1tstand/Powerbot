@@ -37,13 +37,6 @@ public abstract class Script<
 	 */
 	protected abstract ST getResetState();
 	
-	/**
-	 * This is used at runtime to verify that all states have a handling class when
-	 * {@link #setUpActions()} is called.
-	 * @return The entire state enum as a class.
-	 */
-	protected abstract Class<ST> getStateClass();
-	
 
 	private final Map<ST, Action> scriptActions;
 	private final Slick slick;
@@ -147,7 +140,8 @@ public abstract class Script<
 		for (Map.Entry<ST, Class<? extends Action>> entry : getActionMap().entrySet()) {
 			scriptActions.put(entry.getKey(), slick.get(entry.getValue()));
 		}
-		ST[] states = getStateClass().getEnumConstants();
+		// Some trickery here to get all enums within ST (state) because Java's type erasure.
+		ST[] states = getResetState().getDeclaringClass().getEnumConstants();
 		for (ST state : states) {
 			if (scriptActions.containsKey(state)) {
 				throw new RuntimeException(

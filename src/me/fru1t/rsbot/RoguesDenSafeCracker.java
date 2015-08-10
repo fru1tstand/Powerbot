@@ -92,9 +92,4 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	protected State getResetState() {
 		return State.UNKNOWN;
 	}
-	
-	@Override
-	protected Class<State> getStateClass() {
-		return State.class;
-	}
 }

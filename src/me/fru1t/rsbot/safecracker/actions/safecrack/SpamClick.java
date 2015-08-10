@@ -15,8 +15,8 @@ import me.fru1t.rsbot.utils.Random;
  * time wears on, fatigue may build up reducing both click count and click delay
  * mean.
  * 
- * <p>
- * TODO: Add focus integration
+ * <p>TODO: Add focus integration
+ * <p>TODO: Abstract
  */
 public class SpamClick {
 	private static final int ABSOLUTE_MAX_CLICKS = 5;

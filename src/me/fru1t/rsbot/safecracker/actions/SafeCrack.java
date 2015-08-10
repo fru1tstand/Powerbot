@@ -66,8 +66,8 @@ public class SafeCrack implements Action {
 		// level?
 		if (ctx.backpack.select().count() >= backpack.bankAt()) {
 			backpack.newBankAt();
-			// TODO: Move somewhere more... appropriate.
-			safeLogic.getSafe();
+			// TODO: Move this somewhere more... appropriate.
+			safeLogic.newSafe();
 			state.update(RoguesDenSafeCracker.State.BANK_WALK);
 			return true;
 		}

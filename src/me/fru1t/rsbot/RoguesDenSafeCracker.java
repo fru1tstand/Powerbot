@@ -25,6 +25,9 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	public static final int PLAYER_HURTING_ANIMATION = 18353;
 	public static final String MENU_CRACK_ACTIVE_TEXT = "Crack";
 	
+	/**
+	 * Defines this script's possible states.
+	 */
 	public enum State {
 		// Other
 		UNKNOWN,
@@ -40,6 +43,9 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 		SAFE_EAT
 	}
 	
+	/**
+	 * The safes to crack with data associated to each safe.
+	 */
 	public enum Safe {
 		AUTOMATIC(null, null),
 		SW(new Tile(3041, 4957), new Tile(3041, 4956)),
@@ -61,28 +67,23 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 		 */
 		// @Nullable
 		public static Safe fromLocation(Locatable l) {
-			for (Safe safe : Safe.values())
-				if (safe.location.equals(l.tile()))
+			for (Safe safe : Safe.values()) {
+				if (safe.location.equals(l.tile())) {
 					return safe;
+				}
+			}
 			return null;
 		}
 	}
 
-	public RoguesDenSafeCracker() {
-		super(new Settings());
-	}
-	
 	@Override
 	public void init() {
 		showStartupForm(StartupForm.class);
 	}
 
 	@Override
-	protected Map<
-			State,
-			Class<? extends Action<ClientContext, ?, Settings>>> getActionMap() {
-		Map<State, Class<? extends Action<ClientContext, ?, Settings>>> stateMap = 
-				new HashMap<>();
+	protected Map<State, Class<? extends Action>> getActionMap() {
+		Map<State, Class<? extends Action>> stateMap = new HashMap<>();
 		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
 		return stateMap;
 	}
@@ -90,5 +91,10 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	@Override
 	protected State getResetState() {
 		return State.UNKNOWN;
+	}
+	
+	@Override
+	protected Class<State> getStateClass() {
+		return State.class;
 	}
 }

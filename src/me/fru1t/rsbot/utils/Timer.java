@@ -2,11 +2,14 @@ package me.fru1t.rsbot.utils;
 
 import org.powerbot.script.ClientContext;
 
+import me.fru1t.annotations.Inject;
+
 public class Timer {
 	private final ClientContext<?> ctx;
 	private long expirationTimeInMillis;
 	private long lastSetTimeFromNowInMillis;
 	
+	@Inject
 	public Timer(ClientContext<?> ctx) {
 		this(ctx, 0);
 	}

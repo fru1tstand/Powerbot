@@ -9,8 +9,8 @@ import org.powerbot.script.rt6.GameObject;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
+import me.fru1t.rsbot.common.Random;
 import me.fru1t.rsbot.safecracker.Settings;
-import me.fru1t.rsbot.utils.Random;
 
 /**
  * Automatically selects an optimal safe to crack if settings.getPreferredSafe is set to 

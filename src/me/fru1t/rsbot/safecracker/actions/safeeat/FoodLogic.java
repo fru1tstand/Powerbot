@@ -3,8 +3,8 @@ package me.fru1t.rsbot.safecracker.actions.safeeat;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.rsbot.common.Random;
 import me.fru1t.rsbot.safecracker.Settings;
-import me.fru1t.rsbot.utils.Random;
 
 /**
  * There are people who eat one food, those who eat multiple food, and those who eat until the HP

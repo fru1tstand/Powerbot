@@ -1,8 +1,8 @@
 package me.fru1t.rsbot.safecracker.actions.safecrack;
 
 import me.fru1t.annotations.Inject;
-import me.fru1t.rsbot.utils.Random;
-import me.fru1t.rsbot.utils.Timer;
+import me.fru1t.rsbot.common.Random;
+import me.fru1t.rsbot.util.Timer;
 
 /**
  * A user doesn't constantly move the mouse every #interact, and vis versa. Depending on a 

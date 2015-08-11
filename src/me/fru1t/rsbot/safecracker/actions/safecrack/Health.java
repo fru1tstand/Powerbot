@@ -3,8 +3,8 @@ package me.fru1t.rsbot.safecracker.actions.safecrack;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.rsbot.common.Random;
 import me.fru1t.rsbot.safecracker.Settings;
-import me.fru1t.rsbot.utils.Random;
 
 /**
  * Eating habits may vary from person to person. Several of these include eating when hp

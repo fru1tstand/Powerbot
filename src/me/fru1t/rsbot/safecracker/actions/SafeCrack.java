@@ -15,8 +15,8 @@ import me.fru1t.rsbot.safecracker.actions.safecrack.Health;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SafeLogic;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SmartClick;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SpamClick;
-import me.fru1t.rsbot.utils.Condition;
-import me.fru1t.rsbot.utils.Timer;
+import me.fru1t.rsbot.util.Condition;
+import me.fru1t.rsbot.util.Timer;
 
 /**
  * Defines the safe cracking portion of the script.

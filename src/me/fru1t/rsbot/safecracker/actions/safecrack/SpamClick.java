@@ -1,23 +1,9 @@
 package me.fru1t.rsbot.safecracker.actions.safecrack;
 
 import me.fru1t.annotations.Inject;
-import me.fru1t.rsbot.utils.Random;
+import me.fru1t.rsbot.common.Random;
 
-/**
- * The most impatient people will click more than 1 time. Someone sporadically
- * clicking will not know how many times they've clicked (or care to click a
- * consistent amount every time). The delay in clicks tends toward a unimodal
- * symmetric normal distribution (n = 300). However, because people are
- * different, the mean and variance of these curve are too.
- * 
- * <p>
- * Consider: Someone may become impatient, or fall out of impatience. Also, as
- * time wears on, fatigue may build up reducing both click count and click delay
- * mean.
- * 
- * <p>TODO: Add focus integration
- * <p>TODO: Abstract
- */
+
 public class SpamClick {
 	private static final int ABSOLUTE_MAX_CLICKS = 5;
 	private static final int ENABLE_PROBABILITY = 25;

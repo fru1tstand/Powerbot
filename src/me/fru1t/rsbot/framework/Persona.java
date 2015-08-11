@@ -52,4 +52,79 @@ public class Persona {
 	public int laziness() {
 		return 100 - focus();
 	}
+	
+	/**
+	 * Returns a value between minValue and maxValue that is linearly proportional to the current
+	 * focus. If the focus is below focusFloor, minValue will always be returned. If the focus
+	 * is above focusRoof, maxValue will always be returned.
+	 * 
+	 * @param focusFloor [0, 100] Focus below this level will always return minValue
+	 * @param focusRoof [0, 100] Focus above this level will always return maxValue
+	 * @param minValue The lowest value to return
+	 * @param maxValue The highest value to return
+	 * @return A value between minValue and maxValue that is linearly proportional to the current
+	 * focus level.
+	 */
+	public double getFocusScaledDouble(
+			int focusFloor, int focusRoof, double minValue, double maxValue) {
+		if (focusFloor >= focusRoof 
+				|| focusFloor < MIN_FOCUS
+				|| focusRoof > MAX_FOCUS
+				|| minValue >= maxValue) {
+			throw new RuntimeException("Invalid call to #getFocusScaledValue.");
+		}
+		if (focus() <= focusFloor) {
+			return minValue;
+		}
+		if (focus() >= focusRoof) {
+			return maxValue;
+		}
+
+		// Will not go out of bounds due to exception check.
+		return 1.0 * (focusRoof - focusFloor) / (MAX_FOCUS - MIN_FOCUS) // Scale
+				* (maxValue - minValue) // Max delta
+				+ minValue;
+	}
+	
+	/**
+	 * Returns a value between minValue and maxValue that is linearly proportional to the current
+	 * focus.
+	 * 
+	 * @param minValue The lowest value to return
+	 * @param maxValue The highest value to return
+	 * @return A value between minValue and maxValue that is linearly proportional to the current
+	 * focus level.
+	 */
+	public double getFocusScaledDouble(double minValue, double maxValue) {
+		return getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, minValue, maxValue);
+	}
+	
+	/**
+	 * Returns a value between minValue and maxValue that is linearly proportional to the current
+	 * focus. If the focus is below focusFloor, minValue will always be returned. If the focus
+	 * is above focusRoof, maxValue will always be returned.
+	 * 
+	 * @param focusFloor [0, 100] Focus below this level will always return minValue
+	 * @param focusRoof [0, 100] Focus above this level will always return maxValue
+	 * @param minValue The lowest value to return
+	 * @param maxValue The highest value to return
+	 * @return A value between minValue and maxValue that is linearly proportional to the current
+	 * focus level.
+	 */
+	public int getFocusScaledInt(int focusFloor, int focusRoof, int minValue, int maxValue) {
+		return (int) getFocusScaledDouble(focusFloor, focusRoof, minValue, maxValue);
+	}
+	
+	/**
+	 * Returns a value between minValue and maxValue that is linearly proportional to the current
+	 * focus.
+	 * 
+	 * @param minValue The lowest value to return
+	 * @param maxValue The highest value to return
+	 * @return A value between minValue and maxValue that is linearly proportional to the current
+	 * focus level.
+	 */
+	public int getFocusScaledInt(int minValue, int maxValue) {
+		return (int) getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, minValue, maxValue);
+	}
 }

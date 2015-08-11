@@ -91,6 +91,22 @@ public class RandomNormalDistribution {
 	}
 	
 	/**
+	 * Returns a pseudo random number generated between the given range.
+	 * @return A pseudo random number within the mean range.
+	 */
+	public int getRandomMean() {
+		return Random.nextInt(meanMinMax);
+	}
+	
+	/**
+	 * Returns a pseudo random number generated between the given absolute range.
+	 * @return A pseudo random number within the absolute range.
+	 */
+	public int getRandomAbsolute() {
+		return Random.nextInt(absoluteMinMax);
+	}
+	
+	/**
 	 * Verifies that both stdev and mean locked values are set.
 	 */
 	private void prepareLockedValues() {

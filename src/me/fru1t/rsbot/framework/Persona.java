@@ -1,5 +1,8 @@
 package me.fru1t.rsbot.framework;
 
+import me.fru1t.annotations.Nullable;
+import me.fru1t.rsbot.util.Tuple2;
+
 /**
  * Contains methods to quantify certain behaviors. Used in {@link Action}s to determine how the
  * player should interact with the Runescape world.
@@ -87,44 +90,45 @@ public class Persona {
 	}
 	
 	/**
-	 * Returns a value between minValue and maxValue that is linearly proportional to the current
-	 * focus.
-	 * 
-	 * @param minValue The lowest value to return
-	 * @param maxValue The highest value to return
-	 * @return A value between minValue and maxValue that is linearly proportional to the current
-	 * focus level.
+	 * See {@link #getFocusScaledDouble(int, int, double, double)}
 	 */
 	public double getFocusScaledDouble(double minValue, double maxValue) {
 		return getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, minValue, maxValue);
 	}
 	
 	/**
-	 * Returns a value between minValue and maxValue that is linearly proportional to the current
-	 * focus. If the focus is below focusFloor, minValue will always be returned. If the focus
-	 * is above focusRoof, maxValue will always be returned.
-	 * 
-	 * @param focusFloor [0, 100] Focus below this level will always return minValue
-	 * @param focusRoof [0, 100] Focus above this level will always return maxValue
-	 * @param minValue The lowest value to return
-	 * @param maxValue The highest value to return
-	 * @return A value between minValue and maxValue that is linearly proportional to the current
-	 * focus level.
+	 * See {@link #getFocusScaledDouble(int, int, double, double)}.
+	 */
+	public double getFocusScaledDouble(
+			@Nullable Tuple2<Integer, Integer> focus,
+			Tuple2<Double, Double> value) {
+		return (focus == null)
+				? getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, value.first, value.second)
+				: getFocusScaledDouble(focus.first, focus.second, value.first, value.second);
+	}
+	
+	/**
+	 * See {@link #getFocusScaledDouble(int, int, double, double)}
 	 */
 	public int getFocusScaledInt(int focusFloor, int focusRoof, int minValue, int maxValue) {
 		return (int) getFocusScaledDouble(focusFloor, focusRoof, minValue, maxValue);
 	}
 	
 	/**
-	 * Returns a value between minValue and maxValue that is linearly proportional to the current
-	 * focus.
-	 * 
-	 * @param minValue The lowest value to return
-	 * @param maxValue The highest value to return
-	 * @return A value between minValue and maxValue that is linearly proportional to the current
-	 * focus level.
+	 * See {@link #getFocusScaledDouble(int, int, double, double)}
 	 */
 	public int getFocusScaledInt(int minValue, int maxValue) {
 		return (int) getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, minValue, maxValue);
+	}
+	
+	/**
+	 * See {@link #getFocusScaledDouble(int, int, double, double)}
+	 */
+	public int getFocusScaledInt(
+			@Nullable Tuple2<Integer, Integer> focus,
+			Tuple2<Integer, Integer> value) {
+		return (int) ((focus == null)
+				? getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, value.first, value.second)
+				: getFocusScaledDouble(focus.first, focus.second, value.first, value.second));
 	}
 }

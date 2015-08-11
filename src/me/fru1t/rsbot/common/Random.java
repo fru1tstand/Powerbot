@@ -47,4 +47,22 @@ public class Random extends org.powerbot.script.Random {
 		}
 		return result;
 	}
+	
+	/**
+	 * Returns a pseudo-generated random number.
+	 * @param minMax
+	 * @return A pseudo-generated random number.
+	 */
+	public static int nextInt(Tuple2<Integer, Integer> minMax) {
+		return nextInt(minMax.first, minMax.second);
+	}
+	
+	/**
+	 * Returns the next pseudo-random double.
+	 * @param minMax
+	 * @return The next pseudo-random double.
+	 */
+	public static double nextDouble(Tuple2<Double, Double> minMax) {
+		return nextDouble(minMax.first, minMax.second);
+	}
 }

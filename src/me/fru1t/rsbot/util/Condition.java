@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.utils;
+package me.fru1t.rsbot.util;
 
 import java.util.concurrent.Callable;
 

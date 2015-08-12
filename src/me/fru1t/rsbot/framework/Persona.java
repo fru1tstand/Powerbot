@@ -1,7 +1,7 @@
 package me.fru1t.rsbot.framework;
 
 import me.fru1t.annotations.Nullable;
-import me.fru1t.rsbot.util.Tuple2;
+import me.fru1t.collections.Tuple2;
 
 /**
  * Contains methods to quantify certain behaviors. Used in {@link Action}s to determine how the
@@ -98,6 +98,8 @@ public class Persona {
 	
 	/**
 	 * See {@link #getFocusScaledDouble(int, int, double, double)}.
+	 * @param focus @Nullable
+	 * @param value
 	 */
 	public double getFocusScaledDouble(
 			@Nullable Tuple2<Integer, Integer> focus,
@@ -123,6 +125,8 @@ public class Persona {
 	
 	/**
 	 * See {@link #getFocusScaledDouble(int, int, double, double)}
+	 * @param focus @Nullable
+	 * @param value
 	 */
 	public int getFocusScaledInt(
 			@Nullable Tuple2<Integer, Integer> focus,

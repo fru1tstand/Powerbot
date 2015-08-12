@@ -1,7 +1,7 @@
 package me.fru1t.rsbot.common;
 
 import me.fru1t.annotations.Nullable;
-import me.fru1t.rsbot.util.Tuple2;
+import me.fru1t.collections.Tuple2;
 
 public class Random extends org.powerbot.script.Random {
 	private static final int NEXT_SKEWED_GAUSS_ATTEMPTS = 25;

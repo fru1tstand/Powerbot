@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.util;
+package me.fru1t.collections;
 
 /**
  * Holds 2 elements.

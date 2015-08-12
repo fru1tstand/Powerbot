@@ -2,9 +2,9 @@ package me.fru1t.rsbot.framework.action.modules;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Nullable;
+import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.Random;
 import me.fru1t.rsbot.framework.Persona;
-import me.fru1t.rsbot.util.Tuple2;
 
 /**
  * The most impatient people will click more than 1 time. Someone sporadically
@@ -18,6 +18,10 @@ import me.fru1t.rsbot.util.Tuple2;
  * mean.
  */
 public class SpamClick {
+	public static abstract class SettingsProxy {
+		public abstract SpamClick getInstance();
+	}
+	
 	public static class Factory {
 		private final Persona persona;
 		

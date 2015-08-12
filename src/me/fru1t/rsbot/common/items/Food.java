@@ -1,6 +1,6 @@
-package me.fru1t.rsbot.common.food;
+package me.fru1t.rsbot.common.items;
 
-public enum AllFood {
+public enum Food {
 	ANCHOVIES(319 , 200, "Anchovies"),
 	BREAD(2309 , 200, "Bread"),
 	CRAYFISH(13433, 200, "Crayfish"),
@@ -33,7 +33,7 @@ public enum AllFood {
 	public final int id;
 	public final int healAmount;
 	public final String displayName;
-	private AllFood(int id, int healAmount, String displayName) {
+	private Food(int id, int healAmount, String displayName) {
 		this.id = id;
 		this.healAmount = healAmount;
 		this.displayName = displayName;

@@ -3,7 +3,7 @@ package me.fru1t.rsbot.safecracker.actions.safecrack;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.annotations.Inject;
-import me.fru1t.rsbot.common.Random;
+import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
 
 /**

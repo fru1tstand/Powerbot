@@ -8,16 +8,16 @@ import org.powerbot.script.rt6.GameObject;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.framework.Action;
-import me.fru1t.rsbot.framework.action.modules.SpamClick;
-import me.fru1t.rsbot.framework.components.RunState;
+import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.action.modules.SpamClick;
+import me.fru1t.rsbot.common.framework.components.RunState;
+import me.fru1t.rsbot.common.util.Condition;
+import me.fru1t.rsbot.common.util.Timer;
 import me.fru1t.rsbot.safecracker.actions.safecrack.Backpack;
 import me.fru1t.rsbot.safecracker.actions.safecrack.Health;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SafeLogic;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SmartClick;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SpamClickProxy;
-import me.fru1t.rsbot.util.Condition;
-import me.fru1t.rsbot.util.Timer;
 
 /**
  * Defines the safe cracking portion of the script.

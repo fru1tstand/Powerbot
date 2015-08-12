@@ -5,11 +5,11 @@ import java.util.List;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.common.food.AllFood;
-import me.fru1t.rsbot.framework.generics.GenericSettings;
+import me.fru1t.rsbot.common.framework.AbstractSettings;
+import me.fru1t.rsbot.common.items.Food;
 
-public class Settings extends GenericSettings {
-	private List<AllFood> foods;
+public class Settings extends AbstractSettings {
+	private List<Food> foods;
 	private boolean isBankStyleConstant;
 	private RoguesDenSafeCracker.Safe preferredSafe;
 	private int currentFoodPointer;
@@ -29,7 +29,7 @@ public class Settings extends GenericSettings {
 	 * TODO: Abstract with reflection
 	 */
 	@Override
-	public void replace(GenericSettings settings) {
+	public void replace(AbstractSettings settings) {
 		if (!(settings instanceof Settings))
 			return;
 		Settings other = (Settings) settings;
@@ -56,15 +56,15 @@ public class Settings extends GenericSettings {
 	/**
 	 * @return The current food to withdraw from the bank.
 	 */
-	public AllFood getCurrentFood() {
+	public Food getCurrentFood() {
 		return foods.get(currentFoodPointer);
 	}
 	
 	/**
 	 * @return A list of all the food items set in the GUI.
 	 */
-	public List<AllFood> getFoods() {
-		ArrayList<AllFood> listCopy = new ArrayList<AllFood>();
+	public List<Food> getFoods() {
+		ArrayList<Food> listCopy = new ArrayList<Food>();
 		listCopy.addAll(foods);
 		return listCopy;
 	}
@@ -73,8 +73,8 @@ public class Settings extends GenericSettings {
 	 * Sets the food to the given list of food items.
 	 * @param foods
 	 */
-	public void setFoods(List<AllFood> foods) {
-		ArrayList<AllFood> listCopy = new ArrayList<AllFood>();
+	public void setFoods(List<Food> foods) {
+		ArrayList<Food> listCopy = new ArrayList<Food>();
 		listCopy.addAll(foods);
 		this.foods = listCopy;
 	}

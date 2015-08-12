@@ -1,8 +1,8 @@
 package me.fru1t.rsbot.safecracker.actions.safecrack;
 
 import me.fru1t.annotations.Inject;
-import me.fru1t.rsbot.common.Random;
-import me.fru1t.rsbot.framework.Persona;
+import me.fru1t.rsbot.common.framework.components.Persona;
+import me.fru1t.rsbot.common.util.Random;
 
 /**
  * A normal person will wait until the inventory is full (count 28), but on occasion a person

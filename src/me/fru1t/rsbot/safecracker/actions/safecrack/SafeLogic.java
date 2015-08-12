@@ -9,7 +9,7 @@ import org.powerbot.script.rt6.GameObject;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.common.Random;
+import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
 
 /**

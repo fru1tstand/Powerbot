@@ -5,8 +5,8 @@ import org.powerbot.script.rt6.Item;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.framework.Action;
-import me.fru1t.rsbot.framework.components.RunState;
+import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.actions.safeeat.FoodLogic;
 

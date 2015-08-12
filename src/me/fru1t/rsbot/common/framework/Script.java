@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.framework;
+package me.fru1t.rsbot.common.framework;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,16 +6,16 @@ import java.util.Map;
 import org.powerbot.script.ClientContext;
 import org.powerbot.script.PollingScript;
 
-import me.fru1t.rsbot.framework.components.RunState;
-import me.fru1t.rsbot.framework.components.Status;
-import me.fru1t.rsbot.framework.generics.GenericSettings;
-import me.fru1t.rsbot.framework.generics.GenericStartupForm;
+import me.fru1t.rsbot.common.framework.components.Persona;
+import me.fru1t.rsbot.common.framework.components.RunState;
+import me.fru1t.rsbot.common.framework.components.SettingsCallback;
+import me.fru1t.rsbot.common.framework.components.Status;
 import me.fru1t.slick.Slick;
 
 public abstract class Script<
 		C extends ClientContext<?>,
 		ST extends Enum<ST>,
-		T extends GenericSettings> extends PollingScript<C> {
+		T extends AbstractSettings> extends PollingScript<C> {
 	/**
 	 * The number of failures to endure before resetting the script state
 	 */
@@ -99,7 +99,7 @@ public abstract class Script<
 	 * the settings when the form is closed.
 	 * @param formClazz The class corresponding to the startup form.
 	 */
-	protected final <F extends GenericStartupForm<T>> void showStartupForm(Class<F> formClazz) {
+	protected final <F extends AbstractStartupForm<T>> void showStartupForm(Class<F> formClazz) {
 		status.update("Waiting for user input");
 		slick.provide(SettingsCallback.class, new SettingsCallback<T>() {
 			@Override

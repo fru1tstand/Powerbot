@@ -16,9 +16,9 @@ import javax.swing.SwingConstants;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.common.food.AllFood;
-import me.fru1t.rsbot.framework.SettingsCallback;
-import me.fru1t.rsbot.framework.generics.GenericStartupForm;
+import me.fru1t.rsbot.common.framework.AbstractStartupForm;
+import me.fru1t.rsbot.common.framework.components.SettingsCallback;
+import me.fru1t.rsbot.common.items.Food;
 
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import java.util.HashMap;
 import java.awt.event.ActionEvent;
 
 
-public class StartupForm extends GenericStartupForm<Settings> {
+public class StartupForm extends AbstractStartupForm<Settings> {
 	private JFrame settingsForm;
-	private final HashMap<String, AllFood> foodMap;
+	private final HashMap<String, Food> foodMap;
 
 	/**
 	 * Create the application.
@@ -65,10 +65,11 @@ public class StartupForm extends GenericStartupForm<Settings> {
 		lblNewLabel.setBounds(20, 35, 364, 14);
 		settingsForm.getContentPane().add(lblNewLabel);
 		
-		JComboBox<Enum<AllFood>> foodSelectorComboBox = new JComboBox<Enum<AllFood>>();
+		// Java 7 shenanigans doesn't have 'effectively final'.
+		final JComboBox<Enum<Food>> foodSelectorComboBox = new JComboBox<Enum<Food>>();
 		foodSelectorComboBox.setForeground(Color.BLACK);
 		foodSelectorComboBox.setToolTipText("Select food and click add to add it to the list of food you want consumed during safecracking");
-		foodSelectorComboBox.setModel(new DefaultComboBoxModel<Enum<AllFood>>(AllFood.values()));
+		foodSelectorComboBox.setModel(new DefaultComboBoxModel<Enum<Food>>(Food.values()));
 		foodSelectorComboBox.setFont(new Font("Calibri", Font.PLAIN, 14));
 		foodSelectorComboBox.setBackground(Color.WHITE);
 		foodSelectorComboBox.setBounds(20, 52, 244, 20);
@@ -90,7 +91,7 @@ public class StartupForm extends GenericStartupForm<Settings> {
 		rmBtn.setBounds(329, 52, 45, 20);
 		settingsForm.getContentPane().add(rmBtn);
 		
-		java.awt.List foodListJList = new java.awt.List();
+		final java.awt.List foodListJList = new java.awt.List();
 		foodListJList.setMultipleMode(false);
 		foodListJList.setForeground(Color.CYAN);
 		foodListJList.setFont(new Font("Calibri", Font.PLAIN, 14));
@@ -117,7 +118,7 @@ public class StartupForm extends GenericStartupForm<Settings> {
 		lblThisSettingOn.setBounds(20, 294, 364, 14);
 		settingsForm.getContentPane().add(lblThisSettingOn);
 		
-		JComboBox<Enum<RoguesDenSafeCracker.Safe>> preferredSafeComboBox = new JComboBox<Enum<RoguesDenSafeCracker.Safe>>();
+		final JComboBox<Enum<RoguesDenSafeCracker.Safe>> preferredSafeComboBox = new JComboBox<Enum<RoguesDenSafeCracker.Safe>>();
 		preferredSafeComboBox.setFont(new Font("Calibri", Font.PLAIN, 14));
 		preferredSafeComboBox.setModel(new DefaultComboBoxModel<Enum<RoguesDenSafeCracker.Safe>>(RoguesDenSafeCracker.Safe.values()));
 		preferredSafeComboBox.setForeground(Color.BLACK);
@@ -131,7 +132,7 @@ public class StartupForm extends GenericStartupForm<Settings> {
 		lblFoodAmountPer.setBounds(20, 201, 204, 14);
 		settingsForm.getContentPane().add(lblFoodAmountPer);
 		
-		JRadioButton constant = new JRadioButton("Same amount every time");
+		final JRadioButton constant = new JRadioButton("Same amount every time");
 		constant.setFont(new Font("Calibri", Font.PLAIN, 14));
 		constant.setForeground(Color.CYAN);
 		constant.setBackground(Color.DARK_GRAY);
@@ -203,7 +204,7 @@ public class StartupForm extends GenericStartupForm<Settings> {
 			addBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					AllFood selectedFood = (AllFood) foodSelectorComboBox.getSelectedItem();
+					Food selectedFood = (Food) foodSelectorComboBox.getSelectedItem();
 					if (!foodMap.containsKey(selectedFood.name())) {
 						foodListJList.add(selectedFood.name());
 						foodMap.put(selectedFood.name(), selectedFood);
@@ -225,7 +226,7 @@ public class StartupForm extends GenericStartupForm<Settings> {
 				public void actionPerformed(ActionEvent e) {
 					settingsForm.setVisible(false);
 					Settings settings = new Settings();
-					settings.setFoods(new ArrayList<AllFood>(foodMap.values()));
+					settings.setFoods(new ArrayList<Food>(foodMap.values()));
 					settings.setBankStyleConstant(constant.isSelected());
 					settings.setPreferredSafe((RoguesDenSafeCracker.Safe) preferredSafeComboBox.getSelectedItem());
 					settingsForm.dispose();

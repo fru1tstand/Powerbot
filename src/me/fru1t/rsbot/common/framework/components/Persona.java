@@ -1,7 +1,8 @@
-package me.fru1t.rsbot.framework;
+package me.fru1t.rsbot.common.framework.components;
 
 import me.fru1t.annotations.Nullable;
 import me.fru1t.collections.Tuple2;
+import me.fru1t.rsbot.common.framework.Action;
 
 /**
  * Contains methods to quantify certain behaviors. Used in {@link Action}s to determine how the

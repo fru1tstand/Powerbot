@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.framework.components;
+package me.fru1t.rsbot.common.framework.components;
 
 /**
  * Tracks the script's state

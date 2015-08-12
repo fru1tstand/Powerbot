@@ -1,10 +1,10 @@
-package me.fru1t.rsbot.framework.action.modules;
+package me.fru1t.rsbot.common.framework.action.modules;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Nullable;
 import me.fru1t.collections.Tuple2;
-import me.fru1t.rsbot.common.Random;
-import me.fru1t.rsbot.framework.Persona;
+import me.fru1t.rsbot.common.framework.components.Persona;
+import me.fru1t.rsbot.common.util.Random;
 
 /**
  * The most impatient people will click more than 1 time. Someone sporadically

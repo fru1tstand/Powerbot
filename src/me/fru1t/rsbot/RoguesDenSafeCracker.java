@@ -8,8 +8,8 @@ import org.powerbot.script.Script.Manifest;
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 
-import me.fru1t.rsbot.framework.Action;
-import me.fru1t.rsbot.framework.Script;
+import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Script;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
 import me.fru1t.rsbot.safecracker.actions.SafeCrack;

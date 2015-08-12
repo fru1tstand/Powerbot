@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common;
+package me.fru1t.rsbot.common.util;
 
 import me.fru1t.annotations.Nullable;
 import me.fru1t.collections.Tuple2;

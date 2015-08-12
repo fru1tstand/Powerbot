@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.framework;
+package me.fru1t.rsbot.common.framework;
 
 /**
  * Defines a container class for a script Action that holds the ClientContext and Settings for a

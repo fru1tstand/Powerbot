@@ -18,6 +18,9 @@ import me.fru1t.annotations.Inject;
  * 
  * <p>**Does not map interfaces to implementations** Maybe a todo? Inversion of control is not
  * needed for the current usage of Slick so this was left out.
+ * 
+ * <p>Design note: I opted to force the @Inject constructor instead of allowing non-annotated
+ * or no constructor classes because explicit is better than implicit.
  */
 public class Slick {
 	private final Map<Class<?>, Object> providedInstances;
@@ -103,9 +106,9 @@ public class Slick {
 				}
 			}
 			
-			// Lastly, try recursive injection
+			// Find recursive
 			if (constructorFulfillments[i] == null) {
-				// This will either retrieve the required object or throw an exception.
+				// Guaranteed to find or throw exception
 				constructorFulfillments[i] = get(constructorRequirements[i]);
 			}
 		}

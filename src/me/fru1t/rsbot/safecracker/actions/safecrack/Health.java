@@ -131,8 +131,7 @@ public class Health {
 					HEALTH_ABS_MIN,
 					maxHealHealthToEatAt,
 					(int) (maxHealHealthToEatAt * foodOrientedMeanMultiplier),
-					(int) Math.sqrt(foodOrientedVariance),
-					0);
+					(int) Math.sqrt(foodOrientedVariance));
 			break;
 		}
 	}

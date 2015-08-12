@@ -3,6 +3,7 @@ package me.fru1t.slick;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,7 @@ public class Slick {
 	public <T> T get(Class<T> type) {
 		// grab the class's constructors
 		@SuppressWarnings("unchecked") // We're guaranteed this array is of type Constructor<T>
-		Constructor<T>[] constructors = (Constructor<T>[]) type.getConstructors();
+		Constructor<T>[] constructors = (Constructor<T>[]) type.getDeclaredConstructors();
 		if (constructors.length == 0) {
 			throw new SlickException(String.format(
 					"%s has no public injectable constructors.",
@@ -74,6 +75,11 @@ public class Slick {
 			throw new SlickException(String.format(
 					"%s has no constructor with the @Inject annotation.",
 					type.getName()));
+		}
+		
+		// Make sure we can see it from here
+		if ((injectableConstructor.getModifiers() & (Modifier.PRIVATE | Modifier.PROTECTED)) > 0) {
+			injectableConstructor.setAccessible(true);
 		}
 		
 		// Fulfill the constructor's parameters

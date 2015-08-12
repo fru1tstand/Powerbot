@@ -9,12 +9,13 @@ import org.powerbot.script.rt6.GameObject;
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.framework.Action;
+import me.fru1t.rsbot.framework.action.modules.SpamClick;
 import me.fru1t.rsbot.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.actions.safecrack.Backpack;
 import me.fru1t.rsbot.safecracker.actions.safecrack.Health;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SafeLogic;
 import me.fru1t.rsbot.safecracker.actions.safecrack.SmartClick;
-import me.fru1t.rsbot.safecracker.actions.safecrack.SpamClick;
+import me.fru1t.rsbot.safecracker.actions.safecrack.SpamClickProxy;
 import me.fru1t.rsbot.util.Condition;
 import me.fru1t.rsbot.util.Timer;
 
@@ -30,9 +31,9 @@ public class SafeCrack implements Action {
 	private final Backpack backpack;
 	private final SmartClick smartClick;
 	private final SafeLogic safeLogic;
-	private final SpamClick spamClick;
 	private final Timer safecrackAnimationTimer;
-	
+
+	private final SpamClick spamClick;
 	private GameObject safeGameObject;
 	
 	@Inject
@@ -43,17 +44,17 @@ public class SafeCrack implements Action {
 			Backpack backpack,
 			SmartClick smartClick,
 			SafeLogic safeLogic,
-			SpamClick spamClick,
-			Timer safecrackAnimationTimer) {
+			Timer safecrackAnimationTimer,
+			SpamClickProxy spamClickProxy) {
 		this.ctx = ctx;
 		this.state = state;
 		this.health = health;
 		this.backpack = backpack;
 		this.smartClick = smartClick;
 		this.safeLogic = safeLogic;
-		this.spamClick = spamClick;
 		this.safecrackAnimationTimer = safecrackAnimationTimer;
 		
+		this.spamClick = spamClickProxy.getInstance();
 		safeGameObject = null;
 	}
 
@@ -117,7 +118,6 @@ public class SafeCrack implements Action {
 			ctx.input.click(true);
 			Condition.sleep(spamClick.getDelay());
 		}
-		spamClick.newClicks();
 		
 		// Safety check
 		if (ctx.movement.destination() != Tile.NIL

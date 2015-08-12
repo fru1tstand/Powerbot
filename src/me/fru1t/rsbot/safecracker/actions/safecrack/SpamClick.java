@@ -50,8 +50,7 @@ public class SpamClick {
 						DELAY_MEAN_MIN,
 						DELAY_MEAN_MAX,
 						delayMean,
-						(int) Math.sqrt(delayVariance),
-						0);
+						(int) Math.sqrt(delayVariance));
 	}
 
 	/**

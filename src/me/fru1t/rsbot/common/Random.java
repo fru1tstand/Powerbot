@@ -4,7 +4,7 @@ import me.fru1t.annotations.Nullable;
 import me.fru1t.rsbot.util.Tuple2;
 
 public class Random extends org.powerbot.script.Random {
-	private static final int DEFAULT_NEXT_SKEWED_GAUSS_ATTEMPTS = 25;
+	private static final int NEXT_SKEWED_GAUSS_ATTEMPTS = 25;
 	
 	/**
 	 * The rate at which this method returns true will tend toward the given probability after
@@ -35,14 +35,10 @@ public class Random extends org.powerbot.script.Random {
 	 * towards a unimodal skewed normal distribution about the given mean and with the given
 	 * standard deviation.
 	 */
-	public static int nextSkewedGaussian(int min, int max, int mean, double stdev, int attempts) {
-		if (attempts < 1) {
-			attempts = DEFAULT_NEXT_SKEWED_GAUSS_ATTEMPTS;
-		}
-		
+	public static int nextSkewedGaussian(int min, int max, int mean, double stdev) {
 		int result = min;
 		int attemptCount = 0;
-		while ((result > max || result < min) && attemptCount < attempts) {
+		while ((result > max || result < min) && attemptCount < NEXT_SKEWED_GAUSS_ATTEMPTS) {
 			attemptCount++;
 			result = nextGaussian(min, max, mean, stdev);
 		}
@@ -50,6 +46,14 @@ public class Random extends org.powerbot.script.Random {
 			result = Random.nextInt(min, max);
 		}
 		return result;
+	}
+	
+	/**
+	 * See {@link #nextSkewedGaussian(int, int, int, double, int)}.
+	 */
+	public static int nextSkewedGaussian(
+			Tuple2<Integer, Integer> range, int mean, double stdev) {
+		return nextSkewedGaussian(range.first, range.second, mean, stdev);
 	}
 	
 	/**

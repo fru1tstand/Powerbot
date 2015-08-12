@@ -42,10 +42,10 @@ public class SpamClick {
 		 * delayIsRandomProbability and clickCountIsRandomProbability are both 100.
 		 * @param clickCountMeanRange The range of means the spam click instance should be able to
 		 * return.
-		 * @param clickCountVariance The range of variance for distribution of click counts to be
+		 * @param clickCountVarianceRange The range of variance for distribution of click counts to be
 		 * created with. This can be nulled if the clickCountIsRandomProbability is 100.
 		 * @param delayMeanRange The range of means the delay between clicks should be.
-		 * @param delayVariance The range of variances the delay between clicks should be. This
+		 * @param delayVarianceRange The range of variances the delay between clicks should be. This
 		 * can be nulled if the delayCountIsRandomProbability is 100.
 		 * @return A new SpamClick instance with the given parameters.
 		 */
@@ -54,19 +54,19 @@ public class SpamClick {
 				int delayIsRandomProbability,
 				@Nullable Integer varianceIsFocusDependentProbability,
 				Tuple2<Integer, Integer> clickCountMeanRange,
-				@Nullable Tuple2<Double, Double> clickCountVariance,
+				@Nullable Tuple2<Double, Double> clickCountVarianceRange,
 				Tuple2<Integer, Integer> delayMeanRange,
-				@Nullable Tuple2<Double, Double> delayVariance) {
+				@Nullable Tuple2<Double, Double> delayVarianceRange) {
 			if (varianceIsFocusDependentProbability == null
 					&& (delayIsRandomProbability < 100 || clickCountIsRandomProbability < 100)) {
 				throw new RuntimeException("The probability that variance is focus dependent "
 						+ "must be given if delay or click count randomness is not guaranteed.");
 			}
-			if (clickCountVariance == null && clickCountIsRandomProbability < 100) {
+			if (clickCountVarianceRange == null && clickCountIsRandomProbability < 100) {
 				throw new RuntimeException("Click count variance must be defined if click count "
 						+ "is not guaranteed to be random.");
 			}
-			if (delayVariance == null && delayIsRandomProbability < 100) {
+			if (delayVarianceRange == null && delayIsRandomProbability < 100) {
 				throw new RuntimeException("Delay variance must be defined if variance is not "
 						+ "gauranteed to be random.");
 			}
@@ -76,9 +76,9 @@ public class SpamClick {
 					Random.roll(clickCountIsRandomProbability),
 					Random.roll(varianceIsFocusDependentProbability),
 					clickCountMeanRange,
-					clickCountVariance,
+					clickCountVarianceRange,
 					delayMeanRange,
-					delayVariance);
+					delayVarianceRange);
 		}
 	}
 	
@@ -87,9 +87,9 @@ public class SpamClick {
 	private final boolean isClickCountRandom;
 	private final boolean isVarianceFocusDependent;
 	private final Tuple2<Integer, Integer> clickCountMeanRange;
-	@Nullable private final Tuple2<Double, Double> clickCountVariance;
+	@Nullable private final Tuple2<Double, Double> clickCountVarianceRange;
 	private final Tuple2<Integer, Integer> delayMeanRange;
-	@Nullable private final Tuple2<Double, Double> delayVariance;
+	@Nullable private final Tuple2<Double, Double> delayVarianceRange;
 	private final int clickCountMean;
 	private final int delayMean;
 	
@@ -99,17 +99,17 @@ public class SpamClick {
 			boolean isClickCountRandom,
 			boolean isVarianceFocusDependent,
 			Tuple2<Integer, Integer> clickCountMeanRange,
-			@Nullable Tuple2<Double, Double> clickCountVariance,
+			@Nullable Tuple2<Double, Double> clickCountVarianceRange,
 			Tuple2<Integer, Integer> delayMeanRange,
-			@Nullable Tuple2<Double, Double> delayVariance) {
+			@Nullable Tuple2<Double, Double> delayVarianceRange) {
 		this.persona = persona;
 		this.isDelayRandom = isDelayRandom;
 		this.isClickCountRandom = isClickCountRandom;
 		this.isVarianceFocusDependent = isVarianceFocusDependent;
 		this.clickCountMeanRange = clickCountMeanRange;
-		this.clickCountVariance = clickCountVariance;
+		this.clickCountVarianceRange = clickCountVarianceRange;
 		this.delayMeanRange = delayMeanRange;
-		this.delayVariance = delayVariance;
+		this.delayVarianceRange = delayVarianceRange;
 		this.clickCountMean = Random.nextInt(clickCountMeanRange);
 		this.delayMean = Random.nextInt(delayMeanRange);
 	}
@@ -121,7 +121,7 @@ public class SpamClick {
 	 */
 	public int getClicks() {
 		return getConditionalRandomOrGauss(
-				isClickCountRandom, clickCountMean, clickCountMeanRange, clickCountVariance);
+				isClickCountRandom, clickCountMean, clickCountMeanRange, clickCountVarianceRange);
 	}
 	
 	/**
@@ -131,7 +131,7 @@ public class SpamClick {
 	 */
 	public int getDelay() {
 		return getConditionalRandomOrGauss(
-				isDelayRandom, delayMean, delayMeanRange, delayVariance);
+				isDelayRandom, delayMean, delayMeanRange, delayVarianceRange);
 	}
 	
 	private int getConditionalRandomOrGauss(

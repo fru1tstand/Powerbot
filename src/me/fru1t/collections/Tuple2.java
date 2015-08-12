@@ -10,7 +10,7 @@ public class Tuple2<T1, T2> {
 	/**
 	 * Creates a new tuple with the given elements
 	 */
-	public static <T1, T2> Tuple2<T1, T2> from(T1 first, T2 second) {
+	public static <T1, T2> Tuple2<T1, T2> of(T1 first, T2 second) {
 		return new Tuple2<T1, T2>(first, second);
 	}
 	

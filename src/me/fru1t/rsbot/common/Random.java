@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.common;
 
+import me.fru1t.annotations.Nullable;
 import me.fru1t.rsbot.util.Tuple2;
 
 public class Random extends org.powerbot.script.Random {
@@ -11,10 +12,13 @@ public class Random extends org.powerbot.script.Random {
 	 * 
 	 * @param probabilityPercent The pseudo probability that this method should return true. This
 	 * value should be between 0 and 100. Anything less than 0 will always return true, anything
-	 * above 100 will always return false.
+	 * above 100 will always return false. A null probability will always return false.
 	 * @return What the roll returned.
 	 */
-	public static boolean roll(int probabilityPercent) {
+	public static boolean roll(@Nullable Integer probabilityPercent) {
+		if (probabilityPercent == null) {
+			return false;
+		}
 		return Random.nextDouble(0, 100) < probabilityPercent;
 	}
 	

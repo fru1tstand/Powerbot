@@ -123,8 +123,10 @@ public class Slick {
 				if (annotation.annotationType().equals(Singleton.class)) {
 					if (!isClassSingleton) {
 						throw new SlickException(String.format(
-								"%s is not annotated @Singleton, but the injected parameter is.",
-								constructorRequirements[i].getName()));
+								"%s is not annotated @Singleton, "
+								+ "but the injected parameter in %s is.",
+								constructorRequirements[i].getName(),
+								type.getName()));
 					}
 					isParameterSingleton = true;
 					provide(constructorRequirements[i], constructorFulfillments[i]);
@@ -134,8 +136,9 @@ public class Slick {
 			if (isClassSingleton != isParameterSingleton) {
 				if (isClassSingleton) {
 					throw new SlickException(String.format(
-							"%s is annotated @Singleton, but the injected parameter is not.",
-							constructorRequirements[i].getName()));
+							"%s is annotated @Singleton, but the injected parameter in %s is not.",
+							constructorRequirements[i].getName(),
+							type.getName()));
 				}
 			}
 		}

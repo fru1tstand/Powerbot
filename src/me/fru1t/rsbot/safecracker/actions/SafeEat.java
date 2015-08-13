@@ -4,6 +4,7 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Item;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Action;
 import me.fru1t.rsbot.common.framework.components.RunState;
@@ -18,9 +19,9 @@ public class SafeEat implements Action {
 	
 	@Inject
 	public SafeEat(
-			ClientContext ctx,
-			RunState<RoguesDenSafeCracker.State> state,
-			Settings settings,
+			@Singleton ClientContext ctx,
+			@Singleton RunState<RoguesDenSafeCracker.State> state,
+			@Singleton Settings settings,
 			FoodLogic foodLogic) {
 		this.ctx = ctx;
 		this.state = state;

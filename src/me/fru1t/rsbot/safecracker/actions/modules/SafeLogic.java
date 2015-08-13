@@ -8,6 +8,7 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
@@ -40,7 +41,7 @@ public class SafeLogic {
 	private RoguesDenSafeCracker.Safe safe;
 
 	@Inject
-	public SafeLogic(ClientContext ctx, Settings settings) {
+	public SafeLogic(@Singleton ClientContext ctx, @Singleton Settings settings) {
 		this.ctx = ctx;
 		this.settings = settings;
 		newSafe();

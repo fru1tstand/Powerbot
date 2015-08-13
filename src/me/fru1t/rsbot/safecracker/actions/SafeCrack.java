@@ -7,6 +7,7 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Action;
 import me.fru1t.rsbot.common.framework.actions.modules.SpamClick;
@@ -38,8 +39,8 @@ public class SafeCrack implements Action {
 	
 	@Inject
 	public SafeCrack(
-			ClientContext ctx,
-			RunState<RoguesDenSafeCracker.State> state,
+			@Singleton ClientContext ctx,
+			@Singleton RunState<RoguesDenSafeCracker.State> state,
 			Health health,
 			Backpack backpack,
 			SmartClick smartClick,

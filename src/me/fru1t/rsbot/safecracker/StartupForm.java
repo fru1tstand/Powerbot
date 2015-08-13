@@ -15,6 +15,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.AbstractStartupForm;
 import me.fru1t.rsbot.common.framework.SettingsCallback;
@@ -34,7 +35,7 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 	 * Create the application.
 	 */
 	@Inject
-	public StartupForm(SettingsCallback<Settings> callback) {
+	public StartupForm(@Singleton SettingsCallback<Settings> callback) {
 		super(callback);
 		
 		this.foodMap = new HashMap<>();

@@ -1,6 +1,7 @@
 package me.fru1t.rsbot.safecracker.actions.modules;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
 
@@ -32,7 +33,7 @@ public class Backpack {
 	private int bankAmount;
 
 	@Inject
-	public Backpack(Persona persona) {
+	public Backpack(@Singleton Persona persona) {
 		this.persona = persona;
 		newBankAt();
 	}

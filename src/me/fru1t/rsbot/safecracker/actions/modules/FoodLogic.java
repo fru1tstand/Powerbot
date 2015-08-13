@@ -3,6 +3,7 @@ package me.fru1t.rsbot.safecracker.actions.modules;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
 
@@ -21,7 +22,7 @@ public class FoodLogic {
 	private final EatStyle eatStyle;
 	
 	@Inject
-	public FoodLogic(ClientContext ctx, Settings settings) {
+	public FoodLogic(@Singleton ClientContext ctx, @Singleton Settings settings) {
 		this.ctx = ctx;
 		this.settings = settings;
 		

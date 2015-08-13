@@ -2,6 +2,7 @@ package me.fru1t.rsbot.common.framework.actions.modules;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Nullable;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
@@ -26,7 +27,7 @@ public class SpamClick {
 		private final Persona persona;
 		
 		@Inject
-		public Factory(Persona persona) {
+		public Factory(@Singleton Persona persona) {
 			this.persona = persona;
 		}
 		

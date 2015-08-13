@@ -31,7 +31,8 @@ public class Slick {
 	}
 	
 	/**
-	 * Adds an injectable instance of a class to the stored list of injectable classes.
+	 * Gives Slick an instance of the given class to use as a singleton if the class is required
+	 * in another.
 	 * @param clazz The class type to provide
 	 * @param reference The instance of the class
 	 */
@@ -120,7 +121,13 @@ public class Slick {
 			boolean isParameterSingleton = false;
 			for (Annotation annotation : parameterAnnotations[i]) {
 				if (annotation.annotationType().equals(Singleton.class)) {
+					if (!isClassSingleton) {
+						throw new SlickException(String.format(
+								"%s is not annotated @Singleton, but the injected parameter is.",
+								constructorRequirements[i].getName()));
+					}
 					isParameterSingleton = true;
+					provide(constructorRequirements[i], constructorFulfillments[i]);
 					break;
 				}
 			}
@@ -129,14 +136,7 @@ public class Slick {
 					throw new SlickException(String.format(
 							"%s is annotated @Singleton, but the injected parameter is not.",
 							constructorRequirements[i].getName()));
-				} else {
-					throw new SlickException(String.format(
-							"%s is not annotated @Singleton, but the injected parameter is.",
-							constructorRequirements[i].getName()));
 				}
-			}
-			if (isClassSingleton) {
-				provide(constructorRequirements[i], constructorFulfillments[i]);
 			}
 		}
 

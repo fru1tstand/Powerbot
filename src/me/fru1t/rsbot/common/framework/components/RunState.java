@@ -1,9 +1,12 @@
 package me.fru1t.rsbot.common.framework.components;
 
+import me.fru1t.annotations.Singleton;
+
 /**
  * Tracks the script's state
  * @param <ST>
  */
+@Singleton
 public class RunState<ST extends Enum<ST>> {
 	private ST currentState;
 	private ST lastState;

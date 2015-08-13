@@ -2,10 +2,13 @@ package me.fru1t.rsbot.common.framework.components;
 
 import java.util.Stack;
 
+import me.fru1t.annotations.Singleton;
+
 /**
  * Keeps track of a script's status messages. These should only be used for decorational
  * purposes (script paint, debug), not script state management.
  */
+@Singleton
 public class Status {
 	/**
 	 * The default size of the status history stack

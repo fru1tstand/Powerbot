@@ -1,6 +1,7 @@
 package me.fru1t.rsbot.common.framework.components;
 
 import me.fru1t.annotations.Nullable;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.Action;
 
@@ -22,6 +23,7 @@ import me.fru1t.rsbot.common.framework.Action;
  * generated lighter footprints of a Persona driven script. Light footprints equals harder to
  * detect equals less bans.
  */
+@Singleton
 public class Persona {
 	public static int MAX_FOCUS = 100;
 	public static int MIN_FOCUS = 0;

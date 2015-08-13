@@ -9,7 +9,7 @@ import org.powerbot.script.rt6.GameObject;
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Action;
-import me.fru1t.rsbot.common.framework.action.modules.SpamClick;
+import me.fru1t.rsbot.common.framework.actions.modules.SpamClick;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Timer;

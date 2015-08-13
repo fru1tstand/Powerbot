@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.framework.action.modules;
+package me.fru1t.rsbot.common.framework.actions.modules;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Nullable;

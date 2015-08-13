@@ -8,7 +8,7 @@ import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Action;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
-import me.fru1t.rsbot.safecracker.actions.safeeat.FoodLogic;
+import me.fru1t.rsbot.safecracker.actions.modules.FoodLogic;
 
 public class SafeEat implements Action {
 	private final ClientContext ctx;

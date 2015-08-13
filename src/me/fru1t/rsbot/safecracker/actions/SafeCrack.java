@@ -13,11 +13,11 @@ import me.fru1t.rsbot.common.framework.action.modules.SpamClick;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Timer;
-import me.fru1t.rsbot.safecracker.actions.safecrack.Backpack;
-import me.fru1t.rsbot.safecracker.actions.safecrack.Health;
-import me.fru1t.rsbot.safecracker.actions.safecrack.SafeLogic;
-import me.fru1t.rsbot.safecracker.actions.safecrack.SmartClick;
-import me.fru1t.rsbot.safecracker.actions.safecrack.SpamClickProxy;
+import me.fru1t.rsbot.safecracker.actions.modules.Backpack;
+import me.fru1t.rsbot.safecracker.actions.modules.Health;
+import me.fru1t.rsbot.safecracker.actions.modules.SafeLogic;
+import me.fru1t.rsbot.safecracker.actions.modules.SmartClick;
+import me.fru1t.rsbot.safecracker.actions.modules.SpamClickProxy;
 
 /**
  * Defines the safe cracking portion of the script.

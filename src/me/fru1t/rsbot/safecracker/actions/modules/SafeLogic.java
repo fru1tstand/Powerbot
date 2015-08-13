@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions.safecrack;
+package me.fru1t.rsbot.safecracker.actions.modules;
 
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions.safecrack;
+package me.fru1t.rsbot.safecracker.actions.modules;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.collections.Tuple2;

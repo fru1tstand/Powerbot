@@ -31,6 +31,12 @@ public class Persona {
 	private int attentiveness;
 	private int clumsiness;
 	
+	/**
+	 * Creates a new persona.
+	 * 
+	 * <p>TODO: Implement better constructor and decay algorithms. Most likely going to require a
+	 * Timer for the {@link #focus()} method.
+	 */
 	public Persona() {
 		attentiveness = 100;
 		clumsiness = 0;

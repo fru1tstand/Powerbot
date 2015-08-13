@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 
 /**
  * Slick: Simple Lightweight dependency InjeCtion frameworK
@@ -87,6 +88,7 @@ public class Slick {
 		
 		// Fulfill the constructor's parameters
 		Class<?>[] constructorRequirements = injectableConstructor.getParameterTypes();
+		Annotation[][] parameterAnnotations = injectableConstructor.getParameterAnnotations();
 		Object[] constructorFulfillments = new Object[constructorRequirements.length];
 		for (int i = 0; i < constructorRequirements.length; i++) {
 			constructorFulfillments[i] = null;
@@ -110,6 +112,31 @@ public class Slick {
 			if (constructorFulfillments[i] == null) {
 				// Guaranteed to find or throw exception
 				constructorFulfillments[i] = get(constructorRequirements[i]);
+			}
+			
+			// Singleton Check
+			boolean isClassSingleton =
+					constructorRequirements[i].isAnnotationPresent(Singleton.class);
+			boolean isParameterSingleton = false;
+			for (Annotation annotation : parameterAnnotations[i]) {
+				if (annotation.annotationType().equals(Singleton.class)) {
+					isParameterSingleton = true;
+					break;
+				}
+			}
+			if (isClassSingleton != isParameterSingleton) {
+				if (isClassSingleton) {
+					throw new SlickException(String.format(
+							"%s is annotated @Singleton, but the injected parameter is not.",
+							constructorRequirements[i].getName()));
+				} else {
+					throw new SlickException(String.format(
+							"%s is not annotated @Singleton, but the injected parameter is.",
+							constructorRequirements[i].getName()));
+				}
+			}
+			if (isClassSingleton) {
+				provide(constructorRequirements[i], constructorFulfillments[i]);
 			}
 		}
 

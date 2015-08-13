@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions.modules;
+package me.fru1t.rsbot.safecracker.actions.logic;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.common.util.Random;

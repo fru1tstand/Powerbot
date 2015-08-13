@@ -10,15 +10,15 @@ import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Action;
-import me.fru1t.rsbot.common.framework.actions.modules.SpamClick;
+import me.fru1t.rsbot.common.framework.actions.logic.SpamClick;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Timer;
-import me.fru1t.rsbot.safecracker.actions.modules.Backpack;
-import me.fru1t.rsbot.safecracker.actions.modules.Health;
-import me.fru1t.rsbot.safecracker.actions.modules.SafeLogic;
-import me.fru1t.rsbot.safecracker.actions.modules.SmartClick;
-import me.fru1t.rsbot.safecracker.actions.modules.SafecrackSpamClick;
+import me.fru1t.rsbot.safecracker.actions.logic.Backpack;
+import me.fru1t.rsbot.safecracker.actions.logic.Health;
+import me.fru1t.rsbot.safecracker.actions.logic.SafeLogic;
+import me.fru1t.rsbot.safecracker.actions.logic.SafecrackSpamClick;
+import me.fru1t.rsbot.safecracker.actions.logic.SmartClick;
 
 /**
  * Defines the safe cracking portion of the script.

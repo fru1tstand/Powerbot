@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions.modules;
+package me.fru1t.rsbot.safecracker.actions.logic;
 
 import org.powerbot.script.rt6.ClientContext;
 

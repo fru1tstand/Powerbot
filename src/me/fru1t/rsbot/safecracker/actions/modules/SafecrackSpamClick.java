@@ -1,11 +1,12 @@
 package me.fru1t.rsbot.safecracker.actions.modules;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.actions.modules.SpamClick;
 
-
-public class SpamClickProxy extends SpamClick.SettingsProxy {
+@Singleton
+public class SafecrackSpamClick {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int DELAY_IS_RANDOM_PROBABILITY = 50;
@@ -23,16 +24,11 @@ public class SpamClickProxy extends SpamClick.SettingsProxy {
 	private static final double DELAY_VARIANCE_MIN = 0.5;
 	private static final double DELAY_VARIANCE_MAX = 4;
 
-	private final SpamClick.Factory spamClickFactory;
+	private final SpamClick spamClickInstance;
 	
 	@Inject
-	public SpamClickProxy(SpamClick.Factory spamClickFactory) {
-		this.spamClickFactory = spamClickFactory;
-	}
-
-	@Override
-	public SpamClick getInstance() {
-		return spamClickFactory.create(
+	public SafecrackSpamClick(SpamClick.Factory spamClickFactory) {
+		this.spamClickInstance = spamClickFactory.create(
 				IS_ENABLED_PROBABILITY,
 				DELAY_IS_RANDOM_PROBABILITY,
 				VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY,
@@ -40,5 +36,12 @@ public class SpamClickProxy extends SpamClick.SettingsProxy {
 				Tuple2.of(CLICKS_VARIANCE_MIN, CLICKS_VARIANCE_MAX),
 				Tuple2.of(DELAY_MEAN_MIN, DELAY_MEAN_MAX),
 				Tuple2.of(DELAY_VARIANCE_MIN, DELAY_VARIANCE_MAX));
+	}
+
+	/**
+	 * @return The instance of SpamClick stored.
+	 */
+	public SpamClick get() {
+		return spamClickInstance;
 	}
 }

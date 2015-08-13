@@ -18,12 +18,13 @@ import me.fru1t.rsbot.safecracker.actions.modules.Backpack;
 import me.fru1t.rsbot.safecracker.actions.modules.Health;
 import me.fru1t.rsbot.safecracker.actions.modules.SafeLogic;
 import me.fru1t.rsbot.safecracker.actions.modules.SmartClick;
-import me.fru1t.rsbot.safecracker.actions.modules.SpamClickProxy;
+import me.fru1t.rsbot.safecracker.actions.modules.SafecrackSpamClick;
 
 /**
  * Defines the safe cracking portion of the script.
  * 
- * TODO: Add break points if the script get stopped before the entire method completes.
+ * <p>TODO: Add break points if the script get stopped before the entire method completes. Consider
+ * splitting this method up into more states.
  */
 public class SafeCrack implements Action {
 	private final ClientContext ctx;
@@ -34,7 +35,7 @@ public class SafeCrack implements Action {
 	private final SafeLogic safeLogic;
 	private final Timer safecrackAnimationTimer;
 
-	private final SpamClick spamClick;
+	private final SpamClick safecrackSpamClick;
 	private GameObject safeGameObject;
 	
 	@Inject
@@ -46,7 +47,7 @@ public class SafeCrack implements Action {
 			SmartClick smartClick,
 			SafeLogic safeLogic,
 			Timer safecrackAnimationTimer,
-			SpamClickProxy spamClickProxy) {
+			@Singleton SafecrackSpamClick safecrackSpamClick) {
 		this.ctx = ctx;
 		this.state = state;
 		this.health = health;
@@ -55,7 +56,7 @@ public class SafeCrack implements Action {
 		this.safeLogic = safeLogic;
 		this.safecrackAnimationTimer = safecrackAnimationTimer;
 		
-		this.spamClick = spamClickProxy.getInstance();
+		this.safecrackSpamClick = safecrackSpamClick.get();
 		safeGameObject = null;
 	}
 
@@ -112,12 +113,12 @@ public class SafeCrack implements Action {
 		}
 		
 		// Impatient clicking
-		int spamClicks = spamClick.getClicks();
+		int spamClicks = safecrackSpamClick.getClicks();
 		while (spamClicks-- > 1 // First click already happened
 				&& ctx.menu.items()[0].equals(RoguesDenSafeCracker.MENU_CRACK_ACTIVE_TEXT)) {
 			// TODO: Again, smart mis-click?
 			ctx.input.click(true);
-			Condition.sleep(spamClick.getDelay());
+			Condition.sleep(safecrackSpamClick.getDelay());
 		}
 		
 		// Safety check

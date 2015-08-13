@@ -19,10 +19,9 @@ import me.fru1t.rsbot.common.util.Random;
  * mean.
  */
 public class SpamClick {
-	public static abstract class SettingsProxy {
-		public abstract SpamClick getInstance();
-	}
-	
+	/**
+	 * Provides instances of SpamClick.
+	 */
 	public static class Factory {
 		private final Persona persona;
 		

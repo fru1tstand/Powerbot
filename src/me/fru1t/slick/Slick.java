@@ -92,11 +92,13 @@ public class Slick {
 		Annotation[][] parameterAnnotations = injectableConstructor.getParameterAnnotations();
 		Object[] constructorFulfillments = new Object[constructorRequirements.length];
 		for (int i = 0; i < constructorRequirements.length; i++) {
+			boolean foundInProvides = false;
 			constructorFulfillments[i] = null;
 			
 			// Find directly in provides
 			if (providedInstances.containsKey(constructorRequirements[i])) {
 				constructorFulfillments[i] = providedInstances.get(constructorRequirements[i]);
+				foundInProvides = true;
 			}
 			
 			// Find assignable
@@ -116,8 +118,8 @@ public class Slick {
 			}
 			
 			// Singleton Check
-			boolean isClassSingleton =
-					constructorRequirements[i].isAnnotationPresent(Singleton.class);
+			boolean isClassSingleton = foundInProvides
+					|| constructorRequirements[i].isAnnotationPresent(Singleton.class);
 			boolean isParameterSingleton = false;
 			for (Annotation annotation : parameterAnnotations[i]) {
 				if (annotation.annotationType().equals(Singleton.class)) {
@@ -129,7 +131,9 @@ public class Slick {
 								type.getName()));
 					}
 					isParameterSingleton = true;
-					provide(constructorRequirements[i], constructorFulfillments[i]);
+					if (!foundInProvides) {
+						provide(constructorRequirements[i], constructorFulfillments[i]);
+					}
 					break;
 				}
 			}

@@ -1,6 +1,4 @@
-package me.fru1t.rsbot.common.framework.components;
-
-import me.fru1t.rsbot.common.framework.AbstractSettings;
+package me.fru1t.rsbot.common.framework;
 
 /**
  * Provides Javascript style callback that accepts a Settings parameter.

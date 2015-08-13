@@ -17,7 +17,7 @@ import javax.swing.SwingConstants;
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.AbstractStartupForm;
-import me.fru1t.rsbot.common.framework.components.SettingsCallback;
+import me.fru1t.rsbot.common.framework.SettingsCallback;
 import me.fru1t.rsbot.common.items.Food;
 
 import java.awt.event.ActionListener;

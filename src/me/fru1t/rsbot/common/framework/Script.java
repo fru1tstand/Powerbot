@@ -8,7 +8,6 @@ import org.powerbot.script.PollingScript;
 
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.framework.components.RunState;
-import me.fru1t.rsbot.common.framework.components.SettingsCallback;
 import me.fru1t.rsbot.common.framework.components.Status;
 import me.fru1t.slick.Slick;
 

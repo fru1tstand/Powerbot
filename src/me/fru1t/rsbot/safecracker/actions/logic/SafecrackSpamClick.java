@@ -10,7 +10,7 @@ public class SafecrackSpamClick {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int DELAY_IS_RANDOM_PROBABILITY = 50;
-	private static final int VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY = 2;
+	private static final int VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY = 80;
 
 	// Click constants
 	private static final int CLICKS_MEAN_MIN = 1;

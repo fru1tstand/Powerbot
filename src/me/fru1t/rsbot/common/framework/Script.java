@@ -142,7 +142,7 @@ public abstract class Script<
 		// Some trickery here to get all enums within ST (state) because Java's type erasure.
 		ST[] states = getResetState().getDeclaringClass().getEnumConstants();
 		for (ST state : states) {
-			if (scriptActions.containsKey(state)) {
+			if (!scriptActions.containsKey(state)) {
 				throw new RuntimeException(
 						String.format("%s state has no handling class.", state.name()));
 			}

@@ -8,13 +8,19 @@ import org.powerbot.script.Script.Manifest;
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 
+import me.fru1t.annotations.Nullable;
 import me.fru1t.rsbot.common.framework.Action;
 import me.fru1t.rsbot.common.framework.Script;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
+import me.fru1t.rsbot.safecracker.actions.BankWalk;
 import me.fru1t.rsbot.safecracker.actions.SafeCrack;
+import me.fru1t.rsbot.safecracker.actions.SafeEat;
 
-@Manifest(name = "Rogue's Den Safe Cracker", description = "Cracks safes in Rogue's Den")
+@Manifest(
+		name = "Rogue's Den Safe Cracker",
+		description = "Cracks safes in Rogue's Den",
+		properties = "client=4;topic=1278748;hidden=false;")
 public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings> {
 	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
 	public static final int SAFE_OBJECT_ID = 7235;
@@ -65,7 +71,7 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 		 * @param l
 		 * @return The Safe object corresponding to the Locatable, or null if one is not found.
 		 */
-		// @Nullable
+		@Nullable
 		public static Safe fromLocation(Locatable l) {
 			for (Safe safe : Safe.values()) {
 				if (safe.location.equals(l.tile())) {
@@ -85,6 +91,8 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	protected Map<State, Class<? extends Action>> getActionMap() {
 		Map<State, Class<? extends Action>> stateMap = new HashMap<>();
 		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
+		stateMap.put(State.SAFE_EAT, SafeEat.class);
+		stateMap.put(State.BANK_WALK, BankWalk.class);
 		return stateMap;
 	}
 	

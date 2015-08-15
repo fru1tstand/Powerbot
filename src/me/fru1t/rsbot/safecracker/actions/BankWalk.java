@@ -9,6 +9,9 @@ import me.fru1t.rsbot.common.framework.Action;
 import me.fru1t.rsbot.common.framework.actions.Rs3Walking;
 import me.fru1t.rsbot.common.framework.components.RunState;
 
+/**
+ * TODO: Add bank interact while running
+ */
 public class BankWalk implements Action {
 	private static final int RANDOMIZATION_TOLERANCE = 3;
 	// TODO: Add correct area

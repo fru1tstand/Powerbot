@@ -3,7 +3,7 @@ package me.fru1t.rsbot.safecracker.actions.logic;
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
-import me.fru1t.rsbot.common.framework.actions.logic.SpamClick;
+import me.fru1t.rsbot.common.actions.logic.SpamClick;
 
 @Singleton
 public class InteractSpamClickProvider {

@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.framework.actions;
+package me.fru1t.rsbot.common.actions;
 
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
@@ -12,8 +12,8 @@ import org.powerbot.script.rt6.TilePath;
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
+import me.fru1t.rsbot.common.actions.logic.SpamClick;
 import me.fru1t.rsbot.common.framework.Action;
-import me.fru1t.rsbot.common.framework.actions.logic.SpamClick;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;

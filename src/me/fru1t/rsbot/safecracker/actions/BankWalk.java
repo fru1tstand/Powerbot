@@ -5,8 +5,8 @@ import org.powerbot.script.Tile;
 
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
+import me.fru1t.rsbot.common.actions.Rs3Walking;
 import me.fru1t.rsbot.common.framework.Action;
-import me.fru1t.rsbot.common.framework.actions.Rs3Walking;
 import me.fru1t.rsbot.common.framework.components.RunState;
 
 /**

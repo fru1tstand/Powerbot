@@ -8,12 +8,12 @@ import org.powerbot.script.rt6.Npc;
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
+import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.actions.logic.SpamClick;
 import me.fru1t.rsbot.common.framework.Action;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
-import me.fru1t.rsbot.common.util.Timer;
 import me.fru1t.rsbot.safecracker.actions.logic.InteractSpamClickProvider;
 import me.fru1t.rsbot.safecracker.actions.logic.TurnToBanker;
 

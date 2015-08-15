@@ -2,6 +2,8 @@ package me.fru1t.rsbot.common.util;
 
 import java.util.concurrent.Callable;
 
+import me.fru1t.rsbot.common.Timer;
+
 public class Condition extends org.powerbot.script.Condition {
 	/**
 	 * Conditionally wait until either the given timer expires, or the condition has completed.

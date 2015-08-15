@@ -24,21 +24,6 @@ public class Settings extends AbstractSettings {
 		this.food = null;
 	}
 	
-	/**
-	 * TODO: Abstract with reflection
-	 */
-	@Override
-	public void replace(AbstractSettings settings) {
-		if (!(settings instanceof Settings))
-			return;
-		
-		Settings other = (Settings) settings;
-		this.bankStyle = other.bankStyle;
-		this.food = other.food;
-		this.foodQuantity = other.foodQuantity;
-		this.preferredSafe = other.preferredSafe;
-	}
-	
 	@Override
 	public boolean isValid() {
 		return bankStyle != null && foodQuantity > -1 && food != null && preferredSafe != null;

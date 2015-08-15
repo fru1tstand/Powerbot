@@ -25,6 +25,8 @@ import me.fru1t.rsbot.safecracker.actions.logic.SmartClick;
  * 
  * <p>TODO: Add break points if the script get stopped before the entire method completes. Consider
  * splitting this method up into more states.
+ * 
+ * <p>TODO: Add human behavior between actions and waiting.
  */
 public class SafeCrack implements Action {
 	private final ClientContext ctx;
@@ -128,8 +130,6 @@ public class SafeCrack implements Action {
 			return false;
 		}
 		
-		// TODO: Add human factor
-		
 		// Waiting for the player to interact
 		if (!Condition.wait(new Callable<Boolean>() {
 			@Override
@@ -137,10 +137,9 @@ public class SafeCrack implements Action {
 				return ctx.players.local().animation()
 						== RoguesDenSafeCracker.PLAYER_CRACK_ANIMATION;
 			}
-		}, 100, 10)) // 1000 ms
+		}, 100, 10)) { // 1000 ms
 			return false;
-		
-		// TODO: Add human factor
+		}
 		
 		// Waiting for the player to success or fail
 		if (!Condition.wait(
@@ -161,10 +160,9 @@ public class SafeCrack implements Action {
 					}},
 				safecrackAnimationTimer,
 				2000,
-				150))
+				150)) {
 			return false;
-		
-		// TODO: Add human factor
+		}
 		
 		// Wait for safe reset
 		if (!Condition.wait(new Callable<Boolean>() {
@@ -172,8 +170,9 @@ public class SafeCrack implements Action {
 			public Boolean call() throws Exception {
 				return safeGameObject.valid();
 			}
-		}, 300, 7)) // 2100 ms
+		}, 300, 7)) { // 2100 ms
 			return false;
+		}
 		
 		return true;
 	}

@@ -6,7 +6,7 @@ import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.actions.logic.SpamClick;
 
 @Singleton
-public class SafecrackSpamClick {
+public class InteractSpamClickProvider {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int DELAY_IS_RANDOM_PROBABILITY = 50;
@@ -27,7 +27,7 @@ public class SafecrackSpamClick {
 	private final SpamClick spamClickInstance;
 	
 	@Inject
-	public SafecrackSpamClick(SpamClick.Factory spamClickFactory) {
+	public InteractSpamClickProvider(SpamClick.Factory spamClickFactory) {
 		this.spamClickInstance = spamClickFactory.create(
 				IS_ENABLED_PROBABILITY,
 				DELAY_IS_RANDOM_PROBABILITY,

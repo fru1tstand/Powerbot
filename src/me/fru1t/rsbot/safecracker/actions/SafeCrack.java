@@ -17,7 +17,7 @@ import me.fru1t.rsbot.common.util.Timer;
 import me.fru1t.rsbot.safecracker.actions.logic.Backpack;
 import me.fru1t.rsbot.safecracker.actions.logic.Health;
 import me.fru1t.rsbot.safecracker.actions.logic.SafeLogic;
-import me.fru1t.rsbot.safecracker.actions.logic.SafecrackSpamClick;
+import me.fru1t.rsbot.safecracker.actions.logic.InteractSpamClickProvider;
 import me.fru1t.rsbot.safecracker.actions.logic.SmartClick;
 
 /**
@@ -47,7 +47,7 @@ public class SafeCrack implements Action {
 			SmartClick smartClick,
 			SafeLogic safeLogic,
 			Timer safecrackAnimationTimer,
-			@Singleton SafecrackSpamClick safecrackSpamClick) {
+			@Singleton InteractSpamClickProvider spamClickProvider) {
 		this.ctx = ctx;
 		this.state = state;
 		this.health = health;
@@ -56,7 +56,7 @@ public class SafeCrack implements Action {
 		this.safeLogic = safeLogic;
 		this.safecrackAnimationTimer = safecrackAnimationTimer;
 		
-		this.safecrackSpamClick = safecrackSpamClick.get();
+		this.safecrackSpamClick = spamClickProvider.get();
 		safeGameObject = null;
 	}
 

@@ -216,6 +216,7 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 			});
 			
 			// Start button action
+			// TODO: #validate settings before closing the form and display user friendly errors.
 			startBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

@@ -14,7 +14,7 @@ import me.fru1t.rsbot.common.framework.Action;
  * behind it aims to be 100% accurate. This has led to easy, easy detection, as herds of accounts
  * are following an easily discernible pattern and interact with the Runescape world with ~100%
  * accuracy. Bottom line: scripts are too afraid to make mistakes and script writers are too lazy
- * to scatter the script's footprint. 
+ * to make them do so.
  * 
  * <p>Persona^tm aims to throw in more humanistic traits to the script in the form of
  * attentiveness, clumsiness, impatience, etc. Each Persona has its own set of characteristics, but
@@ -22,6 +22,13 @@ import me.fru1t.rsbot.common.framework.Action;
  * task. This scatters the deep footprint of a single traditional script to thousands of randomly
  * generated lighter footprints of a Persona driven script. Light footprints equals harder to
  * detect equals less bans.
+ * 
+ * <p>Things to consider: While persona-driven scripting introduces more humanistic traits, there
+ * is nothing more revealing that a bot is a bot than artificial breaks within a set of commands.
+ * Where it might be natural for a script to be programmed with discrete bundles of commands
+ * (eg. walking, banking, walking, mining), humans don't naturally stop to make sure they're within
+ * a bank to begin banking. They may interact with the banker while still traveling. This is
+ * something scripts need to mimic, that is, the blending between states.
  */
 @Singleton
 public class Persona {

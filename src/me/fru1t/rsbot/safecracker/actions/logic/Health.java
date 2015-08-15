@@ -96,14 +96,14 @@ public class Health {
 			// Do nothing
 			break;
 		case RANDOM:
-			if (settings.getCurrentFood().healAmount + R_MIN + HEALTH_ABS_MIN
+			if (settings.getFood().healAmount + R_MIN + HEALTH_ABS_MIN
 					>= ctx.combatBar.maximumHealth()) {
 				eatMethod = EatMethod.LOWEST_POSSIBLE;
 			}
 			break;
 		case FOOD_ORIENTED:
 		default:
-			if (settings.getCurrentFood().healAmount * FO_MAX_FOOD_MULTIPLIER + HEALTH_ABS_MIN
+			if (settings.getFood().healAmount * FO_MAX_FOOD_MULTIPLIER + HEALTH_ABS_MIN
 					>= ctx.combatBar.maximumHealth()) {
 				eatMethod = EatMethod.LOWEST_POSSIBLE;
 			}
@@ -112,7 +112,7 @@ public class Health {
 		
 		// TODO: Find if this value is inaccurate due to EOC vs Legacy settings
 		int maxHealHealthToEatAt =
-				ctx.combatBar.maximumHealth() - settings.getCurrentFood().healAmount;
+				ctx.combatBar.maximumHealth() - settings.getFood().healAmount;
 		
 		switch (eatMethod) {
 		// Don't heal until very low hp

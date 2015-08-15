@@ -58,6 +58,6 @@ public class FoodLogic {
 	private int getPossibleFoodConsumptionAmount() {
 		// TODO: Is this the correct way to get both EOC and legacy hp?
 		return (ctx.combatBar.maximumHealth() - ctx.combatBar.health())
-				/ settings.getCurrentFood().healAmount;
+				/ settings.getFood().healAmount;
 	}
 }

@@ -1,28 +1,27 @@
 package me.fru1t.rsbot.safecracker;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.AbstractSettings;
 import me.fru1t.rsbot.common.items.Food;
 
 public class Settings extends AbstractSettings {
-	private List<Food> foods;
-	private boolean isBankStyleConstant;
+	public enum BankStyle { CONSTANT, AUTOMATIC, PRESET_1, PRESET_2 }
+	
+	private BankStyle bankStyle;
+	private int foodQuantity;
+	private Food food;
 	private RoguesDenSafeCracker.Safe preferredSafe;
-	private int currentFoodPointer;
 	
 	/**
 	 * Simple constructor which sets default values to class fields.
 	 */
 	@Inject
 	public Settings() {
-		this.foods = null;
-		this.isBankStyleConstant = false;
+		this.bankStyle = null;
 		this.preferredSafe = null;
-		this.currentFoodPointer = 0;
+		this.foodQuantity = -1;
+		this.food = null;
 	}
 	
 	/**
@@ -32,66 +31,32 @@ public class Settings extends AbstractSettings {
 	public void replace(AbstractSettings settings) {
 		if (!(settings instanceof Settings))
 			return;
-		Settings other = (Settings) settings;
 		
-		this.foods = other.foods;
-		this.isBankStyleConstant = other.isBankStyleConstant;
+		Settings other = (Settings) settings;
+		this.bankStyle = other.bankStyle;
+		this.food = other.food;
+		this.foodQuantity = other.foodQuantity;
 		this.preferredSafe = other.preferredSafe;
 	}
 	
 	@Override
 	public boolean isValid() {
-		return foods != null && foods.size() != 0 && preferredSafe != null;
-	}
-	
-	/**
-	 * Increments the food pointer and returns if there is more food queued in the food list.
-	 * @return If more food is still available.
-	 */
-	public boolean ranOutOfFood() {
-		currentFoodPointer++;
-		return currentFoodPointer >= foods.size();
+		return bankStyle != null && foodQuantity > -1 && food != null && preferredSafe != null;
 	}
 	
 	/**
 	 * @return The current food to withdraw from the bank.
 	 */
-	public Food getCurrentFood() {
-		return foods.get(currentFoodPointer);
-	}
-	
-	/**
-	 * @return A list of all the food items set in the GUI.
-	 */
-	public List<Food> getFoods() {
-		ArrayList<Food> listCopy = new ArrayList<Food>();
-		listCopy.addAll(foods);
-		return listCopy;
+	public Food getFood() {
+		return food;
 	}
 	
 	/**
 	 * Sets the food to the given list of food items.
-	 * @param foods
+	 * @param food
 	 */
-	public void setFoods(List<Food> foods) {
-		ArrayList<Food> listCopy = new ArrayList<Food>();
-		listCopy.addAll(foods);
-		this.foods = listCopy;
-	}
-	
-	/**
-	 * @return Returns if the food to withdraw is a constant number.
-	 */
-	public boolean isBankStyleConstant() {
-		return isBankStyleConstant;
-	}
-	
-	/**
-	 * Sets if the bank style is constant.
-	 * @param isBankStyleConstant
-	 */
-	public void setBankStyleConstant(boolean isBankStyleConstant) {
-		this.isBankStyleConstant = isBankStyleConstant;
+	public void setFood(Food food) {
+		this.food = food;
 	}
 	
 	/**
@@ -107,5 +72,35 @@ public class Settings extends AbstractSettings {
 	 */
 	public void setPreferredSafe(RoguesDenSafeCracker.Safe preferredSafe) {
 		this.preferredSafe = preferredSafe;
+	}
+
+	/**
+	 * @return The bank style.
+	 */
+	public BankStyle getBankStyle() {
+		return bankStyle;
+	}
+
+	/**
+	 * Sets the bank style
+	 * @param bankStyle
+	 */
+	public void setBankStyle(BankStyle bankStyle) {
+		this.bankStyle = bankStyle;
+	}
+
+	/**
+	 * @return The food amount to withdraw (if BankStyle is constant).
+	 */
+	public int getFoodQuantity() {
+		return foodQuantity;
+	}
+
+	/**
+	 * Sets the food amount to withdraw. Only used if the bank style is constant.
+	 * @param foodQuantity
+	 */
+	public void setFoodQuantity(int foodQuantity) {
+		this.foodQuantity = foodQuantity;
 	}
 }

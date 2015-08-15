@@ -22,15 +22,19 @@ import me.fru1t.rsbot.common.framework.SettingsCallback;
 import me.fru1t.rsbot.common.items.Food;
 
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.awt.event.ActionEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 
 public class StartupForm extends AbstractStartupForm<Settings> {
+	// Form testing main method.
+	public static void main(String[] args) {
+		new StartupForm();
+	}
+	
 	private JFrame settingsForm;
-	private final HashMap<String, Food> foodMap;
-
+	
 	/**
 	 * Create the application.
 	 */
@@ -38,11 +42,20 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 	public StartupForm(@Singleton SettingsCallback<Settings> callback) {
 		super(callback);
 		
-		this.foodMap = new HashMap<>();
 		this.initialize();
 		this.settingsForm.setVisible(true);
 	}
-
+	
+	/**
+	 * Testing
+	 */
+	private StartupForm() {
+		this(new SettingsCallback<Settings>() {
+			@Override
+			public void call(Settings settings) { }
+		});
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -73,50 +86,25 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		foodSelectorComboBox.setModel(new DefaultComboBoxModel<Enum<Food>>(Food.values()));
 		foodSelectorComboBox.setFont(new Font("Calibri", Font.PLAIN, 14));
 		foodSelectorComboBox.setBackground(Color.WHITE);
-		foodSelectorComboBox.setBounds(20, 52, 244, 20);
+		foodSelectorComboBox.setBounds(20, 52, 364, 20);
 		settingsForm.getContentPane().add(foodSelectorComboBox);
-		
-		JButton addBtn = new JButton("+");
-		addBtn.setForeground(Color.BLACK);
-		addBtn.setToolTipText("Add the selected food to the list");
-		addBtn.setBackground(Color.WHITE);
-		addBtn.setFont(new Font("Calibri", Font.PLAIN, 16));
-		addBtn.setBounds(274, 52, 45, 20);
-		settingsForm.getContentPane().add(addBtn);
-		
-		JButton rmBtn = new JButton("-");
-		rmBtn.setForeground(Color.BLACK);
-		rmBtn.setToolTipText("Remove the selected food from the list");
-		rmBtn.setFont(new Font("Calibri", Font.PLAIN, 16));
-		rmBtn.setBackground(Color.WHITE);
-		rmBtn.setBounds(329, 52, 45, 20);
-		settingsForm.getContentPane().add(rmBtn);
-		
-		final java.awt.List foodListJList = new java.awt.List();
-		foodListJList.setMultipleMode(false);
-		foodListJList.setForeground(Color.CYAN);
-		foodListJList.setFont(new Font("Calibri", Font.PLAIN, 14));
-		foodListJList.setBackground(Color.BLACK);
-		foodListJList.setBounds(20, 78, 354, 107);
-		
-		settingsForm.getContentPane().add(foodListJList);
 		
 		JLabel lblPreferredSafe = new JLabel("Preferred Safe");
 		lblPreferredSafe.setFont(new Font("Calibri", Font.BOLD, 16));
 		lblPreferredSafe.setForeground(Color.CYAN);
-		lblPreferredSafe.setBounds(20, 266, 141, 14);
+		lblPreferredSafe.setBounds(20, 231, 141, 14);
 		settingsForm.getContentPane().add(lblPreferredSafe);
 		
 		JLabel lblUnlessYouHave = new JLabel("Unless you have an extreme prejudice against a certain safe,");
 		lblUnlessYouHave.setFont(new Font("Calibri", Font.PLAIN, 11));
 		lblUnlessYouHave.setForeground(Color.GRAY);
-		lblUnlessYouHave.setBounds(20, 282, 364, 14);
+		lblUnlessYouHave.setBounds(20, 247, 364, 14);
 		settingsForm.getContentPane().add(lblUnlessYouHave);
 		
 		JLabel lblThisSettingOn = new JLabel("it's best to leave this on automatic.");
 		lblThisSettingOn.setFont(new Font("Calibri", Font.PLAIN, 11));
 		lblThisSettingOn.setForeground(Color.GRAY);
-		lblThisSettingOn.setBounds(20, 294, 364, 14);
+		lblThisSettingOn.setBounds(20, 259, 364, 14);
 		settingsForm.getContentPane().add(lblThisSettingOn);
 		
 		final JComboBox<Enum<RoguesDenSafeCracker.Safe>> preferredSafeComboBox = new JComboBox<Enum<RoguesDenSafeCracker.Safe>>();
@@ -124,29 +112,38 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		preferredSafeComboBox.setModel(new DefaultComboBoxModel<Enum<RoguesDenSafeCracker.Safe>>(RoguesDenSafeCracker.Safe.values()));
 		preferredSafeComboBox.setForeground(Color.BLACK);
 		preferredSafeComboBox.setBackground(Color.WHITE);
-		preferredSafeComboBox.setBounds(20, 312, 354, 20);
+		preferredSafeComboBox.setBounds(20, 277, 354, 20);
 		settingsForm.getContentPane().add(preferredSafeComboBox);
 		
-		JLabel lblFoodAmountPer = new JLabel("Food Banking Style");
+		final JSpinner foodAmountSpinner = new JSpinner();
+		foodAmountSpinner.setEnabled(false);
+		foodAmountSpinner.setModel(new SpinnerNumberModel(4, 0, 27, 1));
+		foodAmountSpinner.setFont(new Font("Dialog", Font.PLAIN, 11));
+		foodAmountSpinner.setForeground(Color.CYAN);
+		foodAmountSpinner.setBackground(Color.DARK_GRAY);
+		foodAmountSpinner.setBounds(322, 141, 54, 17);
+		settingsForm.getContentPane().add(foodAmountSpinner);
+		
+		JLabel lblFoodAmountPer = new JLabel("Banking Style");
 		lblFoodAmountPer.setForeground(Color.CYAN);
 		lblFoodAmountPer.setFont(new Font("Calibri", Font.BOLD, 16));
-		lblFoodAmountPer.setBounds(20, 201, 204, 14);
+		lblFoodAmountPer.setBounds(20, 103, 204, 14);
 		settingsForm.getContentPane().add(lblFoodAmountPer);
 		
-		final JRadioButton constant = new JRadioButton("Same amount every time");
-		constant.setFont(new Font("Calibri", Font.PLAIN, 14));
-		constant.setForeground(Color.CYAN);
-		constant.setBackground(Color.DARK_GRAY);
-		constant.setBounds(20, 236, 266, 23);
-		settingsForm.getContentPane().add(constant);
+		final JRadioButton bankConstant = new JRadioButton("Same amount every time");
+		bankConstant.setFont(new Font("Calibri", Font.PLAIN, 14));
+		bankConstant.setForeground(Color.CYAN);
+		bankConstant.setBackground(Color.DARK_GRAY);
+		bankConstant.setBounds(20, 138, 266, 23);
+		settingsForm.getContentPane().add(bankConstant);
 		
-		JRadioButton automatic = new JRadioButton("Automatic amount");
-		automatic.setSelected(true);
-		automatic.setForeground(Color.CYAN);
-		automatic.setFont(new Font("Calibri", Font.PLAIN, 14));
-		automatic.setBackground(Color.DARK_GRAY);
-		automatic.setBounds(20, 216, 266, 23);
-		settingsForm.getContentPane().add(automatic);
+		final JRadioButton bankAutomatic = new JRadioButton("Automatic amount");
+		bankAutomatic.setSelected(true);
+		bankAutomatic.setForeground(Color.CYAN);
+		bankAutomatic.setFont(new Font("Calibri", Font.PLAIN, 14));
+		bankAutomatic.setBackground(Color.DARK_GRAY);
+		bankAutomatic.setBounds(20, 118, 266, 23);
+		settingsForm.getContentPane().add(bankAutomatic);
 		settingsForm.setType(Type.UTILITY);
 		settingsForm.setTitle("Fru1tstand's Safe Cracker");
 		settingsForm.setBackground(Color.BLACK);
@@ -154,17 +151,25 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		settingsForm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		settingsForm.setBounds(100, 100, 400, 465);
 		
-		ButtonGroup foodSelectMethod = new ButtonGroup();
-		foodSelectMethod.add(constant);
-		foodSelectMethod.add(automatic);
+		final JRadioButton bankPreset1 = new JRadioButton("Preset 1");
+		bankPreset1.setForeground(Color.CYAN);
+		bankPreset1.setFont(new Font("Dialog", Font.PLAIN, 14));
+		bankPreset1.setBackground(Color.DARK_GRAY);
+		bankPreset1.setBounds(20, 158, 266, 23);
+		settingsForm.getContentPane().add(bankPreset1);
 		
-		JSpinner foodAmountSpinner = new JSpinner();
-		foodAmountSpinner.setModel(new SpinnerNumberModel(4, 0, 27, 1));
-		foodAmountSpinner.setFont(new Font("Calibri", Font.PLAIN, 22));
-		foodAmountSpinner.setForeground(Color.CYAN);
-		foodAmountSpinner.setBackground(Color.DARK_GRAY);
-		foodAmountSpinner.setBounds(292, 216, 82, 37);
-		settingsForm.getContentPane().add(foodAmountSpinner);
+		final JRadioButton bankPreset2 = new JRadioButton("Preset 2");
+		bankPreset2.setForeground(Color.CYAN);
+		bankPreset2.setFont(new Font("Dialog", Font.PLAIN, 14));
+		bankPreset2.setBackground(Color.DARK_GRAY);
+		bankPreset2.setBounds(20, 178, 266, 23);
+		settingsForm.getContentPane().add(bankPreset2);
+		
+		ButtonGroup foodSelectMethod = new ButtonGroup();
+		foodSelectMethod.add(bankConstant);
+		foodSelectMethod.add(bankAutomatic);
+		foodSelectMethod.add(bankPreset1);
+		foodSelectMethod.add(bankPreset2);
 		
 		JButton startBtn = new JButton("Start!");
 		startBtn.setForeground(Color.BLACK);
@@ -177,14 +182,14 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		lblQuestionsCommentsWant.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblQuestionsCommentsWant.setForeground(Color.GRAY);
 		lblQuestionsCommentsWant.setFont(new Font("Calibri", Font.PLAIN, 11));
-		lblQuestionsCommentsWant.setBounds(20, 370, 354, 14);
+		lblQuestionsCommentsWant.setBounds(20, 355, 354, 14);
 		settingsForm.getContentPane().add(lblQuestionsCommentsWant);
 		
 		JLabel lblPostInThe = new JLabel("Post in the forums and I'll be sure to respond.");
 		lblPostInThe.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblPostInThe.setForeground(Color.GRAY);
 		lblPostInThe.setFont(new Font("Calibri", Font.PLAIN, 11));
-		lblPostInThe.setBounds(20, 380, 354, 14);
+		lblPostInThe.setBounds(20, 365, 354, 14);
 		settingsForm.getContentPane().add(lblPostInThe);
 		
 		JLabel lblCreatedWithLove = new JLabel("Created, with love, by fru1tstand.");
@@ -198,38 +203,36 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		lblThisScriptIs.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblThisScriptIs.setForeground(Color.GRAY);
 		lblThisScriptIs.setFont(new Font("Calibri", Font.PLAIN, 11));
-		lblThisScriptIs.setBounds(20, 390, 354, 14);
+		lblThisScriptIs.setBounds(20, 375, 354, 14);
 		settingsForm.getContentPane().add(lblThisScriptIs);
 		
+		// Events and listeners	
 		{
-			addBtn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Food selectedFood = (Food) foodSelectorComboBox.getSelectedItem();
-					if (!foodMap.containsKey(selectedFood.name())) {
-						foodListJList.add(selectedFood.name());
-						foodMap.put(selectedFood.name(), selectedFood);
-					}
+			// Enable/Disable food amount spinner
+			bankConstant.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					foodAmountSpinner.setEnabled(bankConstant.isSelected());
 				}
 			});
-			rmBtn.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent arg0) {
-					String selectedFood = foodListJList.getSelectedItem();
-					if (foodMap.containsKey(selectedFood)) {
-						foodListJList.remove(selectedFood);
-						foodMap.remove(selectedFood);
-					}
-				}
-			});
+			
+			// Start button action
 			startBtn.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					settingsForm.setVisible(false);
 					Settings settings = new Settings();
-					settings.setFoods(new ArrayList<Food>(foodMap.values()));
-					settings.setBankStyleConstant(constant.isSelected());
 					settings.setPreferredSafe((RoguesDenSafeCracker.Safe) preferredSafeComboBox.getSelectedItem());
+					if (bankAutomatic.isSelected()) {
+						settings.setBankStyle(Settings.BankStyle.AUTOMATIC);
+					} else if (bankConstant.isSelected()) {
+						settings.setBankStyle(Settings.BankStyle.CONSTANT);
+					} else if (bankPreset1.isSelected()) {
+						settings.setBankStyle(Settings.BankStyle.PRESET_1);
+					} else if (bankPreset2.isSelected()) {
+						settings.setBankStyle(Settings.BankStyle.PRESET_2);
+					}
+					settings.setFoodQuantity((Integer) foodAmountSpinner.getModel().getValue());
+					settings.setFood((Food) foodSelectorComboBox.getSelectedItem());
 					settingsForm.dispose();
 					callback.call(settings);
 				}

@@ -32,13 +32,13 @@ public class SafeEat implements Action {
 	@Override
 	public boolean run() {
 		// Out of food?
-		if (ctx.backpack.select().id(settings.getCurrentFood().id).isEmpty()) {
+		if (ctx.backpack.select().id(settings.getFood().id).isEmpty()) {
 			state.update(RoguesDenSafeCracker.State.BANK_WALK);
 			return true;
 		}
 		
 		int eatCount = foodLogic.numberToEat();
-		while (!ctx.backpack.select().id(settings.getCurrentFood().id).isEmpty()
+		while (!ctx.backpack.select().id(settings.getFood().id).isEmpty()
 				&& eatCount-- > 0) {
 			Item food = ctx.backpack.poll();
 			if (!food.inViewport()) {

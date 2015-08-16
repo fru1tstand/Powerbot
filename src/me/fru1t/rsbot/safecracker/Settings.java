@@ -65,6 +65,20 @@ public class Settings extends AbstractSettings {
 	public BankStyle getBankStyle() {
 		return bankStyle;
 	}
+	
+	/**
+	 * Checks if the bank style is one of any of the given styles.
+	 * @param styles 
+	 * @return True if the bank styles are any of the provided. Otherwise, false.
+	 */
+	public boolean isBankStyle(BankStyle... styles) {
+		for (BankStyle style : styles) {
+			if (bankStyle == style) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Sets the bank style

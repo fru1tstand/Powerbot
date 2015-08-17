@@ -6,12 +6,12 @@ import org.powerbot.script.rt6.Item;
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.actions.logic.FoodLogic;
 
-public class SafeEat implements Action {
+public class SafeEat implements Strategy {
 	private final ClientContext ctx;
 	private final RunState<RoguesDenSafeCracker.State> state;
 	private final Settings settings;

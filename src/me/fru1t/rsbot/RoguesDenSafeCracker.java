@@ -9,7 +9,7 @@ import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.annotations.Nullable;
-import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.Script;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
@@ -88,8 +88,8 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	}
 
 	@Override
-	protected Map<State, Class<? extends Action>> getActionMap() {
-		Map<State, Class<? extends Action>> stateMap = new HashMap<>();
+	protected Map<State, Class<? extends Strategy>> getActionMap() {
+		Map<State, Class<? extends Strategy>> stateMap = new HashMap<>();
 		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
 		stateMap.put(State.SAFE_EAT, SafeEat.class);
 		stateMap.put(State.BANK_WALK, BankWalk.class);

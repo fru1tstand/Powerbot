@@ -14,7 +14,7 @@ import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.actions.logic.SpamClick;
-import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
 
@@ -29,7 +29,7 @@ import me.fru1t.rsbot.common.util.Random;
  * 
  * <p> TODO: Add distance-based interaction alongside time based.
  */
-public class Rs3Walking implements Action {
+public class Rs3Walking implements Strategy {
 	protected enum InteractionAmount { CONSTANT, RANDOM, GAUSS }
 	
 	/**

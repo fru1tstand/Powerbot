@@ -9,13 +9,13 @@ import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.actions.logic.SpamClick;
-import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.actions.logic.DepositInventoryButton;
 import me.fru1t.rsbot.safecracker.actions.logic.InteractSpamClickProvider;
 
-public class BankInteract implements Action {
+public class BankInteract implements Strategy {
 	private final ClientContext ctx;
 	private final RunState<RoguesDenSafeCracker.State> state;
 	private final Settings settings;

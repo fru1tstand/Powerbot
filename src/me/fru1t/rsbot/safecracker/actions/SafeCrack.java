@@ -11,7 +11,7 @@ import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.actions.logic.SpamClick;
-import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.safecracker.actions.logic.Backpack;
@@ -28,7 +28,7 @@ import me.fru1t.rsbot.safecracker.actions.logic.SmartClick;
  * 
  * <p>TODO: Add human behavior between actions and waiting.
  */
-public class SafeCrack implements Action {
+public class SafeCrack implements Strategy {
 	private final ClientContext ctx;
 	private final RunState<RoguesDenSafeCracker.State> state;
 	private final Health health;

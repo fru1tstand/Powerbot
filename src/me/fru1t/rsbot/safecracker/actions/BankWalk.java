@@ -6,13 +6,13 @@ import org.powerbot.script.Tile;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.actions.Rs3Walking;
-import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 
 /**
  * TODO: Add bank interact while running
  */
-public class BankWalk implements Action {
+public class BankWalk implements Strategy {
 	private static final int RANDOMIZATION_TOLERANCE = 3;
 	// TODO: Add correct area
 	private static Area destinationArea = new Area(new Tile(0, 0), new Tile(0, 0));

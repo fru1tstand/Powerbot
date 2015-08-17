@@ -10,14 +10,14 @@ import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.actions.logic.SpamClick;
-import me.fru1t.rsbot.common.framework.Action;
+import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.actions.logic.InteractSpamClickProvider;
 import me.fru1t.rsbot.safecracker.actions.logic.TurnToBanker;
 
-public class OpenBank implements Action {
+public class OpenBank implements Strategy {
 	// TODO: Set correct banker id
 	private static final int BANKER_ID = -1;
 	private static final int MAX_WAIT_TIME = 2500;

@@ -29,7 +29,7 @@ public abstract class Script<
 	/**
 	 * @return Returns each script state mapped to the class that handles it.
 	 */
-	protected abstract Map<ST, Class<? extends Action>> getActionMap();
+	protected abstract Map<ST, Class<? extends Strategy>> getActionMap();
 	
 	/**
 	 * @return The reset state for the script if something goes horribly wrong.
@@ -37,7 +37,7 @@ public abstract class Script<
 	protected abstract ST getResetState();
 	
 
-	private final Map<ST, Action> scriptActions;
+	private final Map<ST, Strategy> scriptActions;
 	private final Slick slick;
 	private final Status status;
 	private final RunState<ST> state;
@@ -136,7 +136,7 @@ public abstract class Script<
 	 */
 	protected final void setUpActions() {
 		status.update("Preparing script to run...");
-		for (Map.Entry<ST, Class<? extends Action>> entry : getActionMap().entrySet()) {
+		for (Map.Entry<ST, Class<? extends Strategy>> entry : getActionMap().entrySet()) {
 			scriptActions.put(entry.getKey(), slick.get(entry.getValue()));
 		}
 		// Some trickery here to get all enums within ST (state) because Java's type erasure.

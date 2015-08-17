@@ -1,5 +1,7 @@
 package me.fru1t.rsbot.common.actions.logic;
 
+import org.powerbot.script.ClientContext;
+
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Nullable;
 import me.fru1t.annotations.Singleton;
@@ -20,13 +22,24 @@ import me.fru1t.rsbot.common.util.Random;
  */
 public class SpamClick {
 	/**
+	 * Interface that defines an action to spam click.
+	 */
+	public static interface Action {
+		public void interact();
+	}
+	
+	/**
 	 * Provides instances of SpamClick.
 	 */
 	public static class Factory {
 		private final Persona persona;
+		private final ClientContext<?> ctx;
 		
 		@Inject
-		public Factory(@Singleton Persona persona) {
+		public Factory(
+				@Singleton Persona persona,
+				@Singleton ClientContext<?> ctx) {
+			this.ctx = ctx;
 			this.persona = persona;
 		}
 		
@@ -71,6 +84,7 @@ public class SpamClick {
 						+ "gauranteed to be random.");
 			}
 			return new SpamClick(
+					ctx,
 					persona,
 					Random.roll(delayIsRandomProbability),
 					Random.roll(clickCountIsRandomProbability),
@@ -83,6 +97,7 @@ public class SpamClick {
 	}
 	
 	private final Persona persona;
+	private final ClientContext<?> ctx;
 	private final boolean isDelayRandom;
 	private final boolean isClickCountRandom;
 	private final boolean isVarianceFocusDependent;
@@ -92,8 +107,10 @@ public class SpamClick {
 	@Nullable private final Tuple2<Double, Double> delayVarianceRange;
 	private final int clickCountMean;
 	private final int delayMean;
+	private int interactProbability;
 	
 	private SpamClick(
+			ClientContext<?> ctx,
 			Persona persona,
 			boolean isDelayRandom,
 			boolean isClickCountRandom,
@@ -102,6 +119,7 @@ public class SpamClick {
 			@Nullable Tuple2<Double, Double> clickCountVarianceRange,
 			Tuple2<Integer, Integer> delayMeanRange,
 			@Nullable Tuple2<Double, Double> delayVarianceRange) {
+		this.ctx = ctx;
 		this.persona = persona;
 		this.isDelayRandom = isDelayRandom;
 		this.isClickCountRandom = isClickCountRandom;
@@ -112,6 +130,7 @@ public class SpamClick {
 		this.delayVarianceRange = delayVarianceRange;
 		this.clickCountMean = Random.nextInt(clickCountMeanRange);
 		this.delayMean = Random.nextInt(delayMeanRange);
+		newInteractProbability();
 	}
 	
 	/**
@@ -120,6 +139,7 @@ public class SpamClick {
 	 * @return The number of times to click.
 	 */
 	public int getClicks() {
+		newInteractProbability();
 		return getConditionalRandomOrGauss(
 				isClickCountRandom, clickCountMean, clickCountMeanRange, clickCountVarianceRange);
 	}
@@ -132,6 +152,34 @@ public class SpamClick {
 	public int getDelay() {
 		return getConditionalRandomOrGauss(
 				isDelayRandom, delayMean, delayMeanRange, delayVarianceRange);
+	}
+	
+	/**
+	 * Returns if the player should re-interact with whatever.
+	 * @return If the player should re-interact with whatever.
+	 */
+	public boolean shouldReInteract() {
+		return Random.roll(interactProbability);
+	}
+	
+	/**
+	 * Interacts using the given action using a randomly generated number of clicks that is
+	 * dependent on the current user's persona.
+	 * 
+	 * <p>Implementation note: This would've worked a lot cleaner for the caller if we could use
+	 * lambda statements, but powerbot doesn't like Java 8.
+	 * @param action 
+	 */
+	public void interact(Action action) {
+		int clicks = getClicks();
+		action.interact();
+		while (clicks-- > 1) {
+			if (shouldReInteract()) {
+				action.interact();
+			} else {
+				ctx.input.click(true);
+			}
+		}
 	}
 	
 	private int getConditionalRandomOrGauss(
@@ -147,5 +195,9 @@ public class SpamClick {
 						isVarianceFocusDependent
 								? persona.getFocusScaledDouble(null, varianceRange)
 								: Random.nextDouble(varianceRange));
+	}
+	
+	private void newInteractProbability() {
+		interactProbability = Random.nextInt(0, 100);
 	}
 }

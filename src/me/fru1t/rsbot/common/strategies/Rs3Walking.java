@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.actions;
+package me.fru1t.rsbot.common.strategies;
 
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
@@ -13,8 +13,8 @@ import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
-import me.fru1t.rsbot.common.actions.logic.SpamClick;
 import me.fru1t.rsbot.common.framework.Strategy;
+import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
 

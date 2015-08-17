@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions;
+package me.fru1t.rsbot.safecracker.strategies;
 
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Item;
@@ -9,7 +9,7 @@ import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
-import me.fru1t.rsbot.safecracker.actions.logic.FoodLogic;
+import me.fru1t.rsbot.safecracker.strategies.logic.FoodLogic;
 
 public class SafeEat implements Strategy {
 	private final ClientContext ctx;

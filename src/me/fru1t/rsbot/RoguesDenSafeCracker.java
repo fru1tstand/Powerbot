@@ -13,9 +13,9 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.Script;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
-import me.fru1t.rsbot.safecracker.actions.BankWalk;
-import me.fru1t.rsbot.safecracker.actions.SafeCrack;
-import me.fru1t.rsbot.safecracker.actions.SafeEat;
+import me.fru1t.rsbot.safecracker.strategies.BankWalk;
+import me.fru1t.rsbot.safecracker.strategies.SafeCrack;
+import me.fru1t.rsbot.safecracker.strategies.SafeEat;
 
 @Manifest(
 		name = "Rogue's Den Safe Cracker",

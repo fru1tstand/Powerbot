@@ -1,13 +1,13 @@
-package me.fru1t.rsbot.safecracker.actions;
+package me.fru1t.rsbot.safecracker.strategies;
 
 import org.powerbot.script.Area;
 import org.powerbot.script.Tile;
 
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.common.actions.Rs3Walking;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
+import me.fru1t.rsbot.common.strategies.Rs3Walking;
 
 /**
  * TODO: Add bank interact while running

@@ -1,9 +1,9 @@
-package me.fru1t.rsbot.safecracker.actions.logic;
+package me.fru1t.rsbot.safecracker.strategies.logic;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
-import me.fru1t.rsbot.common.actions.logic.SpamClick;
+import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 
 @Singleton
 public class InteractSpamClickProvider {

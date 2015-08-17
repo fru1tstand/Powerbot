@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.actions.logic;
+package me.fru1t.rsbot.common.strategies.logic;
 
 import org.powerbot.script.ClientContext;
 

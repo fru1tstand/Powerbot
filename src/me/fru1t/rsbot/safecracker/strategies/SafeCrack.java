@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions;
+package me.fru1t.rsbot.safecracker.strategies;
 
 import java.util.concurrent.Callable;
 
@@ -10,15 +10,15 @@ import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.Timer;
-import me.fru1t.rsbot.common.actions.logic.SpamClick;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
+import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 import me.fru1t.rsbot.common.util.Condition;
-import me.fru1t.rsbot.safecracker.actions.logic.Backpack;
-import me.fru1t.rsbot.safecracker.actions.logic.Health;
-import me.fru1t.rsbot.safecracker.actions.logic.SafeLogic;
-import me.fru1t.rsbot.safecracker.actions.logic.InteractSpamClickProvider;
-import me.fru1t.rsbot.safecracker.actions.logic.SmartClick;
+import me.fru1t.rsbot.safecracker.strategies.logic.Backpack;
+import me.fru1t.rsbot.safecracker.strategies.logic.Health;
+import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
+import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
+import me.fru1t.rsbot.safecracker.strategies.logic.SmartClick;
 
 /**
  * Defines the safe cracking portion of the script.

@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions;
+package me.fru1t.rsbot.safecracker.strategies;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,12 +8,12 @@ import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.rsbot.RoguesDenSafeCracker;
-import me.fru1t.rsbot.common.actions.logic.SpamClick;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
+import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 import me.fru1t.rsbot.safecracker.Settings;
-import me.fru1t.rsbot.safecracker.actions.logic.DepositInventoryButton;
-import me.fru1t.rsbot.safecracker.actions.logic.InteractSpamClickProvider;
+import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
+import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 
 public class BankInteract implements Strategy {
 	private final ClientContext ctx;

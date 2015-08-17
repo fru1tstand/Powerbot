@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.safecracker.actions.logic;
+package me.fru1t.rsbot.safecracker.strategies.logic;
 
 import me.fru1t.annotations.Inject;
 import me.fru1t.rsbot.common.Timer;

@@ -20,7 +20,7 @@ import me.fru1t.rsbot.safecracker.strategies.SafeEat;
 @Manifest(
 		name = "Rogue's Den Safe Cracker",
 		description = "Cracks safes in Rogue's Den",
-		properties = "client=4;topic=1278748;hidden=false;")
+		properties = "client=4;")
 public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings> {
 	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
 	public static final int SAFE_OBJECT_ID = 7235;

@@ -3,6 +3,7 @@ package me.fru1t.rsbot.safecracker.strategies;
 import org.powerbot.script.Area;
 import org.powerbot.script.Tile;
 
+import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
@@ -23,6 +24,7 @@ public class BankWalk implements Strategy {
 	private final RunState<RoguesDenSafeCracker.State> state;
 	private final Rs3Walking walker;
 	
+	@Inject
 	public BankWalk(
 			@Singleton RunState<RoguesDenSafeCracker.State> state,
 			Rs3Walking.Factory walkingFactory) {

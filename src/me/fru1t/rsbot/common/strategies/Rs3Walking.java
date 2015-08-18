@@ -37,7 +37,7 @@ public class Rs3Walking implements Strategy {
 	 * when walking.
 	 */
 	@Singleton
-	private class WalkingLogic {
+	private static class WalkingLogic {
 		// Interaction enum probabilities
 		private static final int CONSTANT_THRESHOLD =  5;
 		private static final int RANDOM_THRESHOLD = 45;
@@ -122,7 +122,7 @@ public class Rs3Walking implements Strategy {
 	 * WalkingSpamClick contains the settings for spam clicking while walking.
 	 */
 	@Singleton
-	private class WalkingSpamClick {
+	private static class WalkingSpamClick {
 		// Enable/disable probabilities
 		private static final int IS_ENABLED_PROBABILITY = 35;
 		private static final int DELAY_IS_RANDOM_PROBABILITY = 25;
@@ -162,7 +162,7 @@ public class Rs3Walking implements Strategy {
 	/**
 	 * Creates Rs3Walking instances.
 	 */
-	public class Factory {
+	public static class Factory {
 		private final ClientContext ctx;
 		private final WalkingSpamClick walkingSpamClick;
 		private final WalkingLogic walkingLogic;

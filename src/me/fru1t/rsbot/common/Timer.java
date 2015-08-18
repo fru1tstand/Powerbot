@@ -3,6 +3,7 @@ package me.fru1t.rsbot.common;
 import org.powerbot.script.ClientContext;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 
 public class Timer {
 	private final ClientContext<?> ctx;
@@ -10,7 +11,7 @@ public class Timer {
 	private long lastSetTimeFromNowInMillis;
 	
 	@Inject
-	public Timer(ClientContext<?> ctx) {
+	public Timer(@Singleton ClientContext<?> ctx) {
 		this(ctx, 0);
 	}
 	

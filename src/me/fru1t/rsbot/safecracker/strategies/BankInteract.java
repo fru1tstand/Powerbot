@@ -7,6 +7,8 @@ import java.util.concurrent.Callable;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 
+import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
@@ -22,11 +24,12 @@ public class BankInteract implements Strategy {
 	private final SpamClick spamClick;
 	private final DepositInventoryButton depositInventoryButton;
 	
+	@Inject
 	public BankInteract(
-			ClientContext ctx,
-			RunState<RoguesDenSafeCracker.State> state,
-			Settings settings,
-			InteractSpamClickProvider spamClickProvider,
+			@Singleton ClientContext ctx,
+			@Singleton RunState<RoguesDenSafeCracker.State> state,
+			@Singleton Settings settings,
+			@Singleton InteractSpamClickProvider spamClickProvider,
 			DepositInventoryButton depositInventoryButton) {
 		this.ctx = ctx;
 		this.state = state;

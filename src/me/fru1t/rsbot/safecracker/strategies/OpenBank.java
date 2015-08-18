@@ -31,8 +31,8 @@ public class OpenBank implements Strategy {
 	
 	@Inject
 	public OpenBank(
-			ClientContext ctx,
-			RunState<RoguesDenSafeCracker.State> state,
+			@Singleton ClientContext ctx,
+			@Singleton RunState<RoguesDenSafeCracker.State> state,
 			@Singleton InteractSpamClickProvider spamClickProvider,
 			TurnToBanker turnToBanker,
 			Timer bankOpenTimer) {

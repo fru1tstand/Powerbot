@@ -106,6 +106,7 @@ public class Slick {
 				for (Map.Entry<Class<?>, Object> entry : providedInstances.entrySet()) {
 					if (constructorRequirements[i].isAssignableFrom(entry.getKey())) {
 						constructorFulfillments[i] = entry.getValue();
+						foundInProvides = true;
 						break;
 					}
 				}
@@ -114,7 +115,16 @@ public class Slick {
 			// Find recursive
 			if (constructorFulfillments[i] == null) {
 				// Guaranteed to find or throw exception
-				constructorFulfillments[i] = get(constructorRequirements[i]);
+				try {
+					constructorFulfillments[i] = get(constructorRequirements[i]);
+				} catch (SlickException exception) {
+					throw new SlickException(
+							String.format(
+									"%s\n\t... when getting %s",
+									exception.getMessage(),
+									type.getName()),
+							exception);
+				}
 			}
 			
 			// Singleton Check
@@ -152,10 +162,10 @@ public class Slick {
 		} catch (InstantiationException
 				| IllegalAccessException
 				| IllegalArgumentException
-				| InvocationTargetException e) {
+				| InvocationTargetException exception) {
 			throw new SlickException(
 					String.format("Failed to instantiate %s", type.getName()), 
-					e.getCause());
+					exception);
 		}
 	}
 }

@@ -4,10 +4,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Nullable;
 import me.fru1t.annotations.Singleton;
 
 /**
@@ -29,7 +32,7 @@ public class Slick {
 	public Slick() {
 		this.providedInstances = new HashMap<>();
 	}
-	
+
 	/**
 	 * Gives Slick an instance of the given class to use as a singleton if the class is required
 	 * in another.
@@ -43,7 +46,7 @@ public class Slick {
 					clazz.getName()));
 		providedInstances.put(clazz, reference);
 	}
-	
+
 	/**
 	 * Attempts to create and return an instance of a class.
 	 * @param type The class to make an instance of.
@@ -51,11 +54,11 @@ public class Slick {
 	 */
 	public <T> T get(Class<T> type) {
 		// grab the class's constructors
-		@SuppressWarnings("unchecked") // We're guaranteed this array is of type Constructor<T>
+		@SuppressWarnings("unchecked") // We're certain #getDeclaredConstructors returns T
 		Constructor<T>[] constructors = (Constructor<T>[]) type.getDeclaredConstructors();
 		if (constructors.length == 0) {
 			throw new SlickException(String.format(
-					"%s has no public injectable constructors.",
+					"%s has no injectable constructors.",
 					type.getName()));
 		}
 		
@@ -88,62 +91,49 @@ public class Slick {
 		}
 		
 		// Fulfill the constructor's parameters
-		Class<?>[] constructorRequirements = injectableConstructor.getParameterTypes();
+		Class<?>[] dependencies = injectableConstructor.getParameterTypes();
+		Type[] types = injectableConstructor.getGenericParameterTypes();
 		Annotation[][] parameterAnnotations = injectableConstructor.getParameterAnnotations();
-		Object[] constructorFulfillments = new Object[constructorRequirements.length];
-		for (int i = 0; i < constructorRequirements.length; i++) {
+		Object[] constructorFulfillments = new Object[dependencies.length];
+		for (int i = 0; i < dependencies.length; i++) {
 			boolean foundInProvides = false;
-			constructorFulfillments[i] = null;
+			constructorFulfillments[i] = getFromProvides(dependencies[i], types[i]);
 			
-			// Find directly in provides
-			if (providedInstances.containsKey(constructorRequirements[i])) {
-				constructorFulfillments[i] = providedInstances.get(constructorRequirements[i]);
-				foundInProvides = true;
-			}
-			
-			// Find assignable
-			if (constructorFulfillments[i] == null) {
-				for (Map.Entry<Class<?>, Object> entry : providedInstances.entrySet()) {
-					if (constructorRequirements[i].isAssignableFrom(entry.getKey())) {
-						constructorFulfillments[i] = entry.getValue();
-						break;
-					}
-				}
-			}
-			
-			// Find recursive
+			// Recurse
 			if (constructorFulfillments[i] == null) {
 				// Guaranteed to find or throw exception
-				constructorFulfillments[i] = get(constructorRequirements[i]);
+				constructorFulfillments[i] = get(dependencies[i]);
+			} else {
+				foundInProvides = true;
 			}
 			
 			// Singleton Check
 			boolean isClassSingleton = foundInProvides
-					|| constructorRequirements[i].isAnnotationPresent(Singleton.class);
+					|| dependencies[i].isAnnotationPresent(Singleton.class);
 			boolean isParameterSingleton = false;
 			for (Annotation annotation : parameterAnnotations[i]) {
 				if (annotation.annotationType().equals(Singleton.class)) {
 					if (!isClassSingleton) {
 						throw new SlickException(String.format(
-								"%s is not annotated @Singleton, "
-								+ "but the injected parameter in %s is.",
-								constructorRequirements[i].getName(),
-								type.getName()));
+								"The parameter %s is @Singleton-annotated, "
+								+ "but the defining %s class isn't",
+								type.getName(),
+								dependencies[i].getName()));
 					}
 					isParameterSingleton = true;
+					
 					if (!foundInProvides) {
-						provide(constructorRequirements[i], constructorFulfillments[i]);
+						// @SuppressWarnings We're certain requirements match with fulfillments
+						provide(dependencies[i], constructorFulfillments[i]);
 					}
 					break;
 				}
 			}
-			if (isClassSingleton != isParameterSingleton) {
-				if (isClassSingleton) {
-					throw new SlickException(String.format(
-							"%s is annotated @Singleton, but the injected parameter in %s is not.",
-							constructorRequirements[i].getName(),
-							type.getName()));
-				}
+			if (isClassSingleton != isParameterSingleton && isClassSingleton) {
+				throw new SlickException(String.format(
+						"The class %s is @Singleton-annotated, but the parameter %s isn't",
+						dependencies[i].getName(),
+						type.getName()));
 			}
 		}
 
@@ -154,8 +144,49 @@ public class Slick {
 				| IllegalArgumentException
 				| InvocationTargetException e) {
 			throw new SlickException(
-					String.format("Failed to instantiate %s", type.getName()), 
+					String.format(
+							"%s\nFailed to instantiate %s",
+							e.getMessage(),
+							type.getName()), 
 					e.getCause());
 		}
+	}
+	
+	/**
+	 * Finds the class within the provided and instantiated objects, and returns it if it exists.
+	 * This method checks for superclasses and generics when searching.
+	 * 
+	 * @param clazz The class to find.
+	 * @param type The type to check against.
+	 * @return The instance of the requested class and type if found. Otherwise, null.
+	 */
+	@Nullable
+	private Object getFromProvides(Class<?> clazz, Type type) {
+		// Direct Request
+		if (providedInstances.containsKey(clazz)) {
+			return providedInstances.get(clazz);
+		}
+
+		// Assignable
+		Iterator<Map.Entry<Class<?>, Object>> pIter = providedInstances.entrySet().iterator();
+		while (pIter.hasNext()) {
+			Map.Entry<Class<?>, Object> entry = pIter.next();
+			if (!clazz.isAssignableFrom(entry.getKey())) {
+				continue;
+			}
+			
+			// Type check
+			Class<?> rollClass = entry.getKey();
+			while (rollClass != null) {
+				for (Type t : rollClass.getGenericInterfaces()) {
+					if (type.equals(t)) {
+						return entry.getValue();
+					}
+				}
+				
+				rollClass = rollClass.getSuperclass();
+			}
+		}
+		return null;
 	}
 }

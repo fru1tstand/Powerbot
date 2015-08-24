@@ -15,20 +15,20 @@ import me.fru1t.annotations.Singleton;
 
 /**
  * Slick: Simple Lightweight dependency InjeCtion frameworK
- * 
+ *
  * <p>Slick aims to be a Guice/Dagger-like runtime dependency injection framework. Super simplistic,
  * none of the setup, all of the errors. Only supports constructor injections (versus member
  * injection). But hey, it's "easy to use".
- * 
+ *
  * <p>**Does not map interfaces to implementations** Maybe a todo? Inversion of control is not
  * needed for the current usage of Slick so this was left out.
- * 
+ *
  * <p>Design note: I opted to force the @Inject constructor instead of allowing non-annotated
  * or no constructor classes because explicit is better than implicit.
  */
 public class Slick {
 	private final Map<Class<?>, Object> providedInstances;
-	
+
 	public Slick() {
 		this.providedInstances = new HashMap<>();
 	}
@@ -39,11 +39,21 @@ public class Slick {
 	 * @param clazz The class type to provide
 	 * @param reference The instance of the class
 	 */
-	public void provide(Class<?> clazz, Object reference) {
+	public <T> void provide(Class<T> clazz, T reference) {
 		if (providedInstances.containsKey(clazz))
 			throw new SlickException(String.format(
 					"The provided class '%s' has already been provided to this Slick instance.",
 					clazz.getName()));
+		providedInstances.put(clazz, reference);
+	}
+
+	/**
+	 * ** Interally used only.
+	 * @see #provide(Class, Object)
+	 * @param clazz
+	 * @param reference
+	 */
+	private void uncheckedProvide(Class<?> clazz, Object reference) {
 		providedInstances.put(clazz, reference);
 	}
 
@@ -61,22 +71,17 @@ public class Slick {
 					"%s has no injectable constructors.",
 					type.getName()));
 		}
-		
+
 		// Find an @Inject-able constructor
 		Constructor<T> injectableConstructor = null;
 		for (Constructor<T> constructor : constructors) {
-			Annotation[] annotations = constructor.getAnnotations();
-			for (Annotation annotation : annotations) {
-				if (!annotation.annotationType().equals(Inject.class)) {
-					continue;
-				}
+			if (constructor.isAnnotationPresent(Inject.class)) {
 				if (injectableConstructor != null) {
 					throw new SlickException(String.format(
-							"%s cannot have multiple @Inject annotated constructors",
+							"%s cannot have multiple @Inject-annotated constructors",
 							type.getName()));
 				}
 				injectableConstructor = constructor;
-				break;
 			}
 		}
 		if (injectableConstructor == null) {
@@ -84,50 +89,49 @@ public class Slick {
 					"%s has no constructor with the @Inject annotation.",
 					type.getName()));
 		}
-		
+
 		// Make sure we can see it from here
 		if ((injectableConstructor.getModifiers() & (Modifier.PRIVATE | Modifier.PROTECTED)) > 0) {
 			injectableConstructor.setAccessible(true);
 		}
-		
-		// Fulfill the constructor's parameters
+
+		// Fulfill dependencies
+		Annotation[][] annotations = injectableConstructor.getParameterAnnotations();
 		Class<?>[] dependencies = injectableConstructor.getParameterTypes();
 		Type[] types = injectableConstructor.getGenericParameterTypes();
-		Annotation[][] parameterAnnotations = injectableConstructor.getParameterAnnotations();
-		Object[] constructorFulfillments = new Object[dependencies.length];
+		Object[] fulfillments = new Object[dependencies.length];
 		for (int i = 0; i < dependencies.length; i++) {
 			boolean foundInProvides = false;
-			constructorFulfillments[i] = getFromProvides(dependencies[i], types[i]);
-			
+			fulfillments[i] = getFromProvides(dependencies[i], types[i]);
+
 			// Recurse
-			if (constructorFulfillments[i] == null) {
+			if (fulfillments[i] == null) {
 				// Guaranteed to find or throw exception
-				constructorFulfillments[i] = get(dependencies[i]);
+				fulfillments[i] = get(dependencies[i]);
 			} else {
 				foundInProvides = true;
 			}
-			
+
 			// Singleton Check
 			boolean isClassSingleton = foundInProvides
 					|| dependencies[i].isAnnotationPresent(Singleton.class);
 			boolean isParameterSingleton = false;
-			for (Annotation annotation : parameterAnnotations[i]) {
-				if (annotation.annotationType().equals(Singleton.class)) {
-					if (!isClassSingleton) {
-						throw new SlickException(String.format(
-								"The parameter %s is @Singleton-annotated, "
-								+ "but the defining %s class isn't",
-								type.getName(),
-								dependencies[i].getName()));
-					}
-					isParameterSingleton = true;
-					
-					if (!foundInProvides) {
-						// @SuppressWarnings We're certain requirements match with fulfillments
-						provide(dependencies[i], constructorFulfillments[i]);
-					}
-					break;
+			for (Annotation annotation : annotations[i]) {
+				if (!annotation.annotationType().equals(Singleton.class)) {
+					continue;
 				}
+				if (!isClassSingleton) {
+					throw new SlickException(String.format(
+							"The parameter %s is @Singleton-annotated, "
+							+ "but the defining %s class isn't",
+							type.getName(),
+							dependencies[i].getName()));
+				}
+				if (!foundInProvides) {
+					uncheckedProvide(dependencies[i], fulfillments[i]);
+				}
+				isParameterSingleton = true;
+				break;
 			}
 			if (isClassSingleton != isParameterSingleton && isClassSingleton) {
 				throw new SlickException(String.format(
@@ -138,7 +142,7 @@ public class Slick {
 		}
 
 		try {
-			return injectableConstructor.newInstance(constructorFulfillments);
+			return injectableConstructor.newInstance(fulfillments);
 		} catch (InstantiationException
 				| IllegalAccessException
 				| IllegalArgumentException
@@ -147,15 +151,15 @@ public class Slick {
 					String.format(
 							"%s\nFailed to instantiate %s",
 							e.getMessage(),
-							type.getName()), 
+							type.getName()),
 					e.getCause());
 		}
 	}
-	
+
 	/**
 	 * Finds the class within the provided and instantiated objects, and returns it if it exists.
 	 * This method checks for superclasses and generics when searching.
-	 * 
+	 *
 	 * @param clazz The class to find.
 	 * @param type The type to check against.
 	 * @return The instance of the requested class and type if found. Otherwise, null.
@@ -174,17 +178,17 @@ public class Slick {
 			if (!clazz.isAssignableFrom(entry.getKey())) {
 				continue;
 			}
-			
+
 			// Type check
-			Class<?> rollClass = entry.getKey();
-			while (rollClass != null) {
-				for (Type t : rollClass.getGenericInterfaces()) {
+			Class<?> rollingClass = entry.getKey();
+			while (rollingClass != null) {
+				for (Type t : rollingClass.getGenericInterfaces()) {
 					if (type.equals(t)) {
 						return entry.getValue();
 					}
 				}
-				
-				rollClass = rollClass.getSuperclass();
+
+				rollingClass = rollingClass.getSuperclass();
 			}
 		}
 		return null;

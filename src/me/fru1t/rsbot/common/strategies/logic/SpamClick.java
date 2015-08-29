@@ -15,11 +15,12 @@ import me.fru1t.rsbot.common.util.Random;
  * consistent amount every time). The delay in clicks tends toward a unimodal
  * symmetric normal distribution (n = 300). However, because people are
  * different, the mean and variance of these curve are too.
- * 
+ *
  * <p> Consider: Someone may become impatient, or fall out of impatience. Also, as
  * time wears on, fatigue may build up reducing both click count and click delay
  * mean.
  */
+// TODO: Convert to singleton util.
 public class SpamClick {
 	/**
 	 * Interface that defines an action to spam click.
@@ -27,14 +28,14 @@ public class SpamClick {
 	public static interface Action {
 		public void interact();
 	}
-	
+
 	/**
 	 * Provides instances of SpamClick.
 	 */
 	public static class Factory {
 		private final Persona persona;
 		private final ClientContext<?> ctx;
-		
+
 		@Inject
 		public Factory(
 				@Singleton Persona persona,
@@ -42,10 +43,10 @@ public class SpamClick {
 			this.ctx = ctx;
 			this.persona = persona;
 		}
-		
+
 		/**
 		 * Creates a new instance of SpamClick with the given parameters.
-		 * 
+		 *
 		 * @param delayIsRandomProbability The probability that the delay is random instead of
 		 * normally distributed.
 		 * @param clickCountIsRandomProbability The probability that the click count is random
@@ -95,7 +96,7 @@ public class SpamClick {
 					delayVarianceRange);
 		}
 	}
-	
+
 	private final Persona persona;
 	private final ClientContext<?> ctx;
 	private final boolean isDelayRandom;
@@ -108,7 +109,7 @@ public class SpamClick {
 	private final int clickCountMean;
 	private final int delayMean;
 	private int interactProbability;
-	
+
 	private SpamClick(
 			ClientContext<?> ctx,
 			Persona persona,
@@ -132,7 +133,7 @@ public class SpamClick {
 		this.delayMean = Random.nextInt(delayMeanRange);
 		newInteractProbability();
 	}
-	
+
 	/**
 	 * Returns the number of times to click on an interact event. This should be called and stored
 	 * a single time when interacting.
@@ -143,7 +144,7 @@ public class SpamClick {
 		return getConditionalRandomOrGauss(
 				isClickCountRandom, clickCountMean, clickCountMeanRange, clickCountVarianceRange);
 	}
-	
+
 	/**
 	 * Returns the delay between each click on an interact event. This should be called every click
 	 * event to determine delay.
@@ -153,7 +154,7 @@ public class SpamClick {
 		return getConditionalRandomOrGauss(
 				isDelayRandom, delayMean, delayMeanRange, delayVarianceRange);
 	}
-	
+
 	/**
 	 * Returns if the player should re-interact with whatever.
 	 * @return If the player should re-interact with whatever.
@@ -161,14 +162,14 @@ public class SpamClick {
 	public boolean shouldReInteract() {
 		return Random.roll(interactProbability);
 	}
-	
+
 	/**
 	 * Interacts using the given action using a randomly generated number of clicks that is
 	 * dependent on the current user's persona.
-	 * 
+	 *
 	 * <p>Implementation note: This would've worked a lot cleaner for the caller if we could use
 	 * lambda statements, but powerbot doesn't like Java 8.
-	 * @param action 
+	 * @param action
 	 */
 	public void interact(Action action) {
 		int clicks = getClicks();
@@ -181,7 +182,7 @@ public class SpamClick {
 			}
 		}
 	}
-	
+
 	private int getConditionalRandomOrGauss(
 			boolean isRandom,
 			int mean,
@@ -196,7 +197,7 @@ public class SpamClick {
 								? persona.getFocusScaledDouble(null, varianceRange)
 								: Random.nextDouble(varianceRange));
 	}
-	
+
 	private void newInteractProbability() {
 		interactProbability = Random.nextInt(0, 100);
 	}

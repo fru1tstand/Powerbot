@@ -19,31 +19,31 @@ public abstract class Script<
 	 * The number of failures to endure before resetting the script state
 	 */
 	private static final int CONSECUTIVE_FAILURE_RESET_THRESHOLD = 20;
-	
+
 	/**
 	 * Synonymous to {@link #start()}
 	 * This is where the GUI or settings setup should take place.
 	 */
 	protected abstract void init();
-	
+
 	/**
 	 * @return Returns each script state mapped to the class that handles it.
 	 */
-	protected abstract Map<ST, Class<? extends Strategy>> getActionMap();
-	
+	protected abstract Map<ST, Class<? extends Strategy<ST>>> getActionMap();
+
 	/**
 	 * @return The reset state for the script if something goes horribly wrong.
 	 */
 	protected abstract ST getResetState();
-	
 
-	private final Map<ST, Strategy> scriptActions;
+
+	private final Map<ST, Strategy<ST>> scriptActions;
 	private final Slick slick;
 	private final Status status;
 	private final RunState<ST> state;
-	
+
 	private int consecutiveFailures;
-	
+
 	/**
 	 * Creates a new empty script
 	 */
@@ -51,12 +51,12 @@ public abstract class Script<
 		slick = new Slick();
 		status = new Status();
 		state = new RunState<>();
-		
-		slick.provide(ctx.getClass(), ctx);
-		slick.provide(Status.class, status);
-		slick.provide(Persona.class, new Persona());
-		slick.provide(RunState.class, state);
-		
+
+		slick.provide(ctx);
+		slick.provide(state);
+		slick.provide(status);
+		slick.provide(new Persona());
+
 		this.scriptActions = new HashMap<>();
 	}
 
@@ -66,33 +66,35 @@ public abstract class Script<
 			consecutiveFailures = 0;
 			state.update(getResetState());
 		}
-		
+
 		if (state.getCurrent() == null) {
 			return;
 		}
-		
+
 		// We're guaranteed all states are handled from the setup method
-		if (!scriptActions.get(state.getCurrent()).run()) {
+		ST returnState = scriptActions.get(state.getCurrent()).run();
+		if (returnState == null) {
 			consecutiveFailures++;
 		} else {
 			consecutiveFailures = 0;
+			state.update(returnState);
 		}
 	}
-	
+
 	@Override
 	public final void start() {
 		status.update(String.format(
 				"Starting %s By Fru1tstand", getClass().getAnnotation(Manifest.class).name()));
 		init();
 	}
-	
+
 	@Override
 	public final void stop() {
 		status.update(String.format(
 				"Stopping %s By Fru1tstand", getClass().getAnnotation(Manifest.class).name()));
 	}
-	
-	
+
+
 	/**
 	 * Callable by the implementing class, this method displays the given startup form and sets
 	 * the settings when the form is closed.
@@ -108,11 +110,11 @@ public abstract class Script<
 				scriptReady();
 			}
 		});
-		
+
 		// The form should self-instantiate and become visible.
 		slick.get(formClazz);
 	}
-	
+
 	/**
 	 * Sets the script's settings and indicates that the script is ready to run.
 	 */
@@ -126,17 +128,17 @@ public abstract class Script<
 							+ "that Fru1tstand can fix this issue.",
 					getClass().getAnnotation(Manifest.class).name()));
 		}
-		slick.provide(settings.getClass(), settings);
+		slick.provide(settings);
 		status.update("Settings have been set.");
 	}
-	
+
 	/**
 	 * Instantiates the actions for the script. This must be called after the settings have been
 	 * set, and all dependencies that each Action may have are provided to the slick instance.
 	 */
 	protected final void setUpActions() {
 		status.update("Preparing script to run...");
-		for (Map.Entry<ST, Class<? extends Strategy>> entry : getActionMap().entrySet()) {
+		for (Map.Entry<ST, Class<? extends Strategy<ST>>> entry : getActionMap().entrySet()) {
 			scriptActions.put(entry.getKey(), slick.get(entry.getValue()));
 		}
 		// Some trickery here to get all enums within ST (state) because Java's type erasure.
@@ -148,7 +150,7 @@ public abstract class Script<
 			}
 		}
 	}
-	
+
 	/**
 	 * Flips the switch. Tells the script to start running.
 	 */

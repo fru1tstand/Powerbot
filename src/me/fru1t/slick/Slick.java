@@ -34,26 +34,31 @@ public class Slick {
 	}
 
 	/**
-	 * Gives Slick an instance of the given class to use as a singleton if the class is required
-	 * in another.
+	 * Gives slick an instance of the class for singleton use by classes being injected.
+	 * @param reference
+	 */
+	public <T> void provide(T reference) {
+		unsafeProvide(reference.getClass(), reference);
+	}
+
+	/**
+	 * Gives slick an instance of the specified class for singleton use by classes being injected.
 	 * @param clazz The class type to provide
 	 * @param reference The instance of the class
 	 */
 	public <T> void provide(Class<T> clazz, T reference) {
-		if (providedInstances.containsKey(clazz))
-			throw new SlickException(String.format(
-					"The provided class '%s' has already been provided to this Slick instance.",
-					clazz.getName()));
-		providedInstances.put(clazz, reference);
+		unsafeProvide(clazz, reference);
 	}
 
 	/**
-	 * ** Interally used only.
 	 * @see #provide(Class, Object)
-	 * @param clazz
-	 * @param reference
 	 */
-	private void uncheckedProvide(Class<?> clazz, Object reference) {
+	private void unsafeProvide(Class<?> clazz, Object reference) {
+		if (providedInstances.containsKey(reference.getClass())) {
+			throw new SlickException(String.format(
+					"The provided class '%s' has already been provided to this Slick instance.",
+					clazz.getName()));
+		}
 		providedInstances.put(clazz, reference);
 	}
 
@@ -128,7 +133,7 @@ public class Slick {
 							dependencies[i].getName()));
 				}
 				if (!foundInProvides) {
-					uncheckedProvide(dependencies[i], fulfillments[i]);
+					provide(fulfillments[i]);
 				}
 				isParameterSingleton = true;
 				break;

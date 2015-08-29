@@ -6,8 +6,8 @@ import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 
-import me.fru1t.annotations.Inject;
-import me.fru1t.annotations.Singleton;
+import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.framework.Strategy;

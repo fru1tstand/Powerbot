@@ -1,4 +1,4 @@
-package me.fru1t.collections;
+package me.fru1t.common.collections;
 
 /**
  * Holds 2 elements.

@@ -9,9 +9,9 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Path.TraversalOption;
 import org.powerbot.script.rt6.TilePath;
 
-import me.fru1t.annotations.Inject;
-import me.fru1t.annotations.Singleton;
-import me.fru1t.collections.Tuple2;
+import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Singleton;
+import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 import me.fru1t.rsbot.common.util.Condition;

@@ -7,8 +7,8 @@ import java.util.concurrent.Callable;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 
-import me.fru1t.annotations.Inject;
-import me.fru1t.annotations.Singleton;
+import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.strategies.logic.SpamClick;

@@ -3,7 +3,7 @@ package me.fru1t.rsbot.safecracker.strategies;
 import org.powerbot.script.Area;
 import org.powerbot.script.Tile;
 
-import me.fru1t.annotations.Inject;
+import me.fru1t.common.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.strategies.Rs3WalkingUtil;

@@ -1,6 +1,6 @@
 package me.fru1t.rsbot.common.framework.components;
 
-import me.fru1t.annotations.Singleton;
+import me.fru1t.common.annotations.Singleton;
 
 /**
  * Tracks the script's state

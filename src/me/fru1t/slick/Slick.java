@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import me.fru1t.annotations.Inject;
-import me.fru1t.annotations.Nullable;
-import me.fru1t.annotations.Singleton;
+import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Nullable;
+import me.fru1t.common.annotations.Singleton;
 
 /**
  * Slick: Simple Lightweight dependency InjeCtion frameworK

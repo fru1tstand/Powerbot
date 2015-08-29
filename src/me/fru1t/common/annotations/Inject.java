@@ -1,4 +1,4 @@
-package me.fru1t.annotations;
+package me.fru1t.common.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

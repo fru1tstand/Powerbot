@@ -3,8 +3,8 @@ package me.fru1t.rsbot.safecracker.strategies;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Item;
 
-import me.fru1t.annotations.Inject;
-import me.fru1t.annotations.Singleton;
+import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;

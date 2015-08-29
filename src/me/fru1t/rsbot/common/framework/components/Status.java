@@ -2,7 +2,7 @@ package me.fru1t.rsbot.common.framework.components;
 
 import java.util.Stack;
 
-import me.fru1t.annotations.Singleton;
+import me.fru1t.common.annotations.Singleton;
 
 /**
  * Keeps track of a script's status messages. These should only be used for decorational

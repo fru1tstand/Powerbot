@@ -2,8 +2,8 @@ package me.fru1t.rsbot.common;
 
 import org.powerbot.script.ClientContext;
 
-import me.fru1t.annotations.Inject;
-import me.fru1t.annotations.Singleton;
+import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Singleton;
 
 public class Timer {
 	private final ClientContext<?> ctx;

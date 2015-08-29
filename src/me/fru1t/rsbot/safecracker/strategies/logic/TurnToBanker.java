@@ -2,7 +2,7 @@ package me.fru1t.rsbot.safecracker.strategies.logic;
 
 import org.powerbot.script.rt6.Npc;
 
-import me.fru1t.annotations.Inject;
+import me.fru1t.common.annotations.Inject;
 import me.fru1t.rsbot.common.util.Random;
 
 /**

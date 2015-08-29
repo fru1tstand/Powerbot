@@ -166,10 +166,19 @@ public class SpamClick {
 	/**
 	 * Interacts using the given action using a randomly generated number of clicks that is
 	 * dependent on the current user's persona.
+<<<<<<< HEAD
 	 *
 	 * <p>Implementation note: This would've worked a lot cleaner for the caller if we could use
 	 * lambda statements, but powerbot doesn't like Java 8.
 	 * @param action
+=======
+	 * 
+	 * <p> TODO: Add misclicking
+	 * 
+	 * <p>Implementation note: This would've worked a lot cleaner for the caller if we could use
+	 * lambda statements, but powerbot doesn't like Java 8.
+	 * @param action The single action to perform
+>>>>>>> c071e1d8af3678d42105654706135e6a2328ab7a
 	 */
 	public void interact(Action action) {
 		int clicks = getClicks();

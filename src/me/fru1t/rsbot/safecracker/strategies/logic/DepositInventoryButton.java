@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies.logic;
 
+import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
@@ -10,6 +11,7 @@ public class DepositInventoryButton {
 	
 	private final boolean isEnabled;
 	
+	@Inject
 	public DepositInventoryButton(@Singleton Settings settings) {
 		isEnabled = (settings.isBankStyle(Settings.BankStyle.PRESET_1, Settings.BankStyle.PRESET_2))
 				? Random.roll(ENABLED_WHEN_UNNEEDED_PROBABILITY)

@@ -1,10 +1,12 @@
 package me.fru1t.rsbot.safecracker;
 
 import me.fru1t.annotations.Inject;
+import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.AbstractSettings;
 import me.fru1t.rsbot.common.items.Food;
 
+@Singleton
 public class Settings extends AbstractSettings {
 	public enum BankStyle { CONSTANT, AUTOMATIC, PRESET_1, PRESET_2 }
 	

@@ -68,13 +68,11 @@ public class Slick {
 	 * @return An instance of the class.
 	 */
 	public <T> T get(Class<T> type) {
-		// grab the class's constructors
-		@SuppressWarnings("unchecked") // We're certain #getDeclaredConstructors returns T
+		// Grab the class's constructors
+		@SuppressWarnings("unchecked") // We're guaranteed this array is of type Constructor<T>
 		Constructor<T>[] constructors = (Constructor<T>[]) type.getDeclaredConstructors();
 		if (constructors.length == 0) {
-			throw new SlickException(String.format(
-					"%s has no injectable constructors.",
-					type.getName()));
+			throw new SlickException(String.format("%s has no constructors.", type.getName()));
 		}
 
 		// Find an @Inject-able constructor
@@ -151,13 +149,13 @@ public class Slick {
 		} catch (InstantiationException
 				| IllegalAccessException
 				| IllegalArgumentException
-				| InvocationTargetException e) {
+				| InvocationTargetException exception) {
 			throw new SlickException(
 					String.format(
 							"%s\nFailed to instantiate %s",
-							e.getMessage(),
+							exception.getMessage(),
 							type.getName()),
-					e.getCause());
+					exception.getCause());
 		}
 	}
 

@@ -29,7 +29,7 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Inject
 	public OpenBank(
-			ClientContext ctx,
+			@Singleton ClientContext ctx,
 			@Singleton InteractSpamClickProvider spamClickProvider,
 			TurnToBanker turnToBanker,
 			Timer bankOpenTimer) {

@@ -13,14 +13,17 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.Script;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
+import me.fru1t.rsbot.safecracker.strategies.BankInteract;
 import me.fru1t.rsbot.safecracker.strategies.BankWalk;
+import me.fru1t.rsbot.safecracker.strategies.OpenBank;
 import me.fru1t.rsbot.safecracker.strategies.SafeCrack;
 import me.fru1t.rsbot.safecracker.strategies.SafeEat;
+import me.fru1t.rsbot.safecracker.strategies.SafeWalk;
 
 @Manifest(
 		name = "Rogue's Den Safe Cracker",
 		description = "Cracks safes in Rogue's Den",
-		properties = "client=4;topic=1278748;hidden=false;")
+		properties = "client=6;")
 public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings> {
 	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
 	public static final int SAFE_OBJECT_ID = 7235;
@@ -93,6 +96,9 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
 		stateMap.put(State.SAFE_EAT, SafeEat.class);
 		stateMap.put(State.BANK_WALK, BankWalk.class);
+		stateMap.put(State.BANK_INTERACT, BankInteract.class);
+		stateMap.put(State.SAFE_WALK, SafeWalk.class);
+		stateMap.put(State.BANK_OPEN, OpenBank.class);
 		return stateMap;
 	}
 	

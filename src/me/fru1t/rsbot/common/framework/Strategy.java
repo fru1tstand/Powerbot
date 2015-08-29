@@ -14,11 +14,13 @@ package me.fru1t.rsbot.common.framework;
  * The next strategy may start running towards a destination and in the split second the player
  * starts running, checks if the items exist in the backpack. If not (due to misclick or other
  * error), the run strategy will take corrective measure by updating the state to a known fix.
+ * 
+ * @param ST The script state enum
  */
-public interface Strategy {
+public interface Strategy<ST extends Enum<?>> {
 	/**
 	 * The action to perform.
 	 * @return If the run completed successfully.
 	 */
-	public abstract boolean run();
+	public abstract ST run();
 }

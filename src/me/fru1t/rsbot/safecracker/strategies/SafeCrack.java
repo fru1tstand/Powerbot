@@ -11,7 +11,6 @@ import me.fru1t.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.safecracker.strategies.logic.Backpack;
@@ -28,9 +27,8 @@ import me.fru1t.rsbot.safecracker.strategies.logic.SmartClick;
  * 
  * <p>TODO: Add human behavior between actions and waiting.
  */
-public class SafeCrack implements Strategy {
+public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final RunState<RoguesDenSafeCracker.State> state;
 	private final Health health;
 	private final Backpack backpack;
 	private final SmartClick smartClick;
@@ -43,7 +41,6 @@ public class SafeCrack implements Strategy {
 	@Inject
 	public SafeCrack(
 			@Singleton ClientContext ctx,
-			@Singleton RunState<RoguesDenSafeCracker.State> state,
 			Health health,
 			Backpack backpack,
 			SmartClick smartClick,
@@ -51,7 +48,6 @@ public class SafeCrack implements Strategy {
 			Timer safecrackAnimationTimer,
 			@Singleton InteractSpamClickProvider spamClickProvider) {
 		this.ctx = ctx;
-		this.state = state;
 		this.health = health;
 		this.backpack = backpack;
 		this.smartClick = smartClick;
@@ -63,7 +59,7 @@ public class SafeCrack implements Strategy {
 	}
 
 	@Override
-	public boolean run() {
+	public RoguesDenSafeCracker.State run() {
 		// Bank run?
 		// TODO: Add - Gamble (interact even when inventory is full)
 		// TODO: Add - Eat food to open inventory space
@@ -73,15 +69,13 @@ public class SafeCrack implements Strategy {
 			backpack.newBankAt();
 			// TODO: Move this somewhere more... appropriate.
 			safeLogic.newSafe();
-			state.update(RoguesDenSafeCracker.State.BANK_WALK);
-			return true;
+			return RoguesDenSafeCracker.State.BANK_WALK;
 		}
 		
 		// Health low?
 		if (ctx.combatBar.health() < health.eatAt()) {
 			health.newEatAt();
-			state.update(RoguesDenSafeCracker.State.SAFE_EAT);
-			return true;
+			return RoguesDenSafeCracker.State.SAFE_EAT;
 		}
 		
 		// Interact with safe
@@ -102,7 +96,7 @@ public class SafeCrack implements Strategy {
 			
 			// Already cracked safe? Other issues?
 			if (safeGameObject == null || !safeGameObject.valid()) {
-				return false;
+				return null;
 			}
 			
 			// In view
@@ -126,8 +120,7 @@ public class SafeCrack implements Strategy {
 		// Safety check
 		if (ctx.movement.destination() != Tile.NIL
 				&& ctx.players.local().tile().equals(safeGameObject.tile())) {
-			state.update(RoguesDenSafeCracker.State.SAFE_WALK); // Mistakes were made.
-			return false;
+			return RoguesDenSafeCracker.State.SAFE_WALK; // Mistakes were made.
 		}
 		
 		// Waiting for the player to interact
@@ -138,7 +131,7 @@ public class SafeCrack implements Strategy {
 						== RoguesDenSafeCracker.PLAYER_CRACK_ANIMATION;
 			}
 		}, 100, 10)) { // 1000 ms
-			return false;
+			return null;
 		}
 		
 		// Waiting for the player to success or fail
@@ -161,7 +154,7 @@ public class SafeCrack implements Strategy {
 				safecrackAnimationTimer,
 				2000,
 				150)) {
-			return false;
+			return null;
 		}
 		
 		// Wait for safe reset
@@ -171,10 +164,10 @@ public class SafeCrack implements Strategy {
 				return safeGameObject.valid();
 			}
 		}, 300, 7)) { // 2100 ms
-			return false;
+			return null;
 		}
 		
-		return true;
+		return RoguesDenSafeCracker.State.SAFE_CRACK;
 	}
 
 }

@@ -10,33 +10,33 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.FoodLogic;
+import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 
-public class SafeEat implements Strategy {
+public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final RunState<RoguesDenSafeCracker.State> state;
 	private final Settings settings;
 	private final FoodLogic foodLogic;
-	
+
 	@Inject
 	public SafeEat(
 			@Singleton ClientContext ctx,
 			@Singleton RunState<RoguesDenSafeCracker.State> state,
 			@Singleton Settings settings,
+			@Singleton InteractSpamClickProvider spamClickProvider,
 			FoodLogic foodLogic) {
 		this.ctx = ctx;
-		this.state = state;
 		this.settings = settings;
 		this.foodLogic = foodLogic;
 	}
 
 	@Override
-	public boolean run() {
+	public RoguesDenSafeCracker.State run() {
 		// Out of food?
 		if (ctx.backpack.select().id(settings.getFood().id).isEmpty()) {
-			state.update(RoguesDenSafeCracker.State.BANK_WALK);
-			return true;
+			return RoguesDenSafeCracker.State.BANK_WALK;
 		}
-		
+
+		// TODO: Add spam click
 		int eatCount = foodLogic.numberToEat();
 		while (!ctx.backpack.select().id(settings.getFood().id).isEmpty()
 				&& eatCount-- > 0) {
@@ -46,7 +46,7 @@ public class SafeEat implements Strategy {
 			}
 			food.click();
 		}
-		return true;
+		return RoguesDenSafeCracker.State.SAFE_CRACK;
 	}
 
 }

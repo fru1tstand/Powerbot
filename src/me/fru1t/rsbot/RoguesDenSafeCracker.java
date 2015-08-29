@@ -88,8 +88,8 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	}
 
 	@Override
-	protected Map<State, Class<? extends Strategy>> getActionMap() {
-		Map<State, Class<? extends Strategy>> stateMap = new HashMap<>();
+	protected Map<State, Class<? extends Strategy<State>>> getActionMap() {
+		Map<State, Class<? extends Strategy<State>>> stateMap = new HashMap<>();
 		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
 		stateMap.put(State.SAFE_EAT, SafeEat.class);
 		stateMap.put(State.BANK_WALK, BankWalk.class);

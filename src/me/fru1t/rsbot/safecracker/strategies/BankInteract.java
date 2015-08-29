@@ -9,34 +9,30 @@ import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
 import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 
-public class BankInteract implements Strategy {
+public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final RunState<RoguesDenSafeCracker.State> state;
 	private final Settings settings;
 	private final SpamClick spamClick;
 	private final DepositInventoryButton depositInventoryButton;
-	
+
 	public BankInteract(
 			ClientContext ctx,
-			RunState<RoguesDenSafeCracker.State> state,
 			Settings settings,
 			InteractSpamClickProvider spamClickProvider,
 			DepositInventoryButton depositInventoryButton) {
 		this.ctx = ctx;
-		this.state = state;
 		this.settings = settings;
 		this.spamClick = spamClickProvider.get();
 		this.depositInventoryButton = depositInventoryButton;
 	}
-	
+
 	@Override
-	public boolean run() {
+	public RoguesDenSafeCracker.State run() {
 		// Deposit
 		if (depositInventoryButton.shouldClick()) {
 			// Deposit using dep inv button
@@ -54,7 +50,7 @@ public class BankInteract implements Strategy {
 				backpackSet.add(ctx.backpack.poll().id());
 			}
 		}
-		
+
 		// TODO: Possibly not wait for this?
 		if (Condition.wait(new Callable<Boolean>() {
 				@Override
@@ -65,9 +61,9 @@ public class BankInteract implements Strategy {
 									Settings.BankStyle.PRESET_2);
 				}
 			}, 150)) {
-			return false;
+			return null;
 		}
-		
+
 		// TODO: Extract to another action
 		// Withdraw
 		if (settings.isBankStyle(Settings.BankStyle.PRESET_1, Settings.BankStyle.PRESET_2)) {
@@ -85,9 +81,7 @@ public class BankInteract implements Strategy {
 			// TODO: Add possbility of waiting for food to get into inventory
 			ctx.bank.withdraw(settings.getFood().id, settings.getFoodQuantity());
 		}
-		
-		state.update(RoguesDenSafeCracker.State.SAFE_WALK);
-		return true;
-	}
 
+		return RoguesDenSafeCracker.State.SAFE_WALK;
+	}
 }

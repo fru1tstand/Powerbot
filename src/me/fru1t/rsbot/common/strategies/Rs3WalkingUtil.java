@@ -13,25 +13,24 @@ import me.fru1t.annotations.Inject;
 import me.fru1t.annotations.Singleton;
 import me.fru1t.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
-import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.strategies.logic.SpamClick;
 import me.fru1t.rsbot.common.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
 
 /**
  * Defines a generic Rs3Walking algorithm.
- * 
+ *
  * <p> TODO: Figure out if {@link TilePath#traverse()} is good enough. Maybe add traversing
  * algorithms such as:
  * "straight shot" - the player only clicks in one locations on the
  * minimap producing a straight path towards the destination, and corrects for error when the
  * destination is on the minimap.
- * 
+ *
  * <p> TODO: Add distance-based interaction alongside time based.
  */
-public class Rs3Walking implements Strategy {
+public class Rs3WalkingUtil {
 	protected enum InteractionAmount { CONSTANT, RANDOM, GAUSS }
-	
+
 	/**
 	 * WalkingLogic contains the methods that provide delay between clicks to the next location
 	 * when walking.
@@ -42,20 +41,20 @@ public class Rs3Walking implements Strategy {
 		private static final int CONSTANT_THRESHOLD =  5;
 		private static final int RANDOM_THRESHOLD = 45;
 		// private static final int GUASS_THRESHOLD = 100;
-		
+
 		// General
 		private static final int ABSOLUTE_MIN_DELAY = 100;
 		private static final int ABSOLUTE_MAX_DELAY = 2000;
-		
+
 		// Gauss
 		private static final double GAUSS_MIN_VARIANCE = 0.8;
 		private static final double GAUSS_MAX_VARIANCE = 7;
-		
+
 		private final Timer timer;
 		private final InteractionAmount interactionAmount;
 		private int gaussMean;
 		private double gaussStdev;
-		
+
 		@Inject
 		private WalkingLogic(Timer timer) {
 			this.timer = timer;
@@ -68,7 +67,7 @@ public class Rs3Walking implements Strategy {
 				interactionAmount = InteractionAmount.GAUSS;
 			}
 		}
-		
+
 		/**
 		 * Resets the timer according to what logic is enabled. This should be called every time
 		 * the run method from walking is called.
@@ -89,7 +88,7 @@ public class Rs3Walking implements Strategy {
 				break;
 			}
 		}
-		
+
 		/**
 		 * @return Returns if the player should interact with the walking path.
 		 */
@@ -103,7 +102,7 @@ public class Rs3Walking implements Strategy {
 				case RANDOM:
 					timer.set(Random.nextInt(ABSOLUTE_MIN_DELAY, ABSOLUTE_MAX_DELAY));
 					break;
-					
+
 				case GAUSS:
 				default:
 					timer.set(Random.nextSkewedGaussian(
@@ -117,7 +116,7 @@ public class Rs3Walking implements Strategy {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * WalkingSpamClick contains the settings for spam clicking while walking.
 	 */
@@ -139,9 +138,9 @@ public class Rs3Walking implements Strategy {
 		private static final int DELAY_MEAN_MAX = 200;
 		private static final double DELAY_VARIANCE_MIN = 0.5;
 		private static final double DELAY_VARIANCE_MAX = 4;
-		
+
 		private final SpamClick spamClickInstance;
-		
+
 		@Inject
 		private WalkingSpamClick(SpamClick.Factory spamClickFactory) {
 			this.spamClickInstance = spamClickFactory.create(
@@ -153,12 +152,12 @@ public class Rs3Walking implements Strategy {
 					Tuple2.of(DELAY_MEAN_MIN, DELAY_MEAN_MAX),
 					Tuple2.of(DELAY_VARIANCE_MIN, DELAY_VARIANCE_MAX));
 		}
-		
+
 		private SpamClick get() {
 			return spamClickInstance;
 		}
 	}
-	
+
 	/**
 	 * Creates Rs3Walking instances.
 	 */
@@ -166,7 +165,7 @@ public class Rs3Walking implements Strategy {
 		private final ClientContext ctx;
 		private final WalkingSpamClick walkingSpamClick;
 		private final WalkingLogic walkingLogic;
-		
+
 		@Inject
 		public Factory(
 				@Singleton ClientContext ctx,
@@ -176,9 +175,12 @@ public class Rs3Walking implements Strategy {
 			this.walkingSpamClick = walkingSpamClick;
 			this.walkingLogic = walkingLogic;
 		}
-		
-		public Rs3Walking create(Area destination, Tile[] fullPath, int randomizationTolerance) {
-			return new Rs3Walking(
+
+		public Rs3WalkingUtil create(
+				Area destination,
+				Tile[] fullPath,
+				int randomizationTolerance) {
+			return new Rs3WalkingUtil(
 					ctx,
 					walkingSpamClick,
 					walkingLogic,
@@ -187,9 +189,9 @@ public class Rs3Walking implements Strategy {
 					randomizationTolerance);
 		}
 	}
-	
+
 	private static final int CLOSE_ENOUGH_DISTANCE = 2;
-	
+
 	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
 	private final SpamClick walkingSpamClick;
@@ -197,8 +199,8 @@ public class Rs3Walking implements Strategy {
 	private final Tile[] fullPath;
 	private final Area destination;
 	private final int randomizationTolerance;
-	
-	private Rs3Walking(
+
+	private Rs3WalkingUtil(
 			@Singleton ClientContext ctx,
 			@Singleton WalkingSpamClick walkingSpamClick,
 			@Singleton WalkingLogic walkingLogic,
@@ -214,8 +216,13 @@ public class Rs3Walking implements Strategy {
 		this.randomizationTolerance = randomizationTolerance;
 	}
 
-	@Override
-	public boolean run() {
+	/**
+	 * Performs the entire walking interaction until the player reaches the destination area or
+	 * some failure occurs.
+	 *
+	 * @return True if the player has reached the destination. Otherwise, false for any failure.
+	 */
+	public boolean walk() {
 		TilePath tilePath = ctx
 				.movement
 				.newTilePath(fullPath)
@@ -235,7 +242,7 @@ public class Rs3Walking implements Strategy {
 					Condition.sleep(walkingSpamClick.getDelay());
 				}
 			}
-			
+
 			// Block until we're moving
 			if (!Condition.wait(new Callable<Boolean>() {
 				@Override
@@ -244,12 +251,12 @@ public class Rs3Walking implements Strategy {
 				}
 			}, 150))
 				return false;
-			
+
 			// We're slow and don't react to things instantaneously. Also, this adds some variance
 			// to the InteractionAmount.Constant interact model.
 			Condition.sleep(Random.nextInt(50, 200));
 		}
-		
+
 		return true;
 	}
 }

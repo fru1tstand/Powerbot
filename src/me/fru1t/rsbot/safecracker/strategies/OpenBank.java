@@ -10,9 +10,9 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.strategies.logic.SpamClick;
-import me.fru1t.rsbot.common.util.Condition;
-import me.fru1t.rsbot.common.util.Random;
+import me.fru1t.rsbot.common.framework.util.Condition;
+import me.fru1t.rsbot.common.framework.util.Random;
+import me.fru1t.rsbot.common.strategies.SpamClickUtil;
 import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 import me.fru1t.rsbot.safecracker.strategies.logic.TurnToBanker;
 
@@ -23,7 +23,7 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 	private static final int MIN_WAIT_TIME = 1200;
 
 	private final ClientContext ctx;
-	private final SpamClick spamClick;
+	private final SpamClickUtil spamClick;
 	private final TurnToBanker turnToBanker;
 	private final Timer bankOpenTimer;
 

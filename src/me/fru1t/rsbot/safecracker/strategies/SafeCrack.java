@@ -11,8 +11,8 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.strategies.logic.SpamClick;
-import me.fru1t.rsbot.common.util.Condition;
+import me.fru1t.rsbot.common.framework.util.Condition;
+import me.fru1t.rsbot.common.strategies.SpamClickUtil;
 import me.fru1t.rsbot.safecracker.strategies.logic.Backpack;
 import me.fru1t.rsbot.safecracker.strategies.logic.Health;
 import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
@@ -28,7 +28,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
  */
 public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final SpamClick spamClick;
+	private final SpamClickUtil spamClick;
 	private final Health health;
 	private final Backpack backpack;
 	private final SafeLogic safeLogic;
@@ -93,7 +93,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		}
 
 		// Interact with safe
-		spamClick.interact(new SpamClick.Action() {
+		spamClick.interact(new SpamClickUtil.Action() {
 			@Override
 			public void interact() {
 				wallsafeGameObject.click();

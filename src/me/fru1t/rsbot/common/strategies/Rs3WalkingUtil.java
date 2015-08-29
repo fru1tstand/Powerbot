@@ -13,9 +13,8 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
-import me.fru1t.rsbot.common.strategies.logic.SpamClick;
-import me.fru1t.rsbot.common.util.Condition;
-import me.fru1t.rsbot.common.util.Random;
+import me.fru1t.rsbot.common.framework.util.Condition;
+import me.fru1t.rsbot.common.framework.util.Random;
 
 /**
  * Defines a generic Rs3Walking algorithm.
@@ -139,10 +138,10 @@ public class Rs3WalkingUtil {
 		private static final double DELAY_VARIANCE_MIN = 0.5;
 		private static final double DELAY_VARIANCE_MAX = 4;
 
-		private final SpamClick spamClickInstance;
+		private final SpamClickUtil spamClickInstance;
 
 		@Inject
-		private WalkingSpamClick(SpamClick.Factory spamClickFactory) {
+		private WalkingSpamClick(SpamClickUtil.Factory spamClickFactory) {
 			this.spamClickInstance = spamClickFactory.create(
 					IS_ENABLED_PROBABILITY,
 					DELAY_IS_RANDOM_PROBABILITY,
@@ -153,7 +152,7 @@ public class Rs3WalkingUtil {
 					Tuple2.of(DELAY_VARIANCE_MIN, DELAY_VARIANCE_MAX));
 		}
 
-		private SpamClick get() {
+		private SpamClickUtil get() {
 			return spamClickInstance;
 		}
 	}
@@ -194,7 +193,7 @@ public class Rs3WalkingUtil {
 
 	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
-	private final SpamClick walkingSpamClick;
+	private final SpamClickUtil walkingSpamClick;
 	private final WalkingLogic walkingLogic;
 	private final Tile[] fullPath;
 	private final Area destination;

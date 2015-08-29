@@ -3,7 +3,7 @@ package me.fru1t.rsbot.safecracker.strategies.logic;
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
-import me.fru1t.rsbot.common.strategies.logic.SpamClick;
+import me.fru1t.rsbot.common.strategies.SpamClickUtil;
 
 @Singleton
 public class InteractSpamClickProvider {
@@ -24,10 +24,10 @@ public class InteractSpamClickProvider {
 	private static final double DELAY_VARIANCE_MIN = 0.5;
 	private static final double DELAY_VARIANCE_MAX = 4;
 
-	private final SpamClick spamClickInstance;
+	private final SpamClickUtil spamClickInstance;
 	
 	@Inject
-	public InteractSpamClickProvider(SpamClick.Factory spamClickFactory) {
+	public InteractSpamClickProvider(SpamClickUtil.Factory spamClickFactory) {
 		this.spamClickInstance = spamClickFactory.create(
 				IS_ENABLED_PROBABILITY,
 				DELAY_IS_RANDOM_PROBABILITY,
@@ -41,7 +41,7 @@ public class InteractSpamClickProvider {
 	/**
 	 * @return The instance of SpamClick stored.
 	 */
-	public SpamClick get() {
+	public SpamClickUtil get() {
 		return spamClickInstance;
 	}
 }

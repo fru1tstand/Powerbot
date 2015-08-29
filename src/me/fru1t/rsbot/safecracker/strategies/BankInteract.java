@@ -11,7 +11,7 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.strategies.logic.SpamClick;
+import me.fru1t.rsbot.common.strategies.SpamClickUtil;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
 import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
@@ -19,7 +19,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
 	private final Settings settings;
-	private final SpamClick spamClick;
+	private final SpamClickUtil spamClick;
 	private final DepositInventoryButton depositInventoryButton;
 
 	@Inject
@@ -39,7 +39,7 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 		// Deposit
 		if (depositInventoryButton.shouldClick()) {
 			// Deposit using dep inv button
-			spamClick.interact(new SpamClick.Action() {
+			spamClick.interact(new SpamClickUtil.Action() {
 				@Override
 				public void interact() {
 					ctx.bank.depositInventory();
@@ -70,7 +70,7 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 		// TODO: Extract to another action
 		// Withdraw
 		if (settings.isBankStyle(Settings.BankStyle.PRESET_1, Settings.BankStyle.PRESET_2)) {
-			spamClick.interact(new SpamClick.Action() {
+			spamClick.interact(new SpamClickUtil.Action() {
 				@Override
 				public void interact() {
 					if (settings.isBankStyle(Settings.BankStyle.PRESET_1)) {

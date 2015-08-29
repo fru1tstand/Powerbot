@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.strategies.logic;
+package me.fru1t.rsbot.common.strategies;
 
 import org.powerbot.script.ClientContext;
 
@@ -7,7 +7,7 @@ import me.fru1t.common.annotations.Nullable;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
-import me.fru1t.rsbot.common.util.Random;
+import me.fru1t.rsbot.common.framework.util.Random;
 
 /**
  * The most impatient people will click more than 1 time. Someone sporadically
@@ -21,7 +21,7 @@ import me.fru1t.rsbot.common.util.Random;
  * mean.
  */
 // TODO: Convert to singleton util.
-public class SpamClick {
+public class SpamClickUtil {
 	/**
 	 * Interface that defines an action to spam click.
 	 */
@@ -63,7 +63,7 @@ public class SpamClick {
 		 * can be nulled if the delayCountIsRandomProbability is 100.
 		 * @return A new SpamClick instance with the given parameters.
 		 */
-		public SpamClick create(
+		public SpamClickUtil create(
 				int clickCountIsRandomProbability,
 				int delayIsRandomProbability,
 				@Nullable Integer varianceIsFocusDependentProbability,
@@ -84,7 +84,7 @@ public class SpamClick {
 				throw new RuntimeException("Delay variance must be defined if variance is not "
 						+ "gauranteed to be random.");
 			}
-			return new SpamClick(
+			return new SpamClickUtil(
 					ctx,
 					persona,
 					Random.roll(delayIsRandomProbability),
@@ -110,7 +110,7 @@ public class SpamClick {
 	private final int delayMean;
 	private int interactProbability;
 
-	private SpamClick(
+	private SpamClickUtil(
 			ClientContext<?> ctx,
 			Persona persona,
 			boolean isDelayRandom,

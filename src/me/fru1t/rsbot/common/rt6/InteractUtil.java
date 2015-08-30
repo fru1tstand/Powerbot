@@ -1,6 +1,6 @@
 package me.fru1t.rsbot.common.rt6;
 
-import org.powerbot.script.ClientContext;
+import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Interactive;
 
 import me.fru1t.common.annotations.Inject;
@@ -39,7 +39,7 @@ public class InteractUtil {
 	private static final Tuple2<Double, Double> DELAY_VARIANCE = Tuple2.of(0.5d, 4d);
 
 	private final Persona persona;
-	private final ClientContext<?> ctx;
+	private final ClientContext ctx;
 
 	private final boolean isEnabled;
 	private final boolean isDelayRandom;
@@ -51,7 +51,7 @@ public class InteractUtil {
 
 	@Inject
 	public InteractUtil(
-			@Singleton ClientContext<?> ctx,
+			@Singleton ClientContext ctx,
 			Persona persona) {
 		this.ctx = ctx;
 		this.persona = persona;
@@ -68,9 +68,18 @@ public class InteractUtil {
 
 	/**
 	 * Left clicks on the given interactive object with a human-like interaction.
+	 *
+	 * <p> Warning: It's the caller's responsibility to have the object on screen.
+	 *
 	 * @param interactive
+	 * @return Returns true if no errors occurred, but does not guarantee that the interaction
+	 * completed successfully. Otherwise, false.
 	 */
-	public void click(Interactive interactive) {
+	public boolean click(Interactive interactive) {
+		if (!interactive.inViewport()) {
+			return false;
+		}
+
 		int clicks = isEnabled ? getClicks() : 1;
 		boolean isFirstHover = true;
 		while (clicks-- > 0) {
@@ -84,6 +93,7 @@ public class InteractUtil {
 				Condition.sleep(getDelay());
 			}
 		}
+		return true;
 	}
 
 	/**

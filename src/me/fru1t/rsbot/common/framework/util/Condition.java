@@ -2,12 +2,13 @@ package me.fru1t.rsbot.common.framework.util;
 
 import java.util.concurrent.Callable;
 
+import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
 
 public class Condition extends org.powerbot.script.Condition {
 	/**
 	 * Conditionally wait until either the given timer expires, or the condition has completed.
-	 * 
+	 *
 	 * @param condition The condition to wait for.
 	 * @param timerCondition The condition that the timer should be reset.
 	 * @param timer The timing timer.
@@ -36,5 +37,16 @@ public class Condition extends org.powerbot.script.Condition {
 			sleep(pollFrequency);
 		}
 		return false;
+	}
+
+	/**
+	 * Wait until either the condition is true or a random time within the given range has elapsed.
+	 *
+	 * @param condition
+	 * @param waitRange
+	 * @return True if the condition returned true. Otherwise, false.
+	 */
+	public static boolean wait(Callable<Boolean> condition, Tuple2<Integer, Integer> waitRange) {
+		return wait(condition, Random.nextInt(waitRange));
 	}
 }

@@ -15,7 +15,6 @@ import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.strategies.SpamClickUtil;
 import me.fru1t.rsbot.safecracker.strategies.logic.Backpack;
 import me.fru1t.rsbot.safecracker.strategies.logic.Health;
-import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
 
 /**
@@ -28,7 +27,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
  */
 public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final SpamClickUtil spamClick;
+	private final SpamClickUtil spamClickUtil;
 	private final Health health;
 	private final Backpack backpack;
 	private final SafeLogic safeLogic;
@@ -39,13 +38,13 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	@Inject
 	public SafeCrack(
 			@Singleton ClientContext ctx,
-			@Singleton InteractSpamClickProvider spamClickProvider,
+			@Singleton SpamClickUtil spamClickUtil,
 			Health health,
 			Backpack backpack,
 			SafeLogic safeLogic,
 			Timer safecrackAnimationTimer) {
 		this.ctx = ctx;
-		this.spamClick = spamClickProvider.get();
+		this.spamClickUtil = spamClickUtil;
 		this.health = health;
 		this.backpack = backpack;
 		this.safeLogic = safeLogic;
@@ -93,12 +92,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		}
 
 		// Interact with safe
-		spamClick.interact(new SpamClickUtil.Action() {
-			@Override
-			public void interact() {
-				wallsafeGameObject.click();
-			}
-		});
+		spamClickUtil.click(wallsafeGameObject);
 
 		// Waiting for the player to interact or fail
 		if (!Condition.wait(new Callable<Boolean>() {

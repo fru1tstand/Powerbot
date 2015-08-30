@@ -117,61 +117,20 @@ public class Rs3WalkingUtil {
 	}
 
 	/**
-	 * WalkingSpamClick contains the settings for spam clicking while walking.
-	 */
-	@Singleton
-	private static class WalkingSpamClick {
-		// Enable/disable probabilities
-		private static final int IS_ENABLED_PROBABILITY = 35;
-		private static final int DELAY_IS_RANDOM_PROBABILITY = 25;
-		private static final int VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY = 80;
-
-		// Click constants
-		private static final int CLICKS_MEAN_MIN = 1;
-		private static final int CLICKS_MEAN_MAX = 8;
-		private static final double CLICKS_VARIANCE_MIN = 1;
-		private static final double CLICKS_VARIANCE_MAX = 5;
-
-		// Delay  constants
-		private static final int DELAY_MEAN_MIN = 70;
-		private static final int DELAY_MEAN_MAX = 200;
-		private static final double DELAY_VARIANCE_MIN = 0.5;
-		private static final double DELAY_VARIANCE_MAX = 4;
-
-		private final SpamClickUtil spamClickInstance;
-
-		@Inject
-		private WalkingSpamClick(SpamClickUtil.Factory spamClickFactory) {
-			this.spamClickInstance = spamClickFactory.create(
-					IS_ENABLED_PROBABILITY,
-					DELAY_IS_RANDOM_PROBABILITY,
-					VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY,
-					Tuple2.of(CLICKS_MEAN_MIN, CLICKS_MEAN_MAX),
-					Tuple2.of(CLICKS_VARIANCE_MIN, CLICKS_VARIANCE_MAX),
-					Tuple2.of(DELAY_MEAN_MIN, DELAY_MEAN_MAX),
-					Tuple2.of(DELAY_VARIANCE_MIN, DELAY_VARIANCE_MAX));
-		}
-
-		private SpamClickUtil get() {
-			return spamClickInstance;
-		}
-	}
-
-	/**
 	 * Creates Rs3Walking instances.
 	 */
 	public static class Factory {
 		private final ClientContext ctx;
-		private final WalkingSpamClick walkingSpamClick;
+		private final SpamClickUtil spamClickUtil;
 		private final WalkingLogic walkingLogic;
 
 		@Inject
 		public Factory(
 				@Singleton ClientContext ctx,
-				@Singleton WalkingSpamClick walkingSpamClick,
+				@Singleton SpamClickUtil spamClickUtil,
 				@Singleton WalkingLogic walkingLogic) {
 			this.ctx = ctx;
-			this.walkingSpamClick = walkingSpamClick;
+			this.spamClickUtil = spamClickUtil;
 			this.walkingLogic = walkingLogic;
 		}
 
@@ -181,7 +140,7 @@ public class Rs3WalkingUtil {
 				int randomizationTolerance) {
 			return new Rs3WalkingUtil(
 					ctx,
-					walkingSpamClick,
+					spamClickUtil,
 					walkingLogic,
 					destination,
 					fullPath,
@@ -193,7 +152,7 @@ public class Rs3WalkingUtil {
 
 	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
-	private final SpamClickUtil walkingSpamClick;
+	private final SpamClickUtil spamClickUtil;
 	private final WalkingLogic walkingLogic;
 	private final Tile[] fullPath;
 	private final Area destination;
@@ -201,14 +160,14 @@ public class Rs3WalkingUtil {
 
 	private Rs3WalkingUtil(
 			@Singleton ClientContext ctx,
-			@Singleton WalkingSpamClick walkingSpamClick,
+			@Singleton SpamClickUtil spamClickUtil,
 			@Singleton WalkingLogic walkingLogic,
 			Area destination,
 			Tile[] fullPath,
 			int randomizationTolerance) {
 		traversalOptions = EnumSet.of(TraversalOption.HANDLE_RUN);
 		this.ctx = ctx;
-		this.walkingSpamClick = walkingSpamClick.get();
+		this.spamClickUtil = spamClickUtil;
 		this.walkingLogic = walkingLogic;
 		this.fullPath = fullPath;
 		this.destination = destination;
@@ -234,11 +193,11 @@ public class Rs3WalkingUtil {
 				if (!tilePath.traverse(traversalOptions)) {
 					break;
 				}
-				int spamClicks = walkingSpamClick.getClicks();
+				int spamClicks = spamClickUtil.getClicks();
 				while (spamClicks-- > 1) {
 					// TODO: Add small mouse movement (+- 1/2/3 px per click) or simply #traverse
 					ctx.input.click(true);
-					Condition.sleep(walkingSpamClick.getDelay());
+					Condition.sleep(spamClickUtil.getDelay());
 				}
 			}
 

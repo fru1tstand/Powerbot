@@ -13,7 +13,6 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.framework.util.Random;
 import me.fru1t.rsbot.common.strategies.SpamClickUtil;
-import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 import me.fru1t.rsbot.safecracker.strategies.logic.TurnToBanker;
 
 public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
@@ -23,19 +22,19 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 	private static final int MIN_WAIT_TIME = 1200;
 
 	private final ClientContext ctx;
-	private final SpamClickUtil spamClick;
+	private final SpamClickUtil spamClickUtil;
 	private final TurnToBanker turnToBanker;
 	private final Timer bankOpenTimer;
 
 	@Inject
 	public OpenBank(
 			@Singleton ClientContext ctx,
-			@Singleton InteractSpamClickProvider spamClickProvider,
+			@Singleton SpamClickUtil spamClickUtil,
 			TurnToBanker turnToBanker,
 			Timer bankOpenTimer) {
 		this.ctx = ctx;
 		this.turnToBanker = turnToBanker;
-		this.spamClick = spamClickProvider.get();
+		this.spamClickUtil = spamClickUtil;
 		this.bankOpenTimer = bankOpenTimer;
 	}
 
@@ -57,10 +56,7 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 		// TODO: Sometimes right click to interact
 		// TODO: Add misclicks
 
-		int spamClickCount = spamClick.getClicks();
-		while (spamClickCount-- > 0) {
-			banker.click();
-		}
+		spamClickUtil.click(banker);
 
 		if (!Condition.wait(
 				new Callable<Boolean>() {

@@ -1,12 +1,13 @@
 package me.fru1t.rsbot.common.strategies;
 
 import org.powerbot.script.ClientContext;
+import org.powerbot.script.rt6.Interactive;
 
 import me.fru1t.common.annotations.Inject;
-import me.fru1t.common.annotations.Nullable;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
+import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.framework.util.Random;
 
 /**
@@ -20,118 +21,69 @@ import me.fru1t.rsbot.common.framework.util.Random;
  * time wears on, fatigue may build up reducing both click count and click delay
  * mean.
  */
-// TODO: Convert to singleton util.
+@Singleton
 public class SpamClickUtil {
-	/**
-	 * Interface that defines an action to spam click.
-	 */
-	public static interface Action {
-		public void interact();
-	}
+	// Enable/disable probabilities
+	private static final int IS_ENABLED_PROBABILITY = 25;
+	private static final int CLICK_COUNT_IS_RANDOM_PROBABILITY = 25;
+	private static final int DELAY_IS_RANDOM_PROBABILITY = 50;
+	private static final int VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY = 80;
+	// TODO: Add click count is focus dependent probability.
 
-	/**
-	 * Provides instances of SpamClick.
-	 */
-	public static class Factory {
-		private final Persona persona;
-		private final ClientContext<?> ctx;
+	// Click constants
+	private static final Tuple2<Integer, Integer> CLICKS_MEAN = Tuple2.of(1, 5);
+	private static final Tuple2<Double, Double> CLICKS_VARIANCE = Tuple2.of(1d, 5d);
 
-		@Inject
-		public Factory(
-				@Singleton Persona persona,
-				@Singleton ClientContext<?> ctx) {
-			this.ctx = ctx;
-			this.persona = persona;
-		}
-
-		/**
-		 * Creates a new instance of SpamClick with the given parameters.
-		 *
-		 * @param delayIsRandomProbability The probability that the delay is random instead of
-		 * normally distributed.
-		 * @param clickCountIsRandomProbability The probability that the click count is random
-		 * instead of normally distributed.
-		 * @param varianceIsFocusDependentProbability The probability that the variance given to
-		 * the gaussian function is focus dependent versus random. Nullable if both
-		 * delayIsRandomProbability and clickCountIsRandomProbability are both 100.
-		 * @param clickCountMeanRange The range of means the spam click instance should be able to
-		 * return.
-		 * @param clickCountVarianceRange The range of variance for distribution of click counts to be
-		 * created with. This can be nulled if the clickCountIsRandomProbability is 100.
-		 * @param delayMeanRange The range of means the delay between clicks should be.
-		 * @param delayVarianceRange The range of variances the delay between clicks should be. This
-		 * can be nulled if the delayCountIsRandomProbability is 100.
-		 * @return A new SpamClick instance with the given parameters.
-		 */
-		public SpamClickUtil create(
-				int clickCountIsRandomProbability,
-				int delayIsRandomProbability,
-				@Nullable Integer varianceIsFocusDependentProbability,
-				Tuple2<Integer, Integer> clickCountMeanRange,
-				@Nullable Tuple2<Double, Double> clickCountVarianceRange,
-				Tuple2<Integer, Integer> delayMeanRange,
-				@Nullable Tuple2<Double, Double> delayVarianceRange) {
-			if (varianceIsFocusDependentProbability == null
-					&& (delayIsRandomProbability < 100 || clickCountIsRandomProbability < 100)) {
-				throw new RuntimeException("The probability that variance is focus dependent "
-						+ "must be given if delay or click count randomness is not guaranteed.");
-			}
-			if (clickCountVarianceRange == null && clickCountIsRandomProbability < 100) {
-				throw new RuntimeException("Click count variance must be defined if click count "
-						+ "is not guaranteed to be random.");
-			}
-			if (delayVarianceRange == null && delayIsRandomProbability < 100) {
-				throw new RuntimeException("Delay variance must be defined if variance is not "
-						+ "gauranteed to be random.");
-			}
-			return new SpamClickUtil(
-					ctx,
-					persona,
-					Random.roll(delayIsRandomProbability),
-					Random.roll(clickCountIsRandomProbability),
-					Random.roll(varianceIsFocusDependentProbability),
-					clickCountMeanRange,
-					clickCountVarianceRange,
-					delayMeanRange,
-					delayVarianceRange);
-		}
-	}
+	// Delay  constants
+	private static final Tuple2<Integer, Integer> DELAY_MEAN = Tuple2.of(90, 175);
+	private static final Tuple2<Double, Double> DELAY_VARIANCE = Tuple2.of(0.5d, 4d);
 
 	private final Persona persona;
 	private final ClientContext<?> ctx;
+
+	private final boolean isEnabled;
 	private final boolean isDelayRandom;
 	private final boolean isClickCountRandom;
 	private final boolean isVarianceFocusDependent;
-	private final Tuple2<Integer, Integer> clickCountMeanRange;
-	@Nullable private final Tuple2<Double, Double> clickCountVarianceRange;
-	private final Tuple2<Integer, Integer> delayMeanRange;
-	@Nullable private final Tuple2<Double, Double> delayVarianceRange;
 	private final int clickCountMean;
 	private final int delayMean;
 	private int interactProbability;
 
-	private SpamClickUtil(
-			ClientContext<?> ctx,
-			Persona persona,
-			boolean isDelayRandom,
-			boolean isClickCountRandom,
-			boolean isVarianceFocusDependent,
-			Tuple2<Integer, Integer> clickCountMeanRange,
-			@Nullable Tuple2<Double, Double> clickCountVarianceRange,
-			Tuple2<Integer, Integer> delayMeanRange,
-			@Nullable Tuple2<Double, Double> delayVarianceRange) {
+	@Inject
+	public SpamClickUtil(
+			@Singleton ClientContext<?> ctx,
+			Persona persona) {
 		this.ctx = ctx;
 		this.persona = persona;
-		this.isDelayRandom = isDelayRandom;
-		this.isClickCountRandom = isClickCountRandom;
-		this.isVarianceFocusDependent = isVarianceFocusDependent;
-		this.clickCountMeanRange = clickCountMeanRange;
-		this.clickCountVarianceRange = clickCountVarianceRange;
-		this.delayMeanRange = delayMeanRange;
-		this.delayVarianceRange = delayVarianceRange;
-		this.clickCountMean = Random.nextInt(clickCountMeanRange);
-		this.delayMean = Random.nextInt(delayMeanRange);
+
+		this.isEnabled = Random.roll(IS_ENABLED_PROBABILITY);
+		this.isDelayRandom = Random.roll(DELAY_IS_RANDOM_PROBABILITY);
+		this.isClickCountRandom = Random.roll(CLICK_COUNT_IS_RANDOM_PROBABILITY);
+		this.isVarianceFocusDependent = Random.roll(VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY);
+
+		this.clickCountMean = Random.nextInt(CLICKS_MEAN);
+		this.delayMean = Random.nextInt(DELAY_MEAN);
 		newInteractProbability();
+	}
+
+	/**
+	 * Left clicks on the given interactive object with a human-like interaction.
+	 * @param interactive
+	 */
+	public void click(Interactive interactive) {
+		int clicks = isEnabled ? getClicks() : 1;
+		boolean isFirstHover = true;
+		while (clicks-- > 0) {
+			if (isFirstHover || shouldCorrectMouse()) {
+				isFirstHover = false;
+				interactive.hover();
+			}
+			ctx.input.click(true);
+
+			if (clicks > 0) {
+				Condition.sleep(getDelay());
+			}
+		}
 	}
 
 	/**
@@ -142,7 +94,7 @@ public class SpamClickUtil {
 	public int getClicks() {
 		newInteractProbability();
 		return getConditionalRandomOrGauss(
-				isClickCountRandom, clickCountMean, clickCountMeanRange, clickCountVarianceRange);
+				isClickCountRandom, clickCountMean, CLICKS_MEAN, CLICKS_VARIANCE);
 	}
 
 	/**
@@ -152,44 +104,15 @@ public class SpamClickUtil {
 	 */
 	public int getDelay() {
 		return getConditionalRandomOrGauss(
-				isDelayRandom, delayMean, delayMeanRange, delayVarianceRange);
+				isDelayRandom, delayMean, DELAY_MEAN, DELAY_VARIANCE);
 	}
 
 	/**
 	 * Returns if the player should re-interact with whatever.
 	 * @return If the player should re-interact with whatever.
 	 */
-	public boolean shouldReInteract() {
+	private boolean shouldCorrectMouse() {
 		return Random.roll(interactProbability);
-	}
-
-	/**
-	 * Interacts using the given action using a randomly generated number of clicks that is
-	 * dependent on the current user's persona.
-<<<<<<< HEAD
-	 *
-	 * <p>Implementation note: This would've worked a lot cleaner for the caller if we could use
-	 * lambda statements, but powerbot doesn't like Java 8.
-	 * @param action
-=======
-	 * 
-	 * <p> TODO: Add misclicking
-	 * 
-	 * <p>Implementation note: This would've worked a lot cleaner for the caller if we could use
-	 * lambda statements, but powerbot doesn't like Java 8.
-	 * @param action The single action to perform
->>>>>>> c071e1d8af3678d42105654706135e6a2328ab7a
-	 */
-	public void interact(Action action) {
-		int clicks = getClicks();
-		action.interact();
-		while (clicks-- > 1) {
-			if (shouldReInteract()) {
-				action.interact();
-			} else {
-				ctx.input.click(true);
-			}
-		}
 	}
 
 	private int getConditionalRandomOrGauss(

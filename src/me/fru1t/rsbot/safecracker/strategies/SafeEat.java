@@ -10,7 +10,6 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.FoodLogic;
-import me.fru1t.rsbot.safecracker.strategies.logic.InteractSpamClickProvider;
 
 public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
@@ -22,7 +21,6 @@ public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 			@Singleton ClientContext ctx,
 			@Singleton RunState<RoguesDenSafeCracker.State> state,
 			@Singleton Settings settings,
-			@Singleton InteractSpamClickProvider spamClickProvider,
 			FoodLogic foodLogic) {
 		this.ctx = ctx;
 		this.settings = settings;

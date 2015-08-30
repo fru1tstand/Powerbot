@@ -27,7 +27,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
  */
 public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final MouseUtil spamClickUtil;
+	private final MouseUtil mouseUtil;
 	private final Health health;
 	private final Backpack backpack;
 	private final SafeLogic safeLogic;
@@ -44,7 +44,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 			SafeLogic safeLogic,
 			Timer safecrackAnimationTimer) {
 		this.ctx = ctx;
-		this.spamClickUtil = spamClickUtil;
+		this.mouseUtil = spamClickUtil;
 		this.health = health;
 		this.backpack = backpack;
 		this.safeLogic = safeLogic;
@@ -92,7 +92,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		}
 
 		// Interact with safe
-		spamClickUtil.click(wallsafeGameObject);
+		mouseUtil.click(wallsafeGameObject);
 
 		// Waiting for the player to interact or fail
 		if (!Condition.wait(new Callable<Boolean>() {

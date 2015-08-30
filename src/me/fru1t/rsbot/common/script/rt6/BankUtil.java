@@ -17,14 +17,14 @@ public class BankUtil {
 	private static final Tuple2<Integer, Integer> INTERACT_WAIT_RANGE = Tuple2.of(800, 2200);
 
 	private final ClientContext ctx;
-	private final MouseUtil interactUtil;
+	private final MouseUtil mouseUtil;
 
 	@Inject
 	public BankUtil(
 			@Singleton ClientContext ctx,
 			@Singleton MouseUtil interactUtil) {
 		this.ctx = ctx;
-		this.interactUtil = interactUtil;
+		this.mouseUtil = interactUtil;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class BankUtil {
 			return false;
 		}
 
-		interactUtil.click(component);
+		mouseUtil.click(component);
 		return Condition.wait(condition, INTERACT_WAIT_RANGE);
 	}
 }

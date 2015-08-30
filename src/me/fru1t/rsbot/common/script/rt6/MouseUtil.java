@@ -44,7 +44,7 @@ public class MouseUtil extends me.fru1t.rsbot.common.script.MouseUtil<ClientCont
 			ctx.input.click(true);
 
 			if (clicks > 0) {
-				Condition.sleep(getDelay());
+				Condition.sleep(persona.getNextSpamDelay());
 			}
 		}
 		return true;

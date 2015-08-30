@@ -23,7 +23,6 @@ public class MouseUtil<C extends ClientContext> {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int CLICK_COUNT_IS_RANDOM_PROBABILITY = 25;
-	private static final int DELAY_IS_RANDOM_PROBABILITY = 50;
 	private static final int VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY = 80;
 	// TODO: Add click count is focus dependent probability.
 
@@ -31,30 +30,22 @@ public class MouseUtil<C extends ClientContext> {
 	private static final Tuple2<Integer, Integer> CLICKS_MEAN = Tuple2.of(1, 5);
 	private static final Tuple2<Double, Double> CLICKS_VARIANCE = Tuple2.of(1d, 5d);
 
-	// Delay  constants
-	private static final Tuple2<Integer, Integer> DELAY_MEAN = Tuple2.of(90, 175);
-	private static final Tuple2<Double, Double> DELAY_VARIANCE = Tuple2.of(0.5d, 4d);
-
-	private final Persona persona;
+	protected final Persona persona;
 
 	private final boolean isSpamClickEnabled;
-	private final boolean isDelayRandom;
 	private final boolean isClickCountRandom;
 	private final boolean isVarianceFocusDependent;
 	private final int clickCountMean;
-	private final int delayMean;
 	private int interactProbability;
 
 	protected MouseUtil(Persona persona) {
 		this.persona = persona;
 
 		this.isSpamClickEnabled = Random.roll(IS_ENABLED_PROBABILITY);
-		this.isDelayRandom = Random.roll(DELAY_IS_RANDOM_PROBABILITY);
 		this.isClickCountRandom = Random.roll(CLICK_COUNT_IS_RANDOM_PROBABILITY);
 		this.isVarianceFocusDependent = Random.roll(VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY);
 
 		this.clickCountMean = Random.nextInt(CLICKS_MEAN);
-		this.delayMean = Random.nextInt(DELAY_MEAN);
 		newInteractProbability();
 	}
 
@@ -65,22 +56,20 @@ public class MouseUtil<C extends ClientContext> {
 	 */
 	public int getClicks() {
 		newInteractProbability();
-		return isSpamClickEnabled
-				? getConditionalRandomOrGauss(
-						isClickCountRandom, clickCountMean, CLICKS_MEAN, CLICKS_VARIANCE)
-				: 1;
-	}
+		if (!isSpamClickEnabled) {
+			return 1;
+		}
 
-	/**
-	 * Returns the delay between each click on an interact event. This should be called every click
-	 * event to determine delay.
-	 * @return The delay, in milliseconds, between each click.
-	 */
-	public int getDelay() {
-		return isSpamClickEnabled
-				? getConditionalRandomOrGauss(
-						isDelayRandom, delayMean, DELAY_MEAN, DELAY_VARIANCE)
-				: 1;
+		if (isClickCountRandom) {
+			return Random.nextInt(CLICKS_MEAN);
+		}
+
+		return Random.nextSkewedGaussian(
+				CLICKS_MEAN,
+				clickCountMean,
+				isVarianceFocusDependent
+						? persona.getFocusScaledDouble(null, CLICKS_VARIANCE)
+						: Random.nextDouble(CLICKS_VARIANCE));
 	}
 
 	/**
@@ -89,21 +78,6 @@ public class MouseUtil<C extends ClientContext> {
 	 */
 	public boolean shouldCorrectMouse() {
 		return Random.roll(interactProbability);
-	}
-
-	private int getConditionalRandomOrGauss(
-			boolean isRandom,
-			int mean,
-			Tuple2<Integer, Integer> meanRange,
-			Tuple2<Double, Double> varianceRange) {
-		return isRandom
-				? Random.nextInt(meanRange)
-				: Random.nextSkewedGaussian(
-						meanRange,
-						mean,
-						isVarianceFocusDependent
-								? persona.getFocusScaledDouble(null, varianceRange)
-								: Random.nextDouble(varianceRange));
 	}
 
 	private void newInteractProbability() {

@@ -13,9 +13,9 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
+import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.framework.util.Random;
-import me.fru1t.rsbot.common.script.MouseUtil;
 
 /**
  * Defines a generic Rs3Walking algorithm.
@@ -122,17 +122,20 @@ public class WalkUtil {
 	 */
 	public static class Factory {
 		private final ClientContext ctx;
-		private final MouseUtil spamClickUtil;
+		private final MouseUtil mouseUtil;
 		private final WalkingLogic walkingLogic;
+		private final Persona persona;
 
 		@Inject
 		public Factory(
 				@Singleton ClientContext ctx,
-				@Singleton MouseUtil spamClickUtil,
-				@Singleton WalkingLogic walkingLogic) {
+				@Singleton MouseUtil mouseUtil,
+				@Singleton WalkingLogic walkingLogic,
+				@Singleton Persona persona) {
 			this.ctx = ctx;
-			this.spamClickUtil = spamClickUtil;
+			this.mouseUtil = mouseUtil;
 			this.walkingLogic = walkingLogic;
+			this.persona = persona;
 		}
 
 		public WalkUtil create(
@@ -141,8 +144,9 @@ public class WalkUtil {
 				int randomizationTolerance) {
 			return new WalkUtil(
 					ctx,
-					spamClickUtil,
+					mouseUtil,
 					walkingLogic,
+					persona,
 					destination,
 					fullPath,
 					randomizationTolerance);
@@ -153,26 +157,29 @@ public class WalkUtil {
 
 	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
-	private final MouseUtil spamClickUtil;
+	private final MouseUtil mouseUtil;
 	private final WalkingLogic walkingLogic;
 	private final Tile[] fullPath;
 	private final Area destination;
 	private final int randomizationTolerance;
+	private final Persona persona;
 
 	private WalkUtil(
 			@Singleton ClientContext ctx,
-			@Singleton MouseUtil spamClickUtil,
+			@Singleton MouseUtil mouseUtil,
 			@Singleton WalkingLogic walkingLogic,
+			@Singleton Persona persona,
 			Area destination,
 			Tile[] fullPath,
 			int randomizationTolerance) {
 		traversalOptions = EnumSet.of(TraversalOption.HANDLE_RUN);
 		this.ctx = ctx;
-		this.spamClickUtil = spamClickUtil;
+		this.mouseUtil = mouseUtil;
 		this.walkingLogic = walkingLogic;
 		this.fullPath = fullPath;
 		this.destination = destination;
 		this.randomizationTolerance = randomizationTolerance;
+		this.persona = persona;
 	}
 
 	/**
@@ -194,11 +201,11 @@ public class WalkUtil {
 				if (!tilePath.traverse(traversalOptions)) {
 					break;
 				}
-				int spamClicks = spamClickUtil.getClicks();
+				int spamClicks = mouseUtil.getClicks();
 				while (spamClicks-- > 1) {
 					// TODO: Add small mouse movement (+- 1/2/3 px per click) or simply #traverse
 					ctx.input.click(true);
-					Condition.sleep(spamClickUtil.getDelay());
+					Condition.sleep(persona.getNextSpamDelay());
 				}
 			}
 

@@ -14,6 +14,7 @@ import me.fru1t.rsbot.common.framework.util.Condition;
 /**
  * Provides utility methods for interacting with the RS3 backpack.
  */
+@Singleton
 public class BackpackUtil {
 	private final ClientContext ctx;
 	private final MouseUtil mouseUtil;

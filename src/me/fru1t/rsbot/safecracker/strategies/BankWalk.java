@@ -3,6 +3,7 @@ package me.fru1t.rsbot.safecracker.strategies;
 import org.powerbot.script.Area;
 import org.powerbot.script.Tile;
 
+import me.fru1t.common.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.script.rt6.WalkUtil;
@@ -20,6 +21,7 @@ public class BankWalk implements Strategy<RoguesDenSafeCracker.State> {
 
 	private final WalkUtil walkUtil;
 
+	@Inject
 	public BankWalk(WalkUtil.Factory walkingFactory) {
 		walkUtil = walkingFactory.create(destinationArea, fullPath, RANDOMIZATION_TOLERANCE);
 	}

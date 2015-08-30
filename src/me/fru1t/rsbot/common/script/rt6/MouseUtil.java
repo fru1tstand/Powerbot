@@ -8,6 +8,7 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.framework.util.Condition;
 
+@Singleton
 public class MouseUtil extends me.fru1t.rsbot.common.script.MouseUtil<ClientContext> {
 	private final ClientContext ctx;
 

@@ -38,7 +38,7 @@ public class MouseUtil<C extends ClientContext> {
 	private final int clickCountMean;
 	private int interactProbability;
 
-	protected MouseUtil(Persona persona) {
+	protected MouseUtil(@Singleton Persona persona) {
 		this.persona = persona;
 
 		this.isSpamClickEnabled = Random.roll(IS_ENABLED_PROBABILITY);

@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.rt6;
+package me.fru1t.rsbot.common.script.rt6;
 
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
@@ -15,6 +15,7 @@ import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.framework.util.Random;
+import me.fru1t.rsbot.common.script.MouseUtil;
 
 /**
  * Defines a generic Rs3Walking algorithm.
@@ -121,13 +122,13 @@ public class WalkUtil {
 	 */
 	public static class Factory {
 		private final ClientContext ctx;
-		private final InteractUtil spamClickUtil;
+		private final MouseUtil spamClickUtil;
 		private final WalkingLogic walkingLogic;
 
 		@Inject
 		public Factory(
 				@Singleton ClientContext ctx,
-				@Singleton InteractUtil spamClickUtil,
+				@Singleton MouseUtil spamClickUtil,
 				@Singleton WalkingLogic walkingLogic) {
 			this.ctx = ctx;
 			this.spamClickUtil = spamClickUtil;
@@ -152,7 +153,7 @@ public class WalkUtil {
 
 	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
-	private final InteractUtil spamClickUtil;
+	private final MouseUtil spamClickUtil;
 	private final WalkingLogic walkingLogic;
 	private final Tile[] fullPath;
 	private final Area destination;
@@ -160,7 +161,7 @@ public class WalkUtil {
 
 	private WalkUtil(
 			@Singleton ClientContext ctx,
-			@Singleton InteractUtil spamClickUtil,
+			@Singleton MouseUtil spamClickUtil,
 			@Singleton WalkingLogic walkingLogic,
 			Area destination,
 			Tile[] fullPath,

@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.rt6;
+package me.fru1t.rsbot.common.script;
 
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Interactive;
@@ -22,7 +22,7 @@ import me.fru1t.rsbot.common.framework.util.Random;
  * mean.
  */
 @Singleton
-public class InteractUtil {
+public class MouseUtil {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int CLICK_COUNT_IS_RANDOM_PROBABILITY = 25;
@@ -50,7 +50,7 @@ public class InteractUtil {
 	private int interactProbability;
 
 	@Inject
-	public InteractUtil(
+	public MouseUtil(
 			@Singleton ClientContext ctx,
 			Persona persona) {
 		this.ctx = ctx;
@@ -121,7 +121,7 @@ public class InteractUtil {
 	 * Returns if the player should re-interact with whatever.
 	 * @return If the player should re-interact with whatever.
 	 */
-	private boolean shouldCorrectMouse() {
+	public boolean shouldCorrectMouse() {
 		return Random.roll(interactProbability);
 	}
 

@@ -5,7 +5,7 @@ import org.powerbot.script.Tile;
 
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.rt6.WalkUtil;
+import me.fru1t.rsbot.common.script.rt6.WalkUtil;
 
 /**
  * TODO: Add bank interact while running

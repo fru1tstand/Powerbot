@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.rt6;
+package me.fru1t.rsbot.common.script.rt6;
 
 import java.util.concurrent.Callable;
 
@@ -10,6 +10,7 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.util.Condition;
+import me.fru1t.rsbot.common.script.MouseUtil;
 
 // TODO: Add impatient return (interacts will return before validating)
 @Singleton
@@ -17,12 +18,12 @@ public class BankUtil {
 	private static final Tuple2<Integer, Integer> INTERACT_WAIT_RANGE = Tuple2.of(800, 2200);
 
 	private final ClientContext ctx;
-	private final InteractUtil interactUtil;
+	private final MouseUtil interactUtil;
 
 	@Inject
 	public BankUtil(
 			@Singleton ClientContext ctx,
-			@Singleton InteractUtil interactUtil) {
+			@Singleton MouseUtil interactUtil) {
 		this.ctx = ctx;
 		this.interactUtil = interactUtil;
 	}

@@ -7,7 +7,6 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.FoodLogic;
 
@@ -19,7 +18,6 @@ public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 	@Inject
 	public SafeEat(
 			@Singleton ClientContext ctx,
-			@Singleton RunState<RoguesDenSafeCracker.State> state,
 			@Singleton Settings settings,
 			FoodLogic foodLogic) {
 		this.ctx = ctx;

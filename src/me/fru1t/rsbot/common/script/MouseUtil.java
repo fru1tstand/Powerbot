@@ -1,13 +1,10 @@
 package me.fru1t.rsbot.common.script;
 
 import org.powerbot.script.rt6.ClientContext;
-import org.powerbot.script.rt6.Interactive;
 
-import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
-import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.framework.util.Random;
 
 /**
@@ -22,7 +19,7 @@ import me.fru1t.rsbot.common.framework.util.Random;
  * mean.
  */
 @Singleton
-public class MouseUtil {
+public class MouseUtil<C extends ClientContext> {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int CLICK_COUNT_IS_RANDOM_PROBABILITY = 25;
@@ -39,9 +36,8 @@ public class MouseUtil {
 	private static final Tuple2<Double, Double> DELAY_VARIANCE = Tuple2.of(0.5d, 4d);
 
 	private final Persona persona;
-	private final ClientContext ctx;
 
-	private final boolean isEnabled;
+	private final boolean isSpamClickEnabled;
 	private final boolean isDelayRandom;
 	private final boolean isClickCountRandom;
 	private final boolean isVarianceFocusDependent;
@@ -49,14 +45,10 @@ public class MouseUtil {
 	private final int delayMean;
 	private int interactProbability;
 
-	@Inject
-	public MouseUtil(
-			@Singleton ClientContext ctx,
-			Persona persona) {
-		this.ctx = ctx;
+	protected MouseUtil(Persona persona) {
 		this.persona = persona;
 
-		this.isEnabled = Random.roll(IS_ENABLED_PROBABILITY);
+		this.isSpamClickEnabled = Random.roll(IS_ENABLED_PROBABILITY);
 		this.isDelayRandom = Random.roll(DELAY_IS_RANDOM_PROBABILITY);
 		this.isClickCountRandom = Random.roll(CLICK_COUNT_IS_RANDOM_PROBABILITY);
 		this.isVarianceFocusDependent = Random.roll(VARIANCE_IS_FOCUS_DEPENDENT_PROBABILITY);
@@ -67,44 +59,16 @@ public class MouseUtil {
 	}
 
 	/**
-	 * Left clicks on the given interactive object with a human-like interaction.
-	 *
-	 * <p> Warning: It's the caller's responsibility to have the object on screen.
-	 *
-	 * @param interactive
-	 * @return Returns true if no errors occurred, but does not guarantee that the interaction
-	 * completed successfully. Otherwise, false.
-	 */
-	public boolean click(Interactive interactive) {
-		if (!interactive.inViewport()) {
-			return false;
-		}
-
-		int clicks = isEnabled ? getClicks() : 1;
-		boolean isFirstHover = true;
-		while (clicks-- > 0) {
-			if (isFirstHover || shouldCorrectMouse()) {
-				isFirstHover = false;
-				interactive.hover();
-			}
-			ctx.input.click(true);
-
-			if (clicks > 0) {
-				Condition.sleep(getDelay());
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * Returns the number of times to click on an interact event. This should be called and stored
 	 * a single time when interacting.
 	 * @return The number of times to click.
 	 */
 	public int getClicks() {
 		newInteractProbability();
-		return getConditionalRandomOrGauss(
-				isClickCountRandom, clickCountMean, CLICKS_MEAN, CLICKS_VARIANCE);
+		return isSpamClickEnabled
+				? getConditionalRandomOrGauss(
+						isClickCountRandom, clickCountMean, CLICKS_MEAN, CLICKS_VARIANCE)
+				: 1;
 	}
 
 	/**
@@ -113,8 +77,10 @@ public class MouseUtil {
 	 * @return The delay, in milliseconds, between each click.
 	 */
 	public int getDelay() {
-		return getConditionalRandomOrGauss(
-				isDelayRandom, delayMean, DELAY_MEAN, DELAY_VARIANCE);
+		return isSpamClickEnabled
+				? getConditionalRandomOrGauss(
+						isDelayRandom, delayMean, DELAY_MEAN, DELAY_VARIANCE)
+				: 1;
 	}
 
 	/**

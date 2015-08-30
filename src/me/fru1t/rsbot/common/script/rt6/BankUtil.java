@@ -10,7 +10,6 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.util.Condition;
-import me.fru1t.rsbot.common.script.MouseUtil;
 
 // TODO: Add impatient return (interacts will return before validating)
 @Singleton

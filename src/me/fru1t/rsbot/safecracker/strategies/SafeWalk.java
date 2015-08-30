@@ -6,7 +6,7 @@ import org.powerbot.script.Tile;
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.strategies.Rs3WalkingUtil;
+import me.fru1t.rsbot.common.rt6.WalkUtil;
 
 public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 	private static final int RANDOMIZATION_TOLERANCE = 3;
@@ -16,10 +16,10 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 
 	};
 
-	private final Rs3WalkingUtil walkUtil;
+	private final WalkUtil walkUtil;
 
 	@Inject
-	public SafeWalk(Rs3WalkingUtil.Factory walkingFactory) {
+	public SafeWalk(WalkUtil.Factory walkingFactory) {
 		this.walkUtil = walkingFactory.create(destinationArea, fullPath, RANDOMIZATION_TOLERANCE);
 	}
 

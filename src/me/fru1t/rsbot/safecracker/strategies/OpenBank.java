@@ -12,7 +12,7 @@ import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.framework.util.Random;
-import me.fru1t.rsbot.common.strategies.SpamClickUtil;
+import me.fru1t.rsbot.common.rt6.InteractUtil;
 import me.fru1t.rsbot.safecracker.strategies.logic.TurnToBanker;
 
 public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
@@ -22,14 +22,14 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 	private static final int MIN_WAIT_TIME = 1200;
 
 	private final ClientContext ctx;
-	private final SpamClickUtil spamClickUtil;
+	private final InteractUtil spamClickUtil;
 	private final TurnToBanker turnToBanker;
 	private final Timer bankOpenTimer;
 
 	@Inject
 	public OpenBank(
 			@Singleton ClientContext ctx,
-			@Singleton SpamClickUtil spamClickUtil,
+			@Singleton InteractUtil spamClickUtil,
 			TurnToBanker turnToBanker,
 			Timer bankOpenTimer) {
 		this.ctx = ctx;

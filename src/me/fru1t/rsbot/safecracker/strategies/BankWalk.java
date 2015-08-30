@@ -5,7 +5,7 @@ import org.powerbot.script.Tile;
 
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.strategies.Rs3WalkingUtil;
+import me.fru1t.rsbot.common.rt6.WalkUtil;
 
 /**
  * TODO: Add bank interact while running
@@ -18,9 +18,9 @@ public class BankWalk implements Strategy<RoguesDenSafeCracker.State> {
 
 	};
 
-	private final Rs3WalkingUtil walkUtil;
+	private final WalkUtil walkUtil;
 
-	public BankWalk(Rs3WalkingUtil.Factory walkingFactory) {
+	public BankWalk(WalkUtil.Factory walkingFactory) {
 		walkUtil = walkingFactory.create(destinationArea, fullPath, RANDOMIZATION_TOLERANCE);
 	}
 

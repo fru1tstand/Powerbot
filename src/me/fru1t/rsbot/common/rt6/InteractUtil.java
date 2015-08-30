@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.strategies;
+package me.fru1t.rsbot.common.rt6;
 
 import org.powerbot.script.ClientContext;
 import org.powerbot.script.rt6.Interactive;
@@ -22,7 +22,7 @@ import me.fru1t.rsbot.common.framework.util.Random;
  * mean.
  */
 @Singleton
-public class SpamClickUtil {
+public class InteractUtil {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int CLICK_COUNT_IS_RANDOM_PROBABILITY = 25;
@@ -50,7 +50,7 @@ public class SpamClickUtil {
 	private int interactProbability;
 
 	@Inject
-	public SpamClickUtil(
+	public InteractUtil(
 			@Singleton ClientContext<?> ctx,
 			Persona persona) {
 		this.ctx = ctx;

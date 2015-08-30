@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common.strategies;
+package me.fru1t.rsbot.common.rt6;
 
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
@@ -27,7 +27,7 @@ import me.fru1t.rsbot.common.framework.util.Random;
  *
  * <p> TODO: Add distance-based interaction alongside time based.
  */
-public class Rs3WalkingUtil {
+public class WalkUtil {
 	protected enum InteractionAmount { CONSTANT, RANDOM, GAUSS }
 
 	/**
@@ -121,24 +121,24 @@ public class Rs3WalkingUtil {
 	 */
 	public static class Factory {
 		private final ClientContext ctx;
-		private final SpamClickUtil spamClickUtil;
+		private final InteractUtil spamClickUtil;
 		private final WalkingLogic walkingLogic;
 
 		@Inject
 		public Factory(
 				@Singleton ClientContext ctx,
-				@Singleton SpamClickUtil spamClickUtil,
+				@Singleton InteractUtil spamClickUtil,
 				@Singleton WalkingLogic walkingLogic) {
 			this.ctx = ctx;
 			this.spamClickUtil = spamClickUtil;
 			this.walkingLogic = walkingLogic;
 		}
 
-		public Rs3WalkingUtil create(
+		public WalkUtil create(
 				Area destination,
 				Tile[] fullPath,
 				int randomizationTolerance) {
-			return new Rs3WalkingUtil(
+			return new WalkUtil(
 					ctx,
 					spamClickUtil,
 					walkingLogic,
@@ -152,15 +152,15 @@ public class Rs3WalkingUtil {
 
 	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
-	private final SpamClickUtil spamClickUtil;
+	private final InteractUtil spamClickUtil;
 	private final WalkingLogic walkingLogic;
 	private final Tile[] fullPath;
 	private final Area destination;
 	private final int randomizationTolerance;
 
-	private Rs3WalkingUtil(
+	private WalkUtil(
 			@Singleton ClientContext ctx,
-			@Singleton SpamClickUtil spamClickUtil,
+			@Singleton InteractUtil spamClickUtil,
 			@Singleton WalkingLogic walkingLogic,
 			Area destination,
 			Tile[] fullPath,

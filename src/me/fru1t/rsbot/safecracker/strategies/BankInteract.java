@@ -12,21 +12,21 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.strategies.SpamClickUtil;
+import me.fru1t.rsbot.common.rt6.InteractUtil;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
 
 public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
 	private final Settings settings;
-	private final SpamClickUtil spamClickUtil;
+	private final InteractUtil spamClickUtil;
 	private final DepositInventoryButton depositInventoryButton;
 
 	@Inject
 	public BankInteract(
 			@Singleton ClientContext ctx,
 			@Singleton Settings settings,
-			@Singleton SpamClickUtil spamClickUtil,
+			@Singleton InteractUtil spamClickUtil,
 			DepositInventoryButton depositInventoryButton) {
 		this.ctx = ctx;
 		this.settings = settings;

@@ -25,6 +25,7 @@ import me.fru1t.common.annotations.Singleton;
  * <p>Design note: I opted to force the @Inject constructor instead of allowing non-annotated
  * or no constructor classes because explicit is better than implicit.
  */
+// TODO(v1): Update docs on all methods, classes, etc.
 public class Slick {
 	private final Map<Class<?>, Object> providedInstances;
 

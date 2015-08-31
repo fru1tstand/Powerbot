@@ -1,6 +1,5 @@
 package me.fru1t.rsbot.common.framework.components;
 
-import me.fru1t.common.annotations.Nullable;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.Strategy;
@@ -47,8 +46,10 @@ public class Persona {
 	public static Tuple2<Integer, Integer> SPAM_DELAY_RANGE = Tuple2.of(80, 175);
 	public static Tuple2<Double, Double> SPAM_DELAY_VARIANCE = Tuple2.of(0.5d, 4d);
 
-	public static int MAX_FOCUS = 100;
-	public static int MIN_FOCUS = 0;
+	/**
+	 * Min/Max focus
+	 */
+	public static Tuple2<Integer, Integer> FOCUS_RANGE = Tuple2.of(0, 100);
 
 	private int attentiveness;
 	private int clumsiness;
@@ -76,7 +77,8 @@ public class Persona {
 	 * @return The amount of focus the Persona currently has [0, 100]
 	 */
 	public int focus() {
-		return Math.min(MAX_FOCUS, Math.max(MIN_FOCUS, attentiveness - clumsiness));
+		return Math.min(
+				FOCUS_RANGE.second, Math.max(FOCUS_RANGE.first, attentiveness - clumsiness));
 	}
 
 	/**
@@ -97,8 +99,8 @@ public class Persona {
 	public int getNextInteractDelay() {
 		return Random.nextSkewedGaussian(
 				INTERACT_DELAY_RANGE,
-				getFocusScaledInt(null, INTERACT_DELAY_RANGE),
-				getFocusScaledDouble(null, INTERACT_DELAY_VARIANCE));
+				getLazinessScaledInt(INTERACT_DELAY_RANGE),
+				getLazinessScaledDouble(INTERACT_DELAY_VARIANCE));
 	}
 
 	/**
@@ -111,87 +113,148 @@ public class Persona {
 	public int getNextSpamDelay() {
 		return Random.nextSkewedGaussian(
 				SPAM_DELAY_RANGE,
-				getFocusScaledInt(null, SPAM_DELAY_RANGE),
-				getFocusScaledDouble(null, SPAM_DELAY_VARIANCE));
+				getLazinessScaledInt(SPAM_DELAY_RANGE),
+				getLazinessScaledDouble(SPAM_DELAY_VARIANCE));
 	}
 
 	/**
-	 * Returns a value between minValue and maxValue that is linearly proportional to the current
-	 * focus. If the focus is below focusFloor, minValue will always be returned. If the focus
-	 * is above focusRoof, maxValue will always be returned.
+	 * Returns a value between minValue and maxValue that is linearly proportional to the passed
+	 * value as a percentage. If the value is below the floor, min will always be returned. If the
+	 * value is above the roof, max will always be returned.
 	 *
-	 * @param focusFloor [0, 100] Focus below this level will always return minValue
-	 * @param focusRoof [0, 100] Focus above this level will always return maxValue
-	 * @param minValue The lowest value to return
-	 * @param maxValue The highest value to return
-	 * @return A value between minValue and maxValue that is linearly proportional to the current
-	 * focus level.
+	 * @param cutoff The cutoff to use.
+	 * @param range The range of return values.
+	 * @param scale The value to use as scale.
+	 * @return A value within the range.
 	 */
-	public double getFocusScaledDouble(
-			int focusFloor, int focusRoof, double minValue, double maxValue) {
-		if (focusFloor >= focusRoof
-				|| focusFloor < MIN_FOCUS
-				|| focusRoof > MAX_FOCUS
-				|| minValue >= maxValue) {
+	public double getScaledDouble(
+			Tuple2<Integer, Integer> cutoff, Tuple2<Double, Double> range, int scale) {
+		if (cutoff.first >= cutoff.second
+				|| cutoff.first < FOCUS_RANGE.first
+				|| cutoff.second > FOCUS_RANGE.second
+				|| range.first >= range.second) {
 			throw new RuntimeException("Invalid call to #getFocusScaledValue.");
 		}
-		if (focus() <= focusFloor) {
-			return minValue;
+		if (scale <= cutoff.first) {
+			return range.first;
 		}
-		if (focus() >= focusRoof) {
-			return maxValue;
+		if (scale >= cutoff.second) {
+			return range.second;
 		}
 
 		// Will not go out of bounds due to exception check.
-		return 1.0 * (focusRoof - focusFloor) / (MAX_FOCUS - MIN_FOCUS) // Scale
-				* (maxValue - minValue) // Max delta
-				+ minValue;
+		return 1.0
+				* (cutoff.second - cutoff.first) / (FOCUS_RANGE.second - FOCUS_RANGE.first) // Scale
+				* (range.second - range.first) // Max delta
+				+ range.first;
 	}
 
 	/**
-	 * See {@link #getFocusScaledDouble(int, int, double, double)}
+	 * @see #getScaledDouble
 	 */
-	public double getFocusScaledDouble(double minValue, double maxValue) {
-		return getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, minValue, maxValue);
+	public int getScaledInt(Tuple2<Integer, Integer> cutoff, Tuple2<Integer, Integer> range, int scale) {
+		return (int) Math.round(getScaledDouble(
+				cutoff,
+				new Tuple2<Double, Double>((double) range.first, (double) range.second),
+				scale));
 	}
 
 	/**
-	 * See {@link #getFocusScaledDouble(int, int, double, double)}.
-	 * @param focus @Nullable
-	 * @param value
+	 * Returns a value within the given range that's linearly scaled to the current focus.
+	 *
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
+	 */
+	public double getFocusScaledDouble(Tuple2<Double, Double> returnRange) {
+		return getScaledDouble(FOCUS_RANGE, returnRange, focus());
+	}
+
+	/**
+	 * Returns a value within the given range that's linearly scaled to the current focus between
+	 * the given cutoff. If the focus is less than the lower bound of the cutoff, the lower end
+	 * of the range is returned. If the focus is greater than the upper bound of the cutoff, the
+	 * higher end of the range is returned.
+	 *
+	 * @param cutoff The cutoff to use.
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
 	 */
 	public double getFocusScaledDouble(
-			@Nullable Tuple2<Integer, Integer> focus,
-			Tuple2<Double, Double> value) {
-		return (focus == null)
-				? getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, value.first, value.second)
-				: getFocusScaledDouble(focus.first, focus.second, value.first, value.second);
+			Tuple2<Integer, Integer> cutoff, Tuple2<Double, Double> returnRange) {
+		return getScaledDouble(cutoff, returnRange, focus());
 	}
 
 	/**
-	 * See {@link #getFocusScaledDouble(int, int, double, double)}
+	 * Returns value within the given range that's linearly scaled to the current focus.
+	 *
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
 	 */
-	public int getFocusScaledInt(int focusFloor, int focusRoof, int minValue, int maxValue) {
-		return (int) getFocusScaledDouble(focusFloor, focusRoof, minValue, maxValue);
+	public int getFocusScaledInt(Tuple2<Integer, Integer> returnRange) {
+		return getScaledInt(FOCUS_RANGE, returnRange, focus());
 	}
 
 	/**
-	 * See {@link #getFocusScaledDouble(int, int, double, double)}
-	 */
-	public int getFocusScaledInt(int minValue, int maxValue) {
-		return (int) getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, minValue, maxValue);
-	}
-
-	/**
-	 * See {@link #getFocusScaledDouble(int, int, double, double)}
-	 * @param focus @Nullable
-	 * @param value
+	 * Returns a value within the given range that's linearly scaled to the current focus between
+	 * the given cutoff. If the focus is less than the lower bound of the cutoff, the lower end
+	 * of the range is returned. If the focus is greater than the upper bound of the cutoff, the
+	 * higher end of the range is returned.
+	 *
+	 * @param cutoff The cutoff to use.
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
 	 */
 	public int getFocusScaledInt(
-			@Nullable Tuple2<Integer, Integer> focus,
-			Tuple2<Integer, Integer> value) {
-		return (int) ((focus == null)
-				? getFocusScaledDouble(MIN_FOCUS, MAX_FOCUS, value.first, value.second)
-				: getFocusScaledDouble(focus.first, focus.second, value.first, value.second));
+			Tuple2<Integer, Integer> cutoff, Tuple2<Integer, Integer> returnRange) {
+		return getScaledInt(cutoff, returnRange, focus());
+	}
+
+	/**
+	 * Returns a value within the given range that's linearly scaled to the current laziness.
+	 *
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
+	 */
+	public double getLazinessScaledDouble(Tuple2<Double, Double> returnRange) {
+		return getScaledDouble(FOCUS_RANGE, returnRange, laziness());
+	}
+
+	/**
+	 * Returns a value within the given range that's linearly scaled to the current laziness between
+	 * the given cutoff. If the lasiness is less than the lower bound of the cutoff, the lower end
+	 * of the range is returned. If the laziness is greater than the upper bound of the cutoff, the
+	 * higher end of the range is returned.
+	 *
+	 * @param cutoff The cutoff to use.
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
+	 */
+	public double getLazinessScaledDouble(
+			Tuple2<Integer, Integer> cutoff, Tuple2<Double, Double> returnRange) {
+		return getScaledDouble(cutoff, returnRange, laziness());
+	}
+
+	/**
+	 * Returns a value within the given range that's linearly scaled to the current laziness.
+	 *
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
+	 */
+	public int getLazinessScaledInt(Tuple2<Integer, Integer> returnRange) {
+		return getScaledInt(FOCUS_RANGE, returnRange, laziness());
+	}
+
+	/**
+	 * Returns a value within the given range that's linearly scaled to the current laziness between
+	 * the given cutoff. If the lasiness is less than the lower bound of the cutoff, the lower end
+	 * of the range is returned. If the laziness is greater than the upper bound of the cutoff, the
+	 * higher end of the range is returned.
+	 *
+	 * @param cutoff The cutoff to use.
+	 * @param returnRange The range of return values.
+	 * @return A value within the range.
+	 */
+	public int getLazinessScaledInt(Tuple2<Integer, Integer> cutoff, Tuple2<Integer, Integer> returnRange) {
+		return getScaledInt(cutoff, returnRange, laziness());
 	}
 }

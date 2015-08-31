@@ -10,6 +10,7 @@ import org.powerbot.script.rt6.ClientContext;
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
+import me.fru1t.rsbot.RoguesDenSafeCracker.State;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.script.rt6.BankUtil;
 import me.fru1t.rsbot.safecracker.Settings;
@@ -34,16 +35,18 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 	}
 
 	@Override
-	public RoguesDenSafeCracker.State run() {
-		// Deposit
+	public State run() {
+		// Deposit. Note: We don't know if the bank is open at this stage.
 		if (depositInventoryButton.shouldClick()) {
+			// Deposit using button
 			if (!bankUtil.depositInventory()) {
-				return null;
+				return State.BANK_OPEN;
 			}
 		} else {
-			// Deposit manually -- This method should most likely go away.
-			ctx.backpack.select();
+			// Deposit manually
+			// TODO(v1 cleanup): Is this method necessary?
 			Set<Integer> backpackSet = new HashSet<>();
+//			ctx.backpack.select().addt;
 			while (!ctx.backpack.isEmpty()) {
 				backpackSet.add(ctx.backpack.poll().id());
 			}

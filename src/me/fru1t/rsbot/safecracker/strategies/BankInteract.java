@@ -39,7 +39,7 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 		// Deposit. Note: We don't know if the bank is open at this stage.
 		if (depositInventoryButton.shouldClick()) {
 			// Deposit using button
-			if (!bankUtil.depositInventory()) {
+			if (!bankUtil.clickDepositInventory()) {
 				return State.BANK_OPEN;
 			}
 		} else {
@@ -69,7 +69,7 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 		// Withdraw
 		if (settings.isBankStyle(Settings.BankStyle.PRESET_1, Settings.BankStyle.PRESET_2)) {
 			if (!(settings.isBankStyle(Settings.BankStyle.PRESET_1)
-					? bankUtil.preset1() : bankUtil.preset2())) {
+					? bankUtil.clickPreset1() : bankUtil.clickPreset2())) {
 				return null;
 			}
 		} else {

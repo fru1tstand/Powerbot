@@ -13,6 +13,9 @@ public class BankDeposit implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Override
 	public State run() {
+		// We aren't certain if the bank is open at this time.
+		
+		
 		// TODO Auto-generated method stub
 		return null;
 	}

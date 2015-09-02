@@ -59,7 +59,7 @@ public class BankUtil {
 			return result;
 		}
 	}
-	
+
 	/**
 	 * Some people like using the deposit inventory button while others like manually depositing
 	 * all items. There is some fuzziness between as well.
@@ -68,15 +68,15 @@ public class BankUtil {
 		// TODO(v1 cleanup): Rename to something better
 		private static final int USE_BUTTON_PROBABILITY = 80;
 		private static final int ONLY_USE_BUTTON_PROBABILITY = 90;
-		
+
 		private static final int SHOULD_DEPOSIT_ALL_PROBABILITY = 80;
 		private static final int ONLY_USE_DEPOSIT_ALL_PROBABILITY = 90;
-		
+
 		private final boolean shouldUseButton;
 		private final boolean onlyUseButton;
 		private final boolean shouldDepositAll;
 		private final boolean onlyUseDepositAll;
-		
+
 		@Inject
 		public DepositInventoryLogic() {
 			this.shouldUseButton = Random.roll(USE_BUTTON_PROBABILITY);
@@ -84,7 +84,7 @@ public class BankUtil {
 			this.shouldDepositAll = Random.roll(SHOULD_DEPOSIT_ALL_PROBABILITY);
 			this.onlyUseDepositAll = Random.roll(ONLY_USE_DEPOSIT_ALL_PROBABILITY);
 		}
-		
+
 		/**
 		 * @return Returns if the user should use the deposit inventory button vs manual deposit.
 		 */
@@ -92,11 +92,11 @@ public class BankUtil {
 			if (onlyUseButton) {
 				return shouldUseButton;
 			}
-			
+
 			// TODO(v2): Revisit shouldUseButton multiple method algorithm
 			return Random.roll(80) ? shouldUseButton : !shouldUseButton;
 		}
-		
+
 		/**
 		 * @return Returns if the user should deposit using the "all" menu button, or simply one at
 		 * a time.
@@ -105,7 +105,7 @@ public class BankUtil {
 			if (onlyUseDepositAll) {
 				return shouldDepositAll;
 			}
-			
+
 			return Random.roll(80) ? shouldDepositAll : !shouldDepositAll;
 		}
 	}
@@ -117,8 +117,7 @@ public class BankUtil {
 	private final MouseUtil mouseUtil;
 	private final Timer bankOpenTimer;
 	private final Persona persona;
-	
-	private final DepositInventoryLogic depositInventoryLogic;
+
 	private final WidgetHoverLogic widgetHoverLogic;
 
 	@Inject
@@ -127,16 +126,14 @@ public class BankUtil {
 			@Singleton MouseUtil interactUtil,
 			@Singleton Persona persona,
 			WidgetHoverLogic widgetHoverLogic,
-			DepositInventoryLogic depositInventoryLogic,
 			Timer bankOpenTimer) {
 		this.ctx = ctx;
 		this.mouseUtil = interactUtil;
 		this.bankOpenTimer = bankOpenTimer;
 		this.widgetHoverLogic = widgetHoverLogic;
-		this.depositInventoryLogic = depositInventoryLogic;
 		this.persona = persona;
 	}
-	
+
 
 	/* Other */
 	/**
@@ -164,7 +161,7 @@ public class BankUtil {
 				150);
 	}
 
-	
+
 	/* Full methods */
 	/**
 	 * Deposits the entire inventory in the bank. Safe to call before the bank opens.
@@ -175,10 +172,11 @@ public class BankUtil {
 		if (!clickDepositInventory()) {
 			return false;
 		}
-		
+
 		// TODO(v2): Add manual depositing
 		return true;
 	}
+
 
 	/* Button interaction methods */
 	/**

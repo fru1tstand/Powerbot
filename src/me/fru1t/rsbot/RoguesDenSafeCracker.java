@@ -45,6 +45,7 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 		BANK_OPEN,
 		BANK_DEPOSIT,
 		BANK_WITHDRAW,
+		BANK_WITHDRAW_WITH_PRESETS,
 
 		// Safe cracking
 		SAFE_WALK,

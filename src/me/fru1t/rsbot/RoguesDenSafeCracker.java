@@ -36,6 +36,7 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	/**
 	 * Defines this script's possible states.
 	 */
+	// TODO(v1): Add state interface that has #getHandlingClass
 	public enum State {
 		// Other
 		UNKNOWN,

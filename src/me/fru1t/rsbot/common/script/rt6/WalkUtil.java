@@ -12,10 +12,10 @@ import org.powerbot.script.rt6.TilePath;
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
-import me.fru1t.rsbot.common.Timer;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.framework.util.Condition;
-import me.fru1t.rsbot.common.framework.util.Random;
+import me.fru1t.rsbot.common.util.Random;
+import me.fru1t.rsbot.common.util.Timer;
 
 /**
  * Defines a generic Rs3Walking algorithm.

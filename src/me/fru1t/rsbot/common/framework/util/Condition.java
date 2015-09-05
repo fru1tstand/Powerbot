@@ -3,7 +3,8 @@ package me.fru1t.rsbot.common.framework.util;
 import java.util.concurrent.Callable;
 
 import me.fru1t.common.collections.Tuple2;
-import me.fru1t.rsbot.common.Timer;
+import me.fru1t.rsbot.common.util.Random;
+import me.fru1t.rsbot.common.util.Timer;
 
 public class Condition extends org.powerbot.script.Condition {
 	/**

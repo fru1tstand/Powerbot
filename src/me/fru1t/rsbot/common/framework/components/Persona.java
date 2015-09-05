@@ -3,7 +3,7 @@ package me.fru1t.rsbot.common.framework.components;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.framework.util.Random;
+import me.fru1t.rsbot.common.util.Random;
 
 /**
  * Contains methods to quantify certain behaviors. Used in {@link Strategy}s to determine how the

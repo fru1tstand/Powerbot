@@ -3,7 +3,7 @@ package me.fru1t.rsbot.safecracker.strategies.logic;
 import org.powerbot.script.rt6.Npc;
 
 import me.fru1t.common.annotations.Inject;
-import me.fru1t.rsbot.common.framework.util.Random;
+import me.fru1t.rsbot.common.util.Random;
 
 /**
  * The banker must be on screen, but even if the banker is on screen, there is a chance that a

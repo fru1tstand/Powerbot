@@ -1,4 +1,4 @@
-package me.fru1t.rsbot.common;
+package me.fru1t.rsbot.common.util;
 
 import org.powerbot.script.ClientContext;
 

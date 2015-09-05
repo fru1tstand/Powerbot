@@ -5,7 +5,7 @@ import org.powerbot.script.rt6.ClientContext;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
-import me.fru1t.rsbot.common.framework.util.Random;
+import me.fru1t.rsbot.common.util.Random;
 
 /**
  * The most impatient people will click more than 1 time. Someone sporadically

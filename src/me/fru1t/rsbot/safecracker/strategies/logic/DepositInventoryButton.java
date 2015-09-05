@@ -2,7 +2,7 @@ package me.fru1t.rsbot.safecracker.strategies.logic;
 
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
-import me.fru1t.rsbot.common.framework.util.Random;
+import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
 
 public class DepositInventoryButton {

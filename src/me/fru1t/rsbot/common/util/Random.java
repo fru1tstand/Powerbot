@@ -6,12 +6,19 @@ import me.fru1t.common.collections.Tuple2;
 public class Random extends org.powerbot.script.Random {
 	private static final int NEXT_SKEWED_GAUSS_ATTEMPTS = 25;
 
-	public static <T extends Enum<T> & Probability> T roll(T set) {
+	/**
+	 * Returns a random enum within the set that's given. The probability that a specific enum is
+	 * returned is defined within the enum and returned with the getProbability method defined
+	 * in the Probability interface.
+	 *
+	 * @param set The enum class
+	 * @return A random enum.
+	 */
+	// TODO(v1 cleanup): Change usages of self-implementation to use this method
+	public static <T extends Enum<T> & Probability> T roll(Class<T> set) {
 		int i = nextInt(0, 100);
 		int sum = 0;
-
-		@SuppressWarnings("unchecked") // We know the resulting class's enum constants is T[]
-		T[] choices = (T[]) set.getClass().getEnumConstants();
+		T[] choices = set.getEnumConstants();
 		for (T choice : choices) {
 			sum += choice.getProbability();
 			if (sum > i) {

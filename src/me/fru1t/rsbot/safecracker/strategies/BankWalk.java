@@ -19,15 +19,17 @@ public class BankWalk implements Strategy<RoguesDenSafeCracker.State> {
 
 	};
 
-	private final Walk walkUtil;
+//	private final Walk walkUtil;
 
 	@Inject
 	public BankWalk(Walk.Factory walkingFactory) {
-		walkUtil = walkingFactory.create(destinationArea, fullPath, RANDOMIZATION_TOLERANCE);
+		// TODO(v1): Implement
+//		walkUtil = walkingFactory.create(destinationArea, fullPath, RANDOMIZATION_TOLERANCE);
 	}
 
 	@Override
 	public RoguesDenSafeCracker.State run() {
-		return walkUtil.walk() ? RoguesDenSafeCracker.State.BANK_OPEN : null;
+		return null;
+//		return walkUtil.walk() ? RoguesDenSafeCracker.State.BANK_OPEN : null;
 	}
 }

@@ -92,10 +92,13 @@ public class Persona {
 	/**
 	 * Returns the time the player should wait before doing another interaction. This should be used
 	 * when interacting with multiple items, objects, etc. (eg. right clicking a menu and selecting
-	 * an option; clicking different items within an inventory)
+	 * an option; clicking different items within an inventory).
+	 *
+	 * <p>This value is within {@value #INTERACT_DELAY_RANGE}
 	 *
 	 * @return The time in ms.
 	 */
+	// TODO(v1 cleanup): Code hint tuple
 	public int getNextInteractDelay() {
 		return Random.nextSkewedGaussian(
 				INTERACT_DELAY_RANGE,
@@ -155,7 +158,7 @@ public class Persona {
 	public int getScaledInt(Tuple2<Integer, Integer> cutoff, Tuple2<Integer, Integer> range, int scale) {
 		return (int) Math.round(getScaledDouble(
 				cutoff,
-				new Tuple2<Double, Double>((double) range.first, (double) range.second),
+				new Tuple2<>((double) range.first, (double) range.second),
 				scale));
 	}
 

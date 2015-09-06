@@ -3,9 +3,8 @@ package me.fru1t.rsbot.common.script.rt6;
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
 
-import org.powerbot.script.Area;
-import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
+import org.powerbot.script.rt6.Path;
 import org.powerbot.script.rt6.Path.TraversalOption;
 import org.powerbot.script.rt6.TilePath;
 
@@ -36,7 +35,6 @@ public class Walk {
 	 * WalkingLogic contains the methods that provide delay between clicks to the next location
 	 * when walking.
 	 */
-	@Singleton
 	private static class WalkingLogic {
 		// Interaction enum probabilities
 		private static final int CONSTANT_THRESHOLD =  5;
@@ -139,48 +137,39 @@ public class Walk {
 			this.persona = persona;
 		}
 
-		public Walk create(
-				Area destination,
-				Tile[] fullPath,
-				int randomizationTolerance) {
+		public Walk create(Path path) {
 			return new Walk(
 					ctx,
 					mouseUtil,
-					walkingLogic,
 					persona,
-					destination,
-					fullPath,
-					randomizationTolerance);
+					walkingLogic,
+					path);
 		}
 	}
 
-	private static final int CLOSE_ENOUGH_DISTANCE = 2;
+	private static final EnumSet<TraversalOption> TRAVERSAL_OPTIONS =
+			EnumSet.of(TraversalOption.HANDLE_RUN);
+	// TODO(v2): Find a more dynamic approach to this.
+	private static final int CLOSE_ENOUGH_DISTANCE = 4;
 
-	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
 	private final Mouse mouseUtil;
 	private final WalkingLogic walkingLogic;
-	private final Tile[] fullPath;
-	private final Area destination;
-	private final int randomizationTolerance;
 	private final Persona persona;
+
+	private final Path path;
 
 	private Walk(
 			@Singleton ClientContext ctx,
 			@Singleton Mouse mouseUtil,
-			@Singleton WalkingLogic walkingLogic,
 			@Singleton Persona persona,
-			Area destination,
-			Tile[] fullPath,
-			int randomizationTolerance) {
-		traversalOptions = EnumSet.of(TraversalOption.HANDLE_RUN);
+			WalkingLogic walkingLogic,
+			Path path) {
 		this.ctx = ctx;
 		this.mouseUtil = mouseUtil;
 		this.walkingLogic = walkingLogic;
-		this.fullPath = fullPath;
-		this.destination = destination;
-		this.randomizationTolerance = randomizationTolerance;
 		this.persona = persona;
+		this.path = path;
 	}
 
 	/**
@@ -190,16 +179,13 @@ public class Walk {
 	 * @return True if the player has reached the destination. Otherwise, false for any failure.
 	 */
 	public boolean walk() {
-		TilePath tilePath = ctx
-				.movement
-				.newTilePath(fullPath)
-				.randomize(randomizationTolerance, randomizationTolerance);
 		walkingLogic.fullReset();
-		while (!destination.contains(ctx.players.local())
-				|| tilePath.end().distanceTo(ctx.players.local()) < CLOSE_ENOUGH_DISTANCE) {
+		// TODO(v2): Add !inViewPort to while condition
+		while (ctx.movement.destination().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE
+				&& ctx.players.local().tile().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE) {
 			// Interact with the path when told to do so by logic
 			if (walkingLogic.shouldInteract()) {
-				if (!tilePath.traverse(traversalOptions)) {
+				if (!path.traverse(TRAVERSAL_OPTIONS)) {
 					break;
 				}
 				int spamClicks = mouseUtil.getClicks();
@@ -221,7 +207,7 @@ public class Walk {
 
 			// We're slow and don't react to things instantaneously. Also, this adds some variance
 			// to the InteractionAmount.Constant interact model.
-			Condition.sleep(Random.nextInt(50, 200));
+			Condition.sleep(persona.getNextInteractDelay());
 		}
 
 		return true;

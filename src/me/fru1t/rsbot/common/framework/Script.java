@@ -11,6 +11,13 @@ import me.fru1t.rsbot.common.framework.components.RunState;
 import me.fru1t.rsbot.common.framework.components.Status;
 import me.fru1t.slick.Slick;
 
+/**
+ * Provides a basic shell of a state-driven script.
+ *
+ * @param <C> The ClientContext for this script (rt4/rt6).
+ * @param <ST> The enum that's used to represent all possible script states.
+ * @param <T> The settings that this script uses.
+ */
 public abstract class Script<
 		C extends ClientContext<?>,
 		ST extends Enum<ST>,

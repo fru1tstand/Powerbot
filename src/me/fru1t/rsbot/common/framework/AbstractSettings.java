@@ -1,7 +1,7 @@
 package me.fru1t.rsbot.common.framework;
 
 /**
- * An abstract Settings file containing common settings
+ * This file provides an outline for what a Settings file should have.
  */
 public abstract class AbstractSettings {
 	/**

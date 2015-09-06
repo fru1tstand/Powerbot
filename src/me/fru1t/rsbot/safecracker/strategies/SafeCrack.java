@@ -11,7 +11,7 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.util.Condition;
-import me.fru1t.rsbot.common.script.rt6.MouseUtil;
+import me.fru1t.rsbot.common.script.rt6.Mouse;
 import me.fru1t.rsbot.common.util.Timer;
 import me.fru1t.rsbot.safecracker.strategies.logic.Backpack;
 import me.fru1t.rsbot.safecracker.strategies.logic.Health;
@@ -27,7 +27,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
  */
 public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final MouseUtil mouseUtil;
+	private final Mouse mouseUtil;
 	private final Health health;
 	private final Backpack backpack;
 	private final SafeLogic safeLogic;
@@ -38,7 +38,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	@Inject
 	public SafeCrack(
 			@Singleton ClientContext ctx,
-			@Singleton MouseUtil spamClickUtil,
+			@Singleton Mouse spamClickUtil,
 			Health health,
 			Backpack backpack,
 			SafeLogic safeLogic,

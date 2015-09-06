@@ -14,18 +14,19 @@ import me.fru1t.rsbot.common.framework.util.Condition;
 /**
  * Provides utility methods for interacting with the RS3 backpack.
  */
+// TODO(v1 cleanup): Find instances of BackpackUtil and convert to Backpack.
 @Singleton
-public class BackpackUtil {
+public class Backpack {
 	private static final int MAX_BACKPACK_SIZE = 28;
 
 	private final ClientContext ctx;
-	private final MouseUtil mouseUtil;
+	private final Mouse mouseUtil;
 	private final Persona persona;
 
 	@Inject
-	public BackpackUtil(
+	public Backpack(
 			@Singleton ClientContext ctx,
-			@Singleton MouseUtil mouseUtil,
+			@Singleton Mouse mouseUtil,
 			@Singleton Persona persona) {
 		this.ctx = ctx;
 		this.mouseUtil = mouseUtil;

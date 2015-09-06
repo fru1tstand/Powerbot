@@ -7,7 +7,7 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.RoguesDenSafeCracker.State;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.script.rt6.BankUtil;
+import me.fru1t.rsbot.common.script.rt6.Bank;
 import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
 
 /**
@@ -15,13 +15,13 @@ import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
  */
 public class BankDeposit implements Strategy<RoguesDenSafeCracker.State> {
 	private final ClientContext ctx;
-	private final BankUtil bankUtil;
+	private final Bank bankUtil;
 	private final DepositInventoryButton depositInventoryButton;
 
 	@Inject
 	public BankDeposit(
 			@Singleton ClientContext ctx,
-			@Singleton BankUtil bankUtil,
+			@Singleton Bank bankUtil,
 			DepositInventoryButton depositInventoryButton) {
 		this.ctx = ctx;
 		this.bankUtil = bankUtil;

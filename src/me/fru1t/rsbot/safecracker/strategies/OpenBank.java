@@ -8,7 +8,7 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.RoguesDenSafeCracker.State;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.script.rt6.MouseUtil;
+import me.fru1t.rsbot.common.script.rt6.Mouse;
 import me.fru1t.rsbot.safecracker.strategies.logic.TurnToBanker;
 
 public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
@@ -16,13 +16,13 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 	private static final int BANKER_ID = -1;
 
 	private final ClientContext ctx;
-	private final MouseUtil mouseUtil;
+	private final Mouse mouseUtil;
 	private final TurnToBanker turnToBanker;
 
 	@Inject
 	public OpenBank(
 			@Singleton ClientContext ctx,
-			@Singleton MouseUtil mouseUtil,
+			@Singleton Mouse mouseUtil,
 			TurnToBanker turnToBanker) {
 		this.ctx = ctx;
 		this.turnToBanker = turnToBanker;

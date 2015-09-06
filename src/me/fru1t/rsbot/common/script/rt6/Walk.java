@@ -28,7 +28,8 @@ import me.fru1t.rsbot.common.util.Timer;
  *
  * <p> TODO: Add distance-based interaction alongside time based.
  */
-public class WalkUtil {
+// TODO(v1 cleanup): Find usages of WalkUtil and rename to Walk
+public class Walk {
 	protected enum InteractionAmount { CONSTANT, RANDOM, GAUSS }
 
 	/**
@@ -122,14 +123,14 @@ public class WalkUtil {
 	 */
 	public static class Factory {
 		private final ClientContext ctx;
-		private final MouseUtil mouseUtil;
+		private final Mouse mouseUtil;
 		private final WalkingLogic walkingLogic;
 		private final Persona persona;
 
 		@Inject
 		public Factory(
 				@Singleton ClientContext ctx,
-				@Singleton MouseUtil mouseUtil,
+				@Singleton Mouse mouseUtil,
 				@Singleton WalkingLogic walkingLogic,
 				@Singleton Persona persona) {
 			this.ctx = ctx;
@@ -138,11 +139,11 @@ public class WalkUtil {
 			this.persona = persona;
 		}
 
-		public WalkUtil create(
+		public Walk create(
 				Area destination,
 				Tile[] fullPath,
 				int randomizationTolerance) {
-			return new WalkUtil(
+			return new Walk(
 					ctx,
 					mouseUtil,
 					walkingLogic,
@@ -157,16 +158,16 @@ public class WalkUtil {
 
 	private final EnumSet<TraversalOption> traversalOptions;
 	private final ClientContext ctx;
-	private final MouseUtil mouseUtil;
+	private final Mouse mouseUtil;
 	private final WalkingLogic walkingLogic;
 	private final Tile[] fullPath;
 	private final Area destination;
 	private final int randomizationTolerance;
 	private final Persona persona;
 
-	private WalkUtil(
+	private Walk(
 			@Singleton ClientContext ctx,
-			@Singleton MouseUtil mouseUtil,
+			@Singleton Mouse mouseUtil,
 			@Singleton WalkingLogic walkingLogic,
 			@Singleton Persona persona,
 			Area destination,

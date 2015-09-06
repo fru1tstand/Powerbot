@@ -16,8 +16,9 @@ import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;
 
 // TODO(v2): Add impatient return (interacts will return before validating)
+// TODO(v1 cleanup): Find instances of BankUtil and convert to Bank.
 @Singleton
-public class BankUtil {
+public class Bank {
 	/**
 	 * After interacting with the bank to open the widget, before the bank appears, some people
 	 * like to hover over where the next widget button will appear.
@@ -114,16 +115,16 @@ public class BankUtil {
 	private static final Tuple2<Integer, Integer> OPEN_WAIT_RANGE = Tuple2.of(1200, 2500);
 
 	private final ClientContext ctx;
-	private final MouseUtil mouseUtil;
+	private final Mouse mouseUtil;
 	private final Timer bankOpenTimer;
 	private final Persona persona;
 
 	private final WidgetHoverLogic widgetHoverLogic;
 
 	@Inject
-	public BankUtil(
+	public Bank(
 			@Singleton ClientContext ctx,
-			@Singleton MouseUtil interactUtil,
+			@Singleton Mouse interactUtil,
 			@Singleton Persona persona,
 			WidgetHoverLogic widgetHoverLogic,
 			Timer bankOpenTimer) {

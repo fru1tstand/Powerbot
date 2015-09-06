@@ -5,19 +5,19 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.RoguesDenSafeCracker.State;
 import me.fru1t.rsbot.common.framework.Strategy;
-import me.fru1t.rsbot.common.script.rt6.BackpackUtil;
+import me.fru1t.rsbot.common.script.rt6.Backpack;
 import me.fru1t.rsbot.safecracker.strategies.logic.WalkLogic;
 
 /**
  * This strategy simply decides which method of walking to use.
  */
 public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
-	private final BackpackUtil backpack;
+	private final Backpack backpack;
 	private final WalkLogic walkLogic;
 
 	@Inject
 	public SafeWalk(
-			@Singleton BackpackUtil backpack,
+			@Singleton Backpack backpack,
 			WalkLogic walkLogic) {
 		this.backpack = backpack;
 		this.walkLogic = walkLogic;

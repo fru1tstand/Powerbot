@@ -8,12 +8,13 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.framework.util.Condition;
 
+// TODO(v1 cleanup): Find usages of MouseUtil and convert to Mouse
 @Singleton
-public class MouseUtil extends me.fru1t.rsbot.common.script.MouseUtil<ClientContext> {
+public class Mouse extends me.fru1t.rsbot.common.script.MouseUtil<ClientContext> {
 	private final ClientContext ctx;
 
 	@Inject
-	public MouseUtil(
+	public Mouse(
 			@Singleton ClientContext ctx,
 			@Singleton Persona persona) {
 		super(persona);

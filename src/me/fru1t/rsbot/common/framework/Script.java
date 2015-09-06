@@ -102,7 +102,7 @@ public abstract class Script<
 	 */
 	protected final <F extends AbstractStartupForm<T>> void showStartupForm(Class<F> formClazz) {
 		status.update("Waiting for user input");
-		slick.provide(SettingsCallback.class, new SettingsCallback<T>() {
+		slick.provide(new AbstractSettings.Callback<T>() {
 			@Override
 			public void call(T settings) {
 				setSettings(settings);

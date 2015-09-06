@@ -22,8 +22,8 @@ import javax.swing.event.ChangeListener;
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
+import me.fru1t.rsbot.common.framework.AbstractSettings;
 import me.fru1t.rsbot.common.framework.AbstractStartupForm;
-import me.fru1t.rsbot.common.framework.SettingsCallback;
 import me.fru1t.rsbot.common.items.Food;
 
 
@@ -39,7 +39,7 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 	 * Create the application.
 	 */
 	@Inject
-	public StartupForm(@Singleton SettingsCallback<Settings> callback) {
+	public StartupForm(@Singleton AbstractSettings.Callback<Settings> callback) {
 		super(callback);
 
 		this.initialize();
@@ -50,7 +50,7 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 	 * Testing
 	 */
 	private StartupForm() {
-		this(new SettingsCallback<Settings>() {
+		this(new AbstractSettings.Callback<Settings>() {
 			@Override
 			public void call(Settings settings) { }
 		});

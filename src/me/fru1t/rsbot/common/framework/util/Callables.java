@@ -8,7 +8,7 @@ public final class Callables {
 	public static <T> Callable<T> of(final T response) {
 		return new Callable<T>() {
 			@Override
-			public T call() throws Exception {
+			public T call() {
 				return response;
 			}
 		};

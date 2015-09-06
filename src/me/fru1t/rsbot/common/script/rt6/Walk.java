@@ -173,10 +173,11 @@ public class Walk {
 	}
 
 	/**
-	 * Performs the entire walking interaction until the player reaches the destination area or
-	 * some failure occurs.
+	 * Performs the majority of the path walking and releases control when the destination of the
+	 * player, or the player itself is within a close enough distance
+	 * ({@value #CLOSE_ENOUGH_DISTANCE} units) to the destination tile.
 	 *
-	 * @return True if the player has reached the destination. Otherwise, false for any failure.
+	 * @return True if the traversing has been successful. False otherwise.
 	 */
 	public boolean walk() {
 		walkingLogic.fullReset();

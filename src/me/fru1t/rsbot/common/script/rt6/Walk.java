@@ -174,6 +174,15 @@ public class Walk {
 		this.path = path;
 	}
 
+	/**
+	 * Performs the majority of the path walking and releases control when the destination of the
+	 * player, or the player itself is within a close enough distance,
+	 * ({@value #CLOSE_ENOUGH_DISTANCE} units) to the destination tile, or the given condition
+	 * evaludates to be true.
+	 *
+	 * @param condition The condition to validate with.
+	 * @return True if the traversing has been successful. False otherwise.
+	 */
 	public boolean walkUntil(@Nullable Callable<Boolean> condition) {
 		if (condition == null) {
 			condition = Callables.of(true);

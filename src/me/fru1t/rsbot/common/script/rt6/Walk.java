@@ -9,9 +9,11 @@ import org.powerbot.script.rt6.Path.TraversalOption;
 import org.powerbot.script.rt6.TilePath;
 
 import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Nullable;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
+import me.fru1t.rsbot.common.framework.util.Callables;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;
@@ -172,6 +174,48 @@ public class Walk {
 		this.path = path;
 	}
 
+	public boolean walkUntil(@Nullable Callable<Boolean> condition) {
+		if (condition == null) {
+			condition = Callables.of(true);
+		}
+
+		walkingLogic.fullReset();
+		try {
+			while (ctx.movement.destination().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE
+					&& ctx.players.local().tile().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE
+					&& condition.call()) {
+				// Interact with the path when told to do so by logic
+				if (walkingLogic.shouldInteract()) {
+					if (!path.traverse(TRAVERSAL_OPTIONS)) {
+						break;
+					}
+					int spamClicks = mouseUtil.getClicks();
+					while (spamClicks-- > 1) {
+						// TODO: Add small mouse movement (+- 1/2/3 px per click)
+						ctx.input.click(true);
+						Condition.sleep(persona.getNextSpamDelay());
+					}
+				}
+
+				// Block until we're moving
+				if (!Condition.wait(new Callable<Boolean>() {
+					@Override
+					public Boolean call() throws Exception {
+						return ctx.players.local().inMotion();
+					}
+				}, 150))
+					return false;
+
+				Condition.sleep(persona.getNextInteractDelay());
+			}
+		} catch (Exception e) {
+			// TODO(v1): Add logging.
+			e.printStackTrace();
+		}
+
+		return true;
+	}
+
 	/**
 	 * Performs the majority of the path walking and releases control when the destination of the
 	 * player, or the player itself is within a close enough distance
@@ -180,37 +224,6 @@ public class Walk {
 	 * @return True if the traversing has been successful. False otherwise.
 	 */
 	public boolean walk() {
-		walkingLogic.fullReset();
-		// TODO(v2): Add !inViewPort to while condition
-		while (ctx.movement.destination().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE
-				&& ctx.players.local().tile().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE) {
-			// Interact with the path when told to do so by logic
-			if (walkingLogic.shouldInteract()) {
-				if (!path.traverse(TRAVERSAL_OPTIONS)) {
-					break;
-				}
-				int spamClicks = mouseUtil.getClicks();
-				while (spamClicks-- > 1) {
-					// TODO: Add small mouse movement (+- 1/2/3 px per click) or simply #traverse
-					ctx.input.click(true);
-					Condition.sleep(persona.getNextSpamDelay());
-				}
-			}
-
-			// Block until we're moving
-			if (!Condition.wait(new Callable<Boolean>() {
-				@Override
-				public Boolean call() throws Exception {
-					return ctx.players.local().inMotion();
-				}
-			}, 150))
-				return false;
-
-			// We're slow and don't react to things instantaneously. Also, this adds some variance
-			// to the InteractionAmount.Constant interact model.
-			Condition.sleep(persona.getNextInteractDelay());
-		}
-
-		return true;
+		return walkUntil(null);
 	}
 }

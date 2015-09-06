@@ -135,10 +135,11 @@ public class DependencyA {
    Persona aims to emulate how a person might interact with the game over time. Where a static bot may, without fail, interact with an object, Persona may, over time, become less and less accurate in interaction until an *event* which may pull the attention back up. While the Persona engine doesn't do this automatically, it provides methods for very easily implementing these types of human responses throughout a script.
 
 
-## ScriptUtil
+## Script Utilities
 ###### Interaction utilities that utilize Persona
 #### Available Utilities
-+ BackpackUtil ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/BackpackUtil.java))
-+ BankUtil ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/BankUtil.java))
-+ MouseUtil ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/MouseUtil.java))
-+ WalkUtil ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/WalkUtil.java))
++ Backpack ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Backpack.java))
++ Bank ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Bank.java))
++ Camera ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Bank.java))
++ Mouse ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Mouse.java))
++ Walk ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Walk.java))

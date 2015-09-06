@@ -1,8 +1,5 @@
 package me.fru1t.rsbot;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.powerbot.script.Locatable;
 import org.powerbot.script.Script.Manifest;
 import org.powerbot.script.Tile;
@@ -10,20 +7,19 @@ import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.common.annotations.Nullable;
 import me.fru1t.rsbot.common.framework.Script;
+import me.fru1t.rsbot.common.framework.StateInterface;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
-import me.fru1t.rsbot.safecracker.strategies.BankWalk;
-import me.fru1t.rsbot.safecracker.strategies.OpenBank;
-import me.fru1t.rsbot.safecracker.strategies.SafeCrack;
-import me.fru1t.rsbot.safecracker.strategies.SafeEat;
-import me.fru1t.rsbot.safecracker.strategies.SafeWalk;
+import me.fru1t.rsbot.safecracker.strategies.BankWithdrawManual;
+import me.fru1t.rsbot.safecracker.strategies.BankWithdrawWithPresets;
 
 @Manifest(
 		name = "Rogue's Den Safe Cracker",
 		description = "Cracks safes in Rogue's Den",
 		properties = "client=6;")
-public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCracker.State, Settings> {
+public class RoguesDenSafeCracker
+		extends Script<ClientContext, RoguesDenSafeCracker.State, Settings> {
 	public static final int[] SAFE_OBJECT_BOUNDS_MODIFIER = {-244, 244, -1140, 0, -64, 128};
 	public static final int SAFE_OBJECT_ID = 7235;
 	public static final int SAFE_OPENED_OBJECT_ID = 64296;
@@ -36,22 +32,32 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	/**
 	 * Defines this script's possible states.
 	 */
-	// TODO(v1): Add state interface that has #getHandlingClass
-	public enum State {
+	public enum State implements StateInterface<State> {
 		// Other
-		UNKNOWN,
+		UNKNOWN(null),
 
 		// Bank
-		BANK_WALK,
-		BANK_OPEN,
-		BANK_DEPOSIT,
-		BANK_WITHDRAW,
-		BANK_WITHDRAW_WITH_PRESETS,
+		BANK_WALK(null),
+		BANK_OPEN(null),
+		BANK_DEPOSIT(null),
+		BANK_WITHDRAW(null),
+		BANK_WITHDRAW_WITH_PRESETS(BankWithdrawWithPresets.class),
+		BANK_WITHDRAW_MANUALLY(BankWithdrawManual.class),
 
 		// Safe cracking
-		SAFE_WALK,
-		SAFE_CRACK,
-		SAFE_EAT
+		SAFE_WALK(null),
+		SAFE_CRACK(null),
+		SAFE_EAT(null);
+
+		private final Class<? extends Strategy<State>> controllingClass;
+		private State(Class<? extends Strategy<State>> controllingClass) {
+			this.controllingClass = controllingClass;
+		}
+
+		@Override
+		public Class<? extends Strategy<State>> getControllingClass() {
+			return controllingClass;
+		}
 	}
 
 	/**
@@ -90,17 +96,6 @@ public class RoguesDenSafeCracker extends Script<ClientContext, RoguesDenSafeCra
 	@Override
 	public void init() {
 		showStartupForm(StartupForm.class);
-	}
-
-	@Override
-	protected Map<State, Class<? extends Strategy<State>>> getActionMap() {
-		Map<State, Class<? extends Strategy<State>>> stateMap = new HashMap<>();
-		stateMap.put(State.SAFE_CRACK, SafeCrack.class);
-		stateMap.put(State.SAFE_EAT, SafeEat.class);
-		stateMap.put(State.BANK_WALK, BankWalk.class);
-		stateMap.put(State.SAFE_WALK, SafeWalk.class);
-		stateMap.put(State.BANK_OPEN, OpenBank.class);
-		return stateMap;
 	}
 
 	@Override

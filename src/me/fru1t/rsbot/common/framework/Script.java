@@ -20,7 +20,7 @@ import me.fru1t.slick.Slick;
  */
 public abstract class Script<
 		C extends ClientContext<?>,
-		ST extends Enum<ST>,
+		ST extends Enum<ST> & StateInterface<ST>,
 		T extends AbstractSettings> extends PollingScript<C> {
 	/**
 	 * The number of failures to endure before resetting the script state
@@ -32,11 +32,6 @@ public abstract class Script<
 	 * This is where the GUI or settings setup should take place.
 	 */
 	protected abstract void init();
-
-	/**
-	 * @return Returns each script state mapped to the class that handles it.
-	 */
-	protected abstract Map<ST, Class<? extends Strategy<ST>>> getActionMap();
 
 	/**
 	 * @return The reset state for the script if something goes horribly wrong.
@@ -114,7 +109,6 @@ public abstract class Script<
 					@Override
 					public void call(T settings) {
 						setSettings(settings);
-						setUpActions();
 						scriptReady();
 					}
 				})
@@ -143,30 +137,21 @@ public abstract class Script<
 	}
 
 	/**
-	 * Instantiates the actions for the script. This must be called after the settings have been
-	 * set, and all dependencies that each Action may have are provided to the slick instance.
-	 */
-	protected final void setUpActions() {
-		status.update("Preparing script to run...");
-		for (Map.Entry<ST, Class<? extends Strategy<ST>>> entry : getActionMap().entrySet()) {
-			scriptActions.put(entry.getKey(), slick.get(entry.getValue()));
-		}
-		// Some trickery here to get all enums within ST (state) because Java's type erasure.
-		ST[] states = getResetState().getDeclaringClass().getEnumConstants();
-		for (ST state : states) {
-			if (!scriptActions.containsKey(state)) {
-				throw new RuntimeException(
-						String.format("%s state has no handling class.", state.name()));
-			}
-		}
-	}
-
-	/**
 	 * Flips the switch. Tells the script to start running.
 	 */
 	protected final void scriptReady() {
-		// Script action map will only fully populate when dependencies are met and all states are
-		// verified to be handled.
+		// Verify all states are handled
+		ST[] states = getResetState().getDeclaringClass().getEnumConstants();
+		for (ST state : states) {
+			if (state.getControllingClass() == null) {
+				throw new RuntimeException(String.format(
+						"%s state has no controlling class",
+						state.name()));
+			}
+			scriptActions.put(state, slick.get(state.getControllingClass()));
+		}
+
+		//
 		if (scriptActions.size() == 0) {
 			throw new RuntimeException("The script was told to run, "
 					+ "but the script action map has no actions in it.");

@@ -48,16 +48,15 @@ public abstract class Script<
 	 * Creates a new empty script
 	 */
 	protected Script() {
-		slick = new Slick();
-		status = new Status();
-		state = new RunState<>();
-
-		slick.provide(ctx);
-		slick.provide(state);
-		slick.provide(status);
-		slick.provide(new Persona());
-
 		this.scriptActions = new HashMap<>();
+		this.status = new Status();
+		this.state = new RunState<>();
+		this.slick = new Slick()
+				.provide(ctx)
+				.provide(state)
+				.provide(status)
+				.provide(new Persona());
+
 	}
 
 	@Override
@@ -102,17 +101,21 @@ public abstract class Script<
 	 */
 	protected final <F extends AbstractStartupForm<T>> void showStartupForm(Class<F> formClazz) {
 		status.update("Waiting for user input");
-		slick.provide(new AbstractSettings.Callback<T>() {
-			@Override
-			public void call(T settings) {
-				setSettings(settings);
-				setUpActions();
-				scriptReady();
-			}
-		});
+		new Slick()
+				// Provide the form's required callback
+				.provide(new AbstractSettings.Callback<T>() {
+					@Override
+					public void call(T settings) {
+						setSettings(settings);
+						setUpActions();
+						scriptReady();
+					}
+				})
 
-		// The form should self-instantiate and become visible.
-		slick.get(formClazz);
+				// Create the form
+				.get(formClazz);
+
+
 	}
 
 	/**

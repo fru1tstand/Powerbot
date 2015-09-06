@@ -46,6 +46,9 @@ public class RoguesDenSafeCracker
 
 		// Safe cracking
 		SAFE_WALK(null),
+		SAFE_WALK_USING_MINIMAP(null),
+		SAFE_WALK_USING_VIEWPORT(null),
+
 		SAFE_CRACK(null),
 		SAFE_EAT(null);
 

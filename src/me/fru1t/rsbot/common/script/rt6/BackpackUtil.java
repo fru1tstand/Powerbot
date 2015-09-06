@@ -16,6 +16,8 @@ import me.fru1t.rsbot.common.framework.util.Condition;
  */
 @Singleton
 public class BackpackUtil {
+	private static final int MAX_BACKPACK_SIZE = 28;
+
 	private final ClientContext ctx;
 	private final MouseUtil mouseUtil;
 	private final Persona persona;
@@ -28,6 +30,14 @@ public class BackpackUtil {
 		this.ctx = ctx;
 		this.mouseUtil = mouseUtil;
 		this.persona = persona;
+	}
+
+	/**
+	 * Returns whether or not the backpack is full. Resets the Backpack query.
+	 * @return Whether or not the backpack is full.
+	 */
+	public boolean isFull() {
+		return ctx.backpack.select().size() == MAX_BACKPACK_SIZE;
 	}
 
 	/**

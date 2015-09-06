@@ -18,12 +18,6 @@ import me.fru1t.common.annotations.Singleton;
  * <p>Slick aims to be a Guice/Dagger-like runtime dependency injection framework. Super simplistic,
  * none of the setup, all of the errors. Only supports constructor injections (versus member
  * injection). But hey, it's "easy to use".
- *
- * <p>**Does not map interfaces to implementations** Maybe a todo? Inversion of control is not
- * needed for the current usage of Slick so this was left out.
- *
- * <p>Design note: I opted to force the @Inject constructor instead of allowing non-annotated
- * or no constructor classes because explicit is better than implicit.
  */
 // TODO(v1): Update docs on all methods, classes, etc.
 public class Slick {
@@ -35,19 +29,25 @@ public class Slick {
 
 	/**
 	 * Gives slick an instance of the class for singleton use by classes being injected.
+	 *
 	 * @param reference
+	 * @return Returns this instance of slick for method chaining.
 	 */
-	public <T> void provide(T reference) {
+	public <T> Slick provide(T reference) {
 		unsafeProvide(reference.getClass(), reference);
+		return this;
 	}
 
 	/**
 	 * Gives slick an instance of the specified class for singleton use by classes being injected.
+	 *
 	 * @param clazz The class type to provide
 	 * @param reference The instance of the class
+	 * @return Returns this instance of slick for method chaining.
 	 */
-	public <T> void provide(Class<T> clazz, T reference) {
+	public <T> Slick provide(Class<T> clazz, T reference) {
 		unsafeProvide(clazz, reference);
+		return this;
 	}
 
 	/**
@@ -64,6 +64,7 @@ public class Slick {
 
 	/**
 	 * Attempts to create and return an instance of a class.
+	 *
 	 * @param clazz The class to make an instance of.
 	 * @return An instance of the class.
 	 */
@@ -192,19 +193,6 @@ public class Slick {
 			}
 
 			return entry.getValue();
-
-			// TODO: Properly implement generic type checking for injection
-			// // Type check
-//			Class<?> rollingClass = entry.getKey();
-//			while (rollingClass != null) {
-//				for (Type t : rollingClass.getGenericInterfaces()) {
-//					if (type.equals(t)) {
-//						return entry.getValue();
-//					}
-//				}
-//
-//				rollingClass = rollingClass.getSuperclass();
-//			}
 		}
 		return null;
 	}

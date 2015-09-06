@@ -49,7 +49,7 @@ public class Persona {
 	/**
 	 * Min/Max focus
 	 */
-	public static Tuple2<Integer, Integer> FOCUS_RANGE = Tuple2.of(0, 100);
+	public static Tuple2<Integer, Integer> MAX_RANGE = Tuple2.of(0, 100);
 
 	private int attentiveness;
 	private int clumsiness;
@@ -78,7 +78,7 @@ public class Persona {
 	 */
 	public int focus() {
 		return Math.min(
-				FOCUS_RANGE.second, Math.max(FOCUS_RANGE.first, attentiveness - clumsiness));
+				MAX_RANGE.second, Math.max(MAX_RANGE.first, attentiveness - clumsiness));
 	}
 
 	/**
@@ -130,8 +130,8 @@ public class Persona {
 	public double getScaledDouble(
 			Tuple2<Integer, Integer> cutoff, Tuple2<Double, Double> range, int scale) {
 		if (cutoff.first >= cutoff.second
-				|| cutoff.first < FOCUS_RANGE.first
-				|| cutoff.second > FOCUS_RANGE.second
+				|| cutoff.first < MAX_RANGE.first
+				|| cutoff.second > MAX_RANGE.second
 				|| range.first >= range.second) {
 			throw new RuntimeException("Invalid call to #getFocusScaledValue.");
 		}
@@ -144,7 +144,7 @@ public class Persona {
 
 		// Will not go out of bounds due to exception check.
 		return 1.0
-				* (cutoff.second - cutoff.first) / (FOCUS_RANGE.second - FOCUS_RANGE.first) // Scale
+				* (cutoff.second - cutoff.first) / (MAX_RANGE.second - MAX_RANGE.first) // Scale
 				* (range.second - range.first) // Max delta
 				+ range.first;
 	}
@@ -166,7 +166,7 @@ public class Persona {
 	 * @return A value within the range.
 	 */
 	public double getFocusScaledDouble(Tuple2<Double, Double> returnRange) {
-		return getScaledDouble(FOCUS_RANGE, returnRange, focus());
+		return getScaledDouble(MAX_RANGE, returnRange, focus());
 	}
 
 	/**
@@ -191,7 +191,7 @@ public class Persona {
 	 * @return A value within the range.
 	 */
 	public int getFocusScaledInt(Tuple2<Integer, Integer> returnRange) {
-		return getScaledInt(FOCUS_RANGE, returnRange, focus());
+		return getScaledInt(MAX_RANGE, returnRange, focus());
 	}
 
 	/**
@@ -216,7 +216,7 @@ public class Persona {
 	 * @return A value within the range.
 	 */
 	public double getLazinessScaledDouble(Tuple2<Double, Double> returnRange) {
-		return getScaledDouble(FOCUS_RANGE, returnRange, laziness());
+		return getScaledDouble(MAX_RANGE, returnRange, laziness());
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class Persona {
 	 * @return A value within the range.
 	 */
 	public int getLazinessScaledInt(Tuple2<Integer, Integer> returnRange) {
-		return getScaledInt(FOCUS_RANGE, returnRange, laziness());
+		return getScaledInt(MAX_RANGE, returnRange, laziness());
 	}
 
 	/**

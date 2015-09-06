@@ -99,10 +99,12 @@ public abstract class Script<
 	/**
 	 * Callable by the implementing class, this method displays the given startup form and sets
 	 * the settings when the form is closed.
-	 * @param formClazz The class corresponding to the startup form.
+	 * @param formClass The class corresponding to the startup form.
 	 */
-	protected final <F extends AbstractStartupForm<T>> void showStartupForm(Class<F> formClazz) {
+	protected final <F extends AbstractStartupForm<T>> void showStartupForm(Class<F> formClass) {
 		status.update("Waiting for user input");
+		// Isolate the startup form and callback from our main instance of slick as there's no need
+		// to pollute it.
 		new Slick()
 				// Provide the form's required callback
 				.provide(new AbstractSettings.Callback<T>() {
@@ -114,9 +116,7 @@ public abstract class Script<
 				})
 
 				// Create the form
-				.get(formClazz);
-
-
+				.get(formClass);
 	}
 
 	/**

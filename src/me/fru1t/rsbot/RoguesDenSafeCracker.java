@@ -9,6 +9,7 @@ import me.fru1t.common.annotations.Nullable;
 import me.fru1t.rsbot.common.framework.Script;
 import me.fru1t.rsbot.common.framework.StateInterface;
 import me.fru1t.rsbot.common.framework.Strategy;
+import me.fru1t.rsbot.common.script.rt6.Camera;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
 import me.fru1t.rsbot.safecracker.strategies.BankWithdrawManual;
@@ -67,15 +68,14 @@ public class RoguesDenSafeCracker
 	 * The safes to crack with data associated to each safe.
 	 */
 	public enum Safe {
-		AUTOMATIC(null, null),
-		SW(new Tile(3041, 4957), new Tile(3041, 4956)),
-		SE(new Tile(3043, 4957), new Tile(3043, 4956)),
-		NW(new Tile(3041, 4962), new Tile(3041, 4963)),
-		NE(new Tile(3043, 4962), new Tile(3043, 4963));
+		SW(new Tile(3041, 4957), new Tile(3041, 4956), Camera.Direction.WIDE_N),
+		SE(new Tile(3043, 4957), new Tile(3043, 4956), Camera.Direction.WIDE_N),
+		NW(new Tile(3041, 4962), new Tile(3041, 4963), Camera.Direction.WIDE_S),
+		NE(new Tile(3043, 4962), new Tile(3043, 4963), Camera.Direction.WIDE_S);
 
 		public final Tile location;
 		public final Tile playerLocation;
-		private Safe(Tile location, Tile playerLocation) {
+		private Safe(Tile location, Tile playerLocation, Camera.Direction direction) {
 			this.location = location;
 			this.playerLocation = playerLocation;
 		}

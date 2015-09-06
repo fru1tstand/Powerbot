@@ -6,6 +6,7 @@ import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.RoguesDenSafeCracker.State;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.script.rt6.Backpack;
+import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
 import me.fru1t.rsbot.safecracker.strategies.logic.WalkLogic;
 
 /**
@@ -14,13 +15,16 @@ import me.fru1t.rsbot.safecracker.strategies.logic.WalkLogic;
 public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 	private final Backpack backpack;
 	private final WalkLogic walkLogic;
+	private final SafeLogic safeLogic;
 
 	@Inject
 	public SafeWalk(
 			@Singleton Backpack backpack,
+			@Singleton SafeLogic safeLogic,
 			WalkLogic walkLogic) {
 		this.backpack = backpack;
 		this.walkLogic = walkLogic;
+		this.safeLogic = safeLogic;
 	}
 
 	@Override
@@ -28,6 +32,9 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 		if (backpack.isFull()) {
 			return State.BANK_WALK;
 		}
+
+		// Seed a new safe to crack
+		safeLogic.newSafe();
 
 		switch(walkLogic.getWalkMethod()) {
 		default:

@@ -15,19 +15,49 @@ import me.fru1t.rsbot.common.util.Random;
 public class Camera {
 	public enum Direction {
 		// TODO(v1): Set these to the correct values
-		N(Tuple2.of(0, 40)),
-		NW(Tuple2.of(0, 40)),
-		W(Tuple2.of(0, 40)),
-		SW(Tuple2.of(0, 40)),
-		S(Tuple2.of(0, 40)),
-		SE(Tuple2.of(0, 40)),
-		E(Tuple2.of(0, 40)),
-		NE(Tuple2.of(0, 40));
+
+		// Tight values don't overlap and are set at absolute 45 degree angles
+		NARROW_N(Tuple2.of(0, 45)),
+		NARROW_NW(Tuple2.of(0, 40)),
+		NARROW_W(Tuple2.of(0, 40)),
+		NARROW_SW(Tuple2.of(0, 40)),
+		NARROW_S(Tuple2.of(0, 40)),
+		NARROW_SE(Tuple2.of(0, 40)),
+		NARROW_E(Tuple2.of(0, 40)),
+		NARROW_NE(Tuple2.of(0, 40)),
+
+		MEDIUM_N(Tuple2.of(0, 90)),
+		MEDIUM_NW(Tuple2.of(0, 40)),
+		MEDIUM_W(Tuple2.of(0, 40)),
+		MEDIUM_SW(Tuple2.of(0, 40)),
+		MEDIUM_S(Tuple2.of(0, 40)),
+		MEDIUM_SE(Tuple2.of(0, 40)),
+		MEDIUM_E(Tuple2.of(0, 40)),
+		MEDIUM_NE(Tuple2.of(0, 40)),
+
+		WIDE_N(Tuple2.of(0, 180)),
+		WIDE_NW(Tuple2.of(0, 40)),
+		WIDE_W(Tuple2.of(0, 40)),
+		WIDE_SW(Tuple2.of(0, 40)),
+		WIDE_S(Tuple2.of(0, 40)),
+		WIDE_SE(Tuple2.of(0, 40)),
+		WIDE_E(Tuple2.of(0, 40)),
+		WIDE_NE(Tuple2.of(0, 40));
 
 		private final Tuple2<Integer, Integer> range;
 		private Direction(Tuple2<Integer, Integer> range) {
 			this.range = range;
 		}
+
+		/**
+		 * Returns a random angle from within this direction's range.
+		 * @return A random angle from this direction's range.
+		 */
+		public int getRandomAngle() {
+			return Random.nextInt(range);
+		}
+
+		// TODO(v2): Gauss angle?
 	}
 
 	/**

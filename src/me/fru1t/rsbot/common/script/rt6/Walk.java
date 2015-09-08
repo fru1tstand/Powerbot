@@ -183,10 +183,8 @@ public class Walk {
 	 * @param condition The condition to validate with.
 	 * @return True if the traversing has been successful. False otherwise.
 	 */
-	public boolean walkUntil(@Nullable Callable<Boolean> condition) {
-		if (condition == null) {
-			condition = Callables.of(true);
-		}
+	public boolean walkUntil(@Nullable Callable<Boolean> nCondition) {
+		Callable<Boolean> condition = (nCondition == null) ? Callables.of(true) : nCondition;
 
 		walkingLogic.fullReset();
 		try {

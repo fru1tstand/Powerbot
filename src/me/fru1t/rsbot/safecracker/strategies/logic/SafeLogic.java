@@ -48,6 +48,44 @@ public class SafeLogic {
 	}
 
 	/**
+	 * Returns if the player is standing at the current safe.
+	 *
+	 * @return If the player is standing at the current safe.
+	 */
+	public boolean isAtSafe() {
+		return safe.playerLocation.equals(ctx.players.local().tile());
+	}
+
+	/**
+	 * Returns if the player is standing at or the player's destination is at the current safe.
+	 *
+	 * @return If the player is standing at or the player's destination is at the current safe.
+	 */
+	public boolean isAtOrMovingTowardsSafe() {
+		return isAtOrMovingTowardsSafeWithTolerance(0);
+	}
+
+	/**
+	 * Returns if the player's distance or the destination's distance to the safe is within the
+	 * given distance.
+	 *
+	 * @param distance The distance tolerance to use. This value is inclusive. Eg. If passed 0 and
+	 * the player is exactly on the tile, this method would return true.
+	 * @return If the player's distance or the destination's distance to the safe is within the
+	 * given distance.
+	 */
+	public boolean isAtOrMovingTowardsSafeWithTolerance(int distance) {
+		if (safe.playerLocation.distanceTo(ctx.players.local()) <= distance) {
+			return true;
+		}
+		if (safe.playerLocation.distanceTo(ctx.movement.destination()) <= distance) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Generates a new optimal safe to crack. This should be called every bank cycle.
 	 *
 	 * <p>Algorithm:

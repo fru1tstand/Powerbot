@@ -1,18 +1,19 @@
 package me.fru1t.rsbot.common.script.rt6;
 
 import java.util.EnumSet;
-import java.util.concurrent.Callable;
 
+import org.powerbot.script.Locatable;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Path;
 import org.powerbot.script.rt6.Path.TraversalOption;
+import org.powerbot.script.rt6.TileMatrix;
 import org.powerbot.script.rt6.TilePath;
 
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Nullable;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
-import me.fru1t.rsbot.common.framework.components.Persona;
+import me.fru1t.rsbot.common.framework.util.Callable;
 import me.fru1t.rsbot.common.framework.util.Callables;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
@@ -30,8 +31,12 @@ import me.fru1t.rsbot.common.util.Timer;
  * <p> TODO: Add distance-based interaction alongside time based.
  */
 // TODO(v1 cleanup): Find usages of WalkUtil and rename to Walk
+// TODO(v1): Add early-quitting for script pause/stop
+// TODO(v1): Rename this class to something like "Path" or extend Path as it has evolved into
+// more of a Path-like class instead of a walk util.
 public class Walk {
 	protected enum InteractionAmount { CONSTANT, RANDOM, GAUSS }
+	public enum Method { VIEWPORT, MINIMAP }
 
 	/**
 	 * WalkingLogic contains the methods that provide delay between clicks to the next location
@@ -119,118 +124,256 @@ public class Walk {
 	}
 
 	/**
-	 * Creates Rs3Walking instances.
+	 * An injectable factory that creates Walk instances.
 	 */
 	public static class Factory {
 		private final ClientContext ctx;
 		private final Mouse mouseUtil;
 		private final WalkingLogic walkingLogic;
-		private final Persona persona;
+		private final Condition condition;
+		private final Timer waitTimer;
 
 		@Inject
 		public Factory(
 				@Singleton ClientContext ctx,
 				@Singleton Mouse mouseUtil,
 				@Singleton WalkingLogic walkingLogic,
-				@Singleton Persona persona) {
+				@Singleton Condition condition,
+				Timer waitTimer) {
 			this.ctx = ctx;
 			this.mouseUtil = mouseUtil;
 			this.walkingLogic = walkingLogic;
-			this.persona = persona;
+			this.condition = condition;
+			this.waitTimer = waitTimer;
 		}
 
+		/**
+		 * Creates a new Walk object with the given path.
+		 * @param path
+		 * @return A new walk object.
+		 */
 		public Walk create(Path path) {
 			return new Walk(
 					ctx,
 					mouseUtil,
-					persona,
+					condition,
+					waitTimer,
 					walkingLogic,
 					path);
 		}
+
+		/**
+		 * Creates a new Walk object with the given locatable, generating a path using localpath.
+		 *
+		 * @param locatable The object to walk towards.
+		 * @return A new walk object.
+		 */
+		public Walk createUsingLocalPath(Locatable locatable) {
+			return create(ctx.movement.findPath(locatable));
+		}
 	}
 
+	private static final String WALK_INTERACT_TEXT = "Walk here";
 	private static final EnumSet<TraversalOption> TRAVERSAL_OPTIONS =
 			EnumSet.of(TraversalOption.HANDLE_RUN);
 	// TODO(v2): Find a more dynamic approach to this.
 	private static final int CLOSE_ENOUGH_DISTANCE = 4;
+	private static final Tuple2<Integer, Integer> WAIT_TIMER_DURATION_RANGE = Tuple2.of(400, 800);
+	private static final int WAIT_TIMER_POLL_FREQUENCY = 150;
 
 	private final ClientContext ctx;
-	private final Mouse mouseUtil;
+	private final Mouse mouse;
 	private final WalkingLogic walkingLogic;
-	private final Persona persona;
+	private final Condition condition;
+	private final Timer waitTimer;
 
 	private final Path path;
 
 	private Walk(
 			@Singleton ClientContext ctx,
 			@Singleton Mouse mouseUtil,
-			@Singleton Persona persona,
+			@Singleton Condition condition,
+			Timer waitTimer,
 			WalkingLogic walkingLogic,
 			Path path) {
 		this.ctx = ctx;
-		this.mouseUtil = mouseUtil;
+		this.mouse = mouseUtil;
 		this.walkingLogic = walkingLogic;
-		this.persona = persona;
+		this.condition = condition;
 		this.path = path;
+		this.waitTimer = waitTimer;
 	}
 
 	/**
-	 * Performs the majority of the path walking and releases control when the destination of the
-	 * player, or the player itself is within a close enough distance,
-	 * ({@value #CLOSE_ENOUGH_DISTANCE} units) to the destination tile, or the given condition
-	 * evaludates to be true.
+	 * The player navigates the path using the given walk method. This method does not guarantee
+	 * the player will be at the end location of the path before it exits, but does guarantee that
+	 * over time, the player will be at the location. This method will also return if the given
+	 * release evaluates to true.
 	 *
-	 * @param condition The condition to validate with.
+	 * @param walkMethod The method of walking to use.
+	 * @param release The condition to check against.
+	 * @return True if the traversing was successful. False otherwise.
+	 */
+	public boolean walkUntil(Method walkMethod, @Nullable Callable<Boolean> release) {
+		return (walkMethod == Method.MINIMAP)
+				? walkWithMinimapUntil(release) : walkWithViewportUntil(release);
+	}
+
+	/**
+	 * Synonymous to {@link #walk(Method, Callable)} passing null as the condition.
+	 *
+	 * @see #walk(Method, Callable)
+	 * @param walkMethod The method of walking to use.
+	 * @return True of the traversing was successful. False otherwise.
+	 */
+	public boolean walk(Method walkMethod) {
+		return walkUntil(walkMethod, null);
+	}
+
+	/**
+	 * Performs the majority of this path and releases control when the player or the destination
+	 * of the player is within the "close enough" distance of {@value #CLOSE_ENOUGH_DISTANCE}
+	 * units, or until the given condition evaluates to true. This method interfaces with the
+	 * minimap to traverse the path.
+	 *
+	 * @param release The condition to validate with.
 	 * @return True if the traversing has been successful. False otherwise.
 	 */
-	public boolean walkUntil(@Nullable Callable<Boolean> nCondition) {
-		Callable<Boolean> condition = (nCondition == null) ? Callables.of(true) : nCondition;
-
-		walkingLogic.fullReset();
-		try {
-			while (ctx.movement.destination().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE
-					&& ctx.players.local().tile().distanceTo(path.end()) > CLOSE_ENOUGH_DISTANCE
-					&& condition.call()) {
-				// Interact with the path when told to do so by logic
-				if (walkingLogic.shouldInteract()) {
-					if (!path.traverse(TRAVERSAL_OPTIONS)) {
-						break;
-					}
-					int spamClicks = mouseUtil.getClicks();
-					while (spamClicks-- > 1) {
-						// TODO: Add small mouse movement (+- 1/2/3 px per click)
-						ctx.input.click(true);
-						Condition.sleep(persona.getNextSpamDelay());
-					}
-				}
-
-				// Block until we're moving
-				if (!Condition.wait(new Callable<Boolean>() {
+	public boolean walkWithMinimapUntil(@Nullable Callable<Boolean> release) {
+		return genericWalk(new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
+						if (!path.traverse(TRAVERSAL_OPTIONS)) {
+							return false;
+						}
+						int spamClicks = mouse.getClicks();
+						while (spamClicks-- > 1) {
+							// TODO: Add small mouse movement (+- 1/2/3 px per click)
+							ctx.input.click(true);
+							condition.sleepForSpamDelay();
+						}
+						return true;
+					}
+				},
+				release);
+	}
+
+	/**
+	 * Synonymous to {@link #walkUntil(Callable)} passing null as the condition.
+	 *
+	 * @see #walkUntil(Callable)
+	 * @return True if the traversing has been successful. False otherwise.
+	 */
+	public boolean walkWithMinimap() {
+		return walkWithMinimapUntil(null);
+	}
+
+	/**
+	 * Performs the majority of this path and releases control when the player or the destination
+	 * of the player is within the "close enough" distance of {@value #CLOSE_ENOUGH_DISTANCE}
+	 * units, or until the given condition evaluates to true. This method forces the player to use
+	 * the viewport to navigate as opposed to the traditional minimap walking.
+	 *
+	 * @return True if the traversing was successful. False otherwise.
+	 */
+	public boolean walkWithViewportUntil(@Nullable Callable<Boolean> release) {
+		return genericWalk(new Callable<Boolean>() {
+					@Override
+					public Boolean ring() {
+						// TODO(v1): Does path#next grab the correct next tile to traverse to?
+						TileMatrix tile = path.next().matrix(ctx);
+						if (!tile.inViewport()) {
+							ctx.camera.turnTo(tile);
+						}
+						if (!tile.interact(WALK_INTERACT_TEXT)) {
+							return false;
+						}
+						int spamClicks = mouse.getClicks();
+						while (spamClicks-- > 1) {
+							if (ctx.menu.items()[0].equals(WALK_INTERACT_TEXT)) {
+								ctx.input.click(true);
+								condition.sleepForSpamDelay();
+							}
+						}
+						return true;
+					}
+				},
+				release);
+	}
+
+	/**
+	 * Synonymous to {@link #walkWithViewportUntil(Callable)} passing null as the condition.
+	 *
+	 * @see #walkWithViewportUntil(Callable)
+	 * @return True of the traversing has been successful. False otherwise.
+	 */
+	public boolean walkWithViewport() {
+		return walkWithViewportUntil(null);
+	}
+
+	/**
+	 * Waits for the player to fully complete the path. This ideally should be called right after
+	 * a walk method has been called if the strategy requires an absolute location to work with.
+	 *
+	 * @return True if the player is at or near the destination of this path.
+	 */
+	public boolean waitUntilDestinationIsReached() {
+		return Condition.wait(
+				new Callable<Boolean>() { /* Condition */
+					@Override
+					public Boolean ring() {
+						return ctx.players.local().tile().distanceTo(path.end())
+								<= CLOSE_ENOUGH_DISTANCE;
+					}
+				},
+				new Callable<Boolean>() { /* Timer Condition */
+					@Override
+					public Boolean ring() {
 						return ctx.players.local().inMotion();
 					}
-				}, 150))
-					return false;
-
-				Condition.sleep(persona.getNextInteractDelay());
-			}
-		} catch (Exception e) {
-			// TODO(v1): Add logging.
-			e.printStackTrace();
-		}
-
-		return true;
+				},
+				waitTimer,
+				Random.nextInt(WAIT_TIMER_DURATION_RANGE),
+				WAIT_TIMER_POLL_FREQUENCY);
 	}
 
 	/**
-	 * Performs the majority of the path walking and releases control when the destination of the
-	 * player, or the player itself is within a close enough distance
-	 * ({@value #CLOSE_ENOUGH_DISTANCE} units) to the destination tile.
+	 * Returns if the player or the player's destination is close enough to the destination.
 	 *
-	 * @return True if the traversing has been successful. False otherwise.
+	 * @return True if the player is close enough or on the way. False otherwise.
 	 */
-	public boolean walk() {
-		return walkUntil(null);
+	public boolean isCloseEnoughOrOnTheWay() {
+		return ctx.movement.destination().distanceTo(path.end()) <= CLOSE_ENOUGH_DISTANCE
+				|| ctx.players.local().tile().distanceTo(path.end()) <= CLOSE_ENOUGH_DISTANCE;
+	}
+
+	/**
+	 * Performs the path walking using the given interact method when it needs to interact.
+	 */
+	private boolean genericWalk(Callable<Boolean> interact, @Nullable Callable<Boolean> nRelease) {
+		Callable<Boolean> release = (nRelease == null) ? Callables.of(false) : nRelease;
+		walkingLogic.fullReset();
+
+		while (!release.ring()
+				&& !isCloseEnoughOrOnTheWay()) {
+			if (walkingLogic.shouldInteract()) {
+				if (!interact.ring()) {
+					return false;
+				}
+			}
+
+			// Block until we're moving
+			if (!Condition.wait(new Callable<Boolean>() {
+					@Override
+					public Boolean ring() {
+						return ctx.players.local().inMotion();
+					}
+				}, 150)) {
+				return false;
+			}
+
+			condition.sleepForInteractDelay();
+		}
+		return true;
 	}
 }

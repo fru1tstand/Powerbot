@@ -1,7 +1,6 @@
 package me.fru1t.rsbot.common.script.rt6;
 
 import java.awt.Point;
-import java.util.concurrent.Callable;
 
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
@@ -11,6 +10,7 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
+import me.fru1t.rsbot.common.framework.util.Callable;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;
@@ -146,13 +146,13 @@ public class Bank {
 		return Condition.wait(
 				new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
 						return ctx.bank.opened();
 					}
 				},
 				new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
 						return ctx.players.local().inMotion();
 					}
 
@@ -220,7 +220,7 @@ public class Bank {
 				Constants.BANK_DEPOSIT_INVENTORY,
 				new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
 						return ctx.backpack.isEmpty();
 					}
 				});
@@ -239,7 +239,7 @@ public class Bank {
 				Constants.BANK_LOAD1,
 				new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
 						return !ctx.bank.opened();
 					}
 				});
@@ -258,7 +258,7 @@ public class Bank {
 				Constants.BANK_LOAD2,
 				new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
 						return !ctx.bank.opened();
 					}
 				});

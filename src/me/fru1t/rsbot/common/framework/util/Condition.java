@@ -1,7 +1,5 @@
 package me.fru1t.rsbot.common.framework.util;
 
-import java.util.concurrent.Callable;
-
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
@@ -10,6 +8,7 @@ import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;
 
 @Singleton
+// TODO(v1): Add early exit for stop/pause
 public class Condition extends org.powerbot.script.Condition {
 	/**
 	 * Conditionally wait until either the given timer expires, or the condition has completed.
@@ -21,6 +20,7 @@ public class Condition extends org.powerbot.script.Condition {
 	 * @param pollFrequency The amount of time between checking the condition and timer condition
 	 * @return If the condition was met within the given time. Otherwise, false.
 	 */
+	// TODO(v2): Eventually remove pollFrequency and inject this class to use Persona-based waiting
 	public static boolean wait(
 			Callable<Boolean> condition,
 			Callable<Boolean> timerCondition,

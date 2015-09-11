@@ -1,7 +1,5 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
-import java.util.concurrent.Callable;
-
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
@@ -10,6 +8,7 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
+import me.fru1t.rsbot.common.framework.util.Callable;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.script.rt6.Mouse;
 import me.fru1t.rsbot.common.util.Timer;
@@ -97,7 +96,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		// Waiting for the player to interact or fail
 		if (!Condition.wait(new Callable<Boolean>() {
 			@Override
-			public Boolean call() throws Exception {
+			public Boolean ring() {
 				return ctx.players.local().animation()
 						== RoguesDenSafeCracker.PLAYER_CRACK_ANIMATION
 						|| !ctx.movement.destination().equals(Tile.NIL)
@@ -118,7 +117,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		if (!Condition.wait(
 				new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
 						return !wallsafeGameObject.valid()
 								|| ctx.players.local().animation()
 										== RoguesDenSafeCracker.PLAYER_CRACK_PRE_HURT_ANIMATION
@@ -127,7 +126,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 					}},
 				new Callable<Boolean>() {
 					@Override
-					public Boolean call() throws Exception {
+					public Boolean ring() {
 						return ctx.players.local().animation()
 								== RoguesDenSafeCracker.PLAYER_CRACK_ANIMATION;
 					}},
@@ -146,7 +145,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		// Wait for safe reset
 		if (!Condition.wait(new Callable<Boolean>() {
 			@Override
-			public Boolean call() throws Exception {
+			public Boolean ring() {
 				return wallsafeGameObject.valid();
 			}
 		}, 300, 7)) { // 2100 ms

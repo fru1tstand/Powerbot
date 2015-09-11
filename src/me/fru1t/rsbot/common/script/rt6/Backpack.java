@@ -53,7 +53,7 @@ public class Backpack {
 	 */
 	public boolean clickMultipleItemsWithSingleId(int id, int amount) {
 		amount = ctx.backpack.select().id(id).count() < amount ? ctx.backpack.count() : amount;
-		List<Item> items = new ArrayList<>();
+		List<Item> items = new ArrayList<Item>();
 		ctx.backpack.limit(amount).addTo(items);
 
 		while (!items.isEmpty()) {

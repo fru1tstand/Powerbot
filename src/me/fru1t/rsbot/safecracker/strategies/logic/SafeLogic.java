@@ -62,7 +62,8 @@ public class SafeLogic {
 
 		if (Random.roll(RANDOM_SAFE_PROBABILITY)) {
 			// Grab a random empty safe, or a random safe if none are empty
-			List<RoguesDenSafeCracker.Safe> availableSafes = new ArrayList<>();
+			List<RoguesDenSafeCracker.Safe> availableSafes =
+					new ArrayList<RoguesDenSafeCracker.Safe>();
 			for (RoguesDenSafeCracker.Safe safe : RoguesDenSafeCracker.Safe.values()) {
 				if (ctx.players.select().at(safe.playerLocation).size() == 0) {
 					availableSafes.add(safe);

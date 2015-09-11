@@ -50,9 +50,9 @@ public abstract class Script<
 	 * Creates a new empty script
 	 */
 	protected Script() {
-		this.scriptActions = new HashMap<>();
+		this.scriptActions = new HashMap<ST, Strategy<ST>>();
 		this.status = new Status();
-		this.state = new RunState<>();
+		this.state = new RunState<ST>();
 		this.slick = new Slick()
 				.provide(ctx)
 				.provide(state)

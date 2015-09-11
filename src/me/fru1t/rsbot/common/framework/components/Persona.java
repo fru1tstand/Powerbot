@@ -158,7 +158,7 @@ public class Persona {
 	public int getScaledInt(Tuple2<Integer, Integer> cutoff, Tuple2<Integer, Integer> range, int scale) {
 		return (int) Math.round(getScaledDouble(
 				cutoff,
-				new Tuple2<>((double) range.first, (double) range.second),
+				Tuple2.of((double) range.first, (double) range.second),
 				scale));
 	}
 

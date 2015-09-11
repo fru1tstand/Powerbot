@@ -2,7 +2,6 @@ package me.fru1t.slick;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,7 +23,7 @@ public class Slick {
 	private final Map<Class<?>, Object> providedInstances;
 
 	public Slick() {
-		this.providedInstances = new HashMap<>();
+		this.providedInstances = new HashMap<Class<?>, Object>();
 	}
 
 	/**
@@ -156,10 +155,7 @@ public class Slick {
 
 		try {
 			return injectableConstructor.newInstance(fulfillments);
-		} catch (InstantiationException
-				| IllegalAccessException
-				| IllegalArgumentException
-				| InvocationTargetException exception) {
+		} catch (Exception exception) {
 			throw new SlickException(
 					String.format(
 							"%s\n\t...Failed to instantiate %s",

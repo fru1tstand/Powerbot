@@ -45,7 +45,7 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 		} else {
 			// Deposit manually
 			// TODO(v1 cleanup): Is this method necessary?
-			Set<Integer> backpackSet = new HashSet<>();
+			Set<Integer> backpackSet = new HashSet<Integer>();
 //			ctx.backpack.select().addt;
 			while (!ctx.backpack.isEmpty()) {
 				backpackSet.add(ctx.backpack.poll().id());

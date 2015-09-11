@@ -2,7 +2,6 @@ package me.fru1t.rsbot.safecracker;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Window.Type;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -80,10 +79,10 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		settingsForm.getContentPane().add(lblNewLabel);
 
 		// Java 7 shenanigans doesn't have 'effectively final'.
-		final JComboBox<Enum<Food>> foodSelectorComboBox = new JComboBox<>();
+		final JComboBox foodSelectorComboBox = new JComboBox();
 		foodSelectorComboBox.setForeground(Color.BLACK);
 		foodSelectorComboBox.setToolTipText("Select food and click add to add it to the list of food you want consumed during safecracking");
-		foodSelectorComboBox.setModel(new DefaultComboBoxModel<Enum<Food>>(Food.values()));
+		foodSelectorComboBox.setModel(new DefaultComboBoxModel(Food.values()));
 		foodSelectorComboBox.setFont(new Font("Calibri", Font.PLAIN, 14));
 		foodSelectorComboBox.setBackground(Color.WHITE);
 		foodSelectorComboBox.setBounds(20, 52, 364, 20);
@@ -107,9 +106,9 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		lblThisSettingOn.setBounds(20, 259, 364, 14);
 		settingsForm.getContentPane().add(lblThisSettingOn);
 
-		final JComboBox<Enum<RoguesDenSafeCracker.Safe>> preferredSafeComboBox = new JComboBox<>();
+		final JComboBox preferredSafeComboBox = new JComboBox();
 		preferredSafeComboBox.setFont(new Font("Calibri", Font.PLAIN, 14));
-		preferredSafeComboBox.setModel(new DefaultComboBoxModel<Enum<RoguesDenSafeCracker.Safe>>(RoguesDenSafeCracker.Safe.values()));
+		preferredSafeComboBox.setModel(new DefaultComboBoxModel(RoguesDenSafeCracker.Safe.values()));
 		preferredSafeComboBox.setForeground(Color.BLACK);
 		preferredSafeComboBox.setBackground(Color.WHITE);
 		preferredSafeComboBox.setBounds(20, 277, 354, 20);
@@ -144,7 +143,6 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		bankAutomatic.setBackground(Color.DARK_GRAY);
 		bankAutomatic.setBounds(20, 118, 266, 23);
 		settingsForm.getContentPane().add(bankAutomatic);
-		settingsForm.setType(Type.UTILITY);
 		settingsForm.setTitle("Fru1tstand's Safe Cracker");
 		settingsForm.setBackground(Color.BLACK);
 		settingsForm.setAlwaysOnTop(true);

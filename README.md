@@ -3,14 +3,14 @@
 
 
 ## Scripts
-#### Rogue's Den Safe Cracker ([Manifest](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/RoguesDenSafeCracker.java) | [Strategies](fru1tstand/Powerbot/tree/master/src/me/fru1t/rsbot/safecracker/strategies))
+#### Rogue's Den Safe Cracker ([Manifest](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/RoguesDenSafeCracker.java) | [Strategies](fru1tstand/Powerbot/tree/master/src/me/fru1t/rsbot/safecracker/strategies))
 
    *Rogue's Den Safe Cracker* cracks safes within Rogue's Den in Taverly. You can start this script from virtually anywhere (but within Taverly, or even better, within Rogue's Den is highly encouraged). Cracking safes requires a minimum of level 25 thieving. 
    
    Cracking safes produces a small sum of money, but also produces a large quantity of rubies, sapphires, and emeralds. Cracking safes is a net positive experience gaining method, with food being the only required cost.
 
 
-## Slick ([source](/fru1tstand/Powerbot/blob/master/src/me/fru1t/slick/Slick.java))
+## Slick ([source](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/slick/Slick.java))
 ###### a Simple LightweIght dependenCy injection frameworK
    Slick aims for very simple (both in implementation and understanding) [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) via inversion of control. Modeled after [Guice](https://github.com/google/guice) and [Dagger 2](http://google.github.io/dagger/), Slick provides simple constructor injection with none of the type checking, and all of the errors.
 
@@ -129,7 +129,7 @@ public class DependencyA {
 ```
 
 
-## Persona^tm ([source](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/framework/components/Persona.java))
+## Persona^tm ([source](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/framework/components/Persona.java))
 ###### Human-like attention and motivation for scripts
 #### What does it do?
    Persona aims to emulate how a person might interact with the game over time. Where a static bot may, without fail, interact with an object, Persona may, over time, become less and less accurate in interaction until an *event* which may pull the attention back up. While the Persona engine doesn't do this automatically, it provides methods for very easily implementing these types of human responses throughout a script.
@@ -138,8 +138,8 @@ public class DependencyA {
 ## Script Utilities
 ###### Interaction utilities that utilize Persona
 #### Available Utilities
-+ Backpack ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Backpack.java))
-+ Bank ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Bank.java))
-+ Camera ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Bank.java))
-+ Mouse ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Mouse.java))
-+ Walk ([rt6](/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Walk.java))
++ Backpack ([rt6](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Backpack.java))
++ Bank ([rt6](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Bank.java))
++ Camera ([rt6](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Bank.java))
++ Mouse ([rt6](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Mouse.java))
++ Walk ([rt6](https://github.com/fru1tstand/Powerbot/blob/master/src/me/fru1t/rsbot/common/script/rt6/Walk.java))

@@ -2,7 +2,10 @@ package me.fru1t.rsbot.common.framework.util;
 
 import java.util.concurrent.Callable;
 
+import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
+import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;
 
@@ -49,5 +52,28 @@ public class Condition extends org.powerbot.script.Condition {
 	 */
 	public static boolean wait(Callable<Boolean> condition, Tuple2<Integer, Integer> waitRange) {
 		return wait(condition, Random.nextInt(waitRange));
+	}
+
+	private final Persona persona;
+
+	@Inject
+	public Condition(@Singleton Persona persona) {
+		this.persona = persona;
+	}
+
+	/**
+	 * Sleeps the current thread for the next interact delay amount of time.
+	 */
+	// TODO(v1 cleanup): Find and remove instances of Condition#Sleep(Persona.getNextInteractDelay)
+	public void sleepForInteractDelay() {
+		sleep(persona.getNextInteractDelay());
+	}
+
+	/**
+	 * Sleeps the current thread for the next spam delay amount of time.
+	 */
+	// TODO(v1 cleanup): Find and remove instances of Condition#Sleep(Persona.getNextSpamDelay)
+	public void sleepForSpamDelay() {
+		sleep(persona.getNextSpamDelay());
 	}
 }

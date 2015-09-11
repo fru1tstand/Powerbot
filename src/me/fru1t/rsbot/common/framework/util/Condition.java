@@ -9,6 +9,7 @@ import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;
 
+@Singleton
 public class Condition extends org.powerbot.script.Condition {
 	/**
 	 * Conditionally wait until either the given timer expires, or the condition has completed.

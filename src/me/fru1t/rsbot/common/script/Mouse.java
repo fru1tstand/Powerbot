@@ -19,7 +19,7 @@ import me.fru1t.rsbot.common.util.Random;
  * mean.
  */
 @Singleton
-public class MouseUtil<C extends ClientContext> {
+public class Mouse<C extends ClientContext> {
 	// Enable/disable probabilities
 	private static final int IS_ENABLED_PROBABILITY = 25;
 	private static final int CLICK_COUNT_IS_RANDOM_PROBABILITY = 25;
@@ -38,7 +38,7 @@ public class MouseUtil<C extends ClientContext> {
 	private final int clickCountMean;
 	private int interactProbability;
 
-	protected MouseUtil(@Singleton Persona persona) {
+	protected Mouse(@Singleton Persona persona) {
 		this.persona = persona;
 
 		this.isSpamClickEnabled = Random.roll(IS_ENABLED_PROBABILITY);

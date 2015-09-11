@@ -10,7 +10,7 @@ import me.fru1t.rsbot.common.framework.util.Condition;
 
 // TODO(v1 cleanup): Find usages of MouseUtil and convert to Mouse
 @Singleton
-public class Mouse extends me.fru1t.rsbot.common.script.MouseUtil<ClientContext> {
+public class Mouse extends me.fru1t.rsbot.common.script.Mouse<ClientContext> {
 	private final ClientContext ctx;
 
 	@Inject
@@ -26,6 +26,10 @@ public class Mouse extends me.fru1t.rsbot.common.script.MouseUtil<ClientContext>
 	 * Left clicks on the given interactive object with a human-like interaction.
 	 *
 	 * <p> Warning: It's the caller's responsibility to have the object on screen.
+	 *
+	 * <p> Warning: This method does not check for unexpected objects on the screen that may
+	 * disrupt intended actions. It is the caller's responsibility to check if an accidental
+	 * interaction occurred.
 	 *
 	 * @param interactive
 	 * @return Returns true if no errors occurred, but does not guarantee that the interaction

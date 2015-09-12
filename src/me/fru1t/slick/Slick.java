@@ -14,6 +14,7 @@ import java.util.Map;
 
 import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Nullable;
+import me.fru1t.common.annotations.Singleton;
 import me.fru1t.slick.util.SlickProvider;
 import me.fru1t.slick.util.Provider;
 
@@ -365,7 +366,7 @@ public class Slick {
 	 */
 	private boolean containsSingletonAnnotation(Annotation[] annotations) {
 		for (Annotation annotation : annotations) {
-			if (annotation instanceof Inject) {
+			if (annotation instanceof Singleton) {
 				return true;
 			}
 		}

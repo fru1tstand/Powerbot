@@ -42,7 +42,7 @@ public class Slick {
 	/**
 	 * Instantiates Slick with the given modules.
 	 *
-	 * @param modules
+	 * @param modules The modules to be used for this Slick instance.
 	 */
 	public Slick(Module... modules) {
 		this.singletonInstances = new HashMap<Class<?>, Object>();

@@ -1,7 +1,5 @@
 package me.fru1t.slick.util;
 
-import z.T;
-
 /**
  *	Utility methods for Providers
  */

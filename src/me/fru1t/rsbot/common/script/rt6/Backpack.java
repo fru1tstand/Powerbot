@@ -3,6 +3,7 @@ package me.fru1t.rsbot.common.script.rt6;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Item;
 
@@ -19,18 +20,18 @@ import me.fru1t.rsbot.common.framework.util.Condition;
 public class Backpack {
 	private static final int MAX_BACKPACK_SIZE = 28;
 
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 	private final Mouse mouseUtil;
-	private final Persona persona;
+	private final Provider<Persona> personaProvider;
 
 	@Inject
 	public Backpack(
-			@Singleton ClientContext ctx,
+			@Singleton Provider<ClientContext> ctxProvider,
 			@Singleton Mouse mouseUtil,
-			@Singleton Persona persona) {
-		this.ctx = ctx;
+			@Singleton Provider<Persona> personaProvider) {
+		this.ctxProvider = ctxProvider;
 		this.mouseUtil = mouseUtil;
-		this.persona = persona;
+		this.personaProvider = personaProvider;
 	}
 
 	/**
@@ -38,7 +39,7 @@ public class Backpack {
 	 * @return Whether or not the backpack is full.
 	 */
 	public boolean isFull() {
-		return ctx.backpack.select().size() == MAX_BACKPACK_SIZE;
+		return ctxProvider.get().backpack.select().size() == MAX_BACKPACK_SIZE;
 	}
 
 	/**
@@ -52,6 +53,7 @@ public class Backpack {
 	 * including errors.
 	 */
 	public boolean clickMultipleItemsWithSingleId(int id, int amount) {
+		final ClientContext ctx = ctxProvider.get();
 		amount = ctx.backpack.select().id(id).count() < amount ? ctx.backpack.count() : amount;
 		List<Item> items = new ArrayList<Item>();
 		ctx.backpack.limit(amount).addTo(items);
@@ -73,7 +75,7 @@ public class Backpack {
 
 				mouseUtil.click(items.get(i));
 
-				Condition.sleep(persona.getNextInteractDelay());
+				Condition.sleep(personaProvider.get().getNextInteractDelay());
 			}
 			// TODO: Maybe add a delay before looping again?
 		}

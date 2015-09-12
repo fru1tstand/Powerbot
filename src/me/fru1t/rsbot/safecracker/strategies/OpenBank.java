@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Npc;
 
@@ -15,33 +16,33 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 	// TODO(v1): Set correct banker id
 	private static final int BANKER_ID = -1;
 
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 	private final Mouse mouseUtil;
 	private final TurnToBanker turnToBanker;
 
 	@Inject
 	public OpenBank(
-			@Singleton ClientContext ctx,
+			Provider<ClientContext> ctxProvider,
 			@Singleton Mouse mouseUtil,
 			TurnToBanker turnToBanker) {
-		this.ctx = ctx;
+		this.ctxProvider = ctxProvider;
 		this.turnToBanker = turnToBanker;
 		this.mouseUtil = mouseUtil;
 	}
 
 	@Override
 	public State run() {
-		if (ctx.npcs.select().id(BANKER_ID).size() == 0) {
+		if (ctxProvider.get().npcs.select().id(BANKER_ID).size() == 0) {
 			return null;
 		}
 
-		if (ctx.bank.opened()) {
+		if (ctxProvider.get().bank.opened()) {
 			return State.BANK_DEPOSIT;
 		}
 
-		Npc banker = ctx.npcs.poll();
+		Npc banker = ctxProvider.get().npcs.poll();
 		if (turnToBanker.should(banker)) {
-			ctx.camera.turnTo(banker);
+			ctxProvider.get().camera.turnTo(banker);
 		}
 
 		// TODO(v2): Sometimes right click to interact

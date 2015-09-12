@@ -1,5 +1,11 @@
 package me.fru1t.rsbot;
 
+import me.fru1t.rsbot.safecracker.strategies.BankDeposit;
+import me.fru1t.rsbot.safecracker.strategies.BankWalk;
+import me.fru1t.rsbot.safecracker.strategies.OpenBank;
+import me.fru1t.rsbot.safecracker.strategies.SafeCrack;
+import me.fru1t.rsbot.safecracker.strategies.SafeEat;
+import me.fru1t.rsbot.safecracker.strategies.SafeWalk;
 import org.powerbot.script.Locatable;
 import org.powerbot.script.Script.Manifest;
 import org.powerbot.script.Tile;
@@ -34,25 +40,25 @@ public class RoguesDenSafeCracker
 	 * Defines this script's possible states.
 	 */
 	public enum State implements StateInterface<State> {
-		// Other
-		UNKNOWN(null),
-
 		// Bank
-		BANK_WALK(null),
-		BANK_OPEN(null),
-		BANK_DEPOSIT(null),
+		BANK_WALK(BankWalk.class),
+		BANK_OPEN(OpenBank.class),
+		BANK_DEPOSIT(BankDeposit.class),
 		BANK_WITHDRAW(null),
 		BANK_WITHDRAW_WITH_PRESETS(BankWithdrawWithPresets.class),
 		BANK_WITHDRAW_MANUALLY(BankWithdrawManual.class),
 
 		// Safe cracking
-		SAFE_WALK(null),
+		SAFE_WALK(SafeWalk.class),
 
-		SAFE_CRACK(null),
-		SAFE_EAT(null);
+		SAFE_CRACK(SafeCrack.class),
+		SAFE_EAT(SafeEat.class),
+
+		// Other
+		UNKNOWN(null);
 
 		private final Class<? extends Strategy<State>> controllingClass;
-		private State(Class<? extends Strategy<State>> controllingClass) {
+		State(Class<? extends Strategy<State>> controllingClass) {
 			this.controllingClass = controllingClass;
 		}
 

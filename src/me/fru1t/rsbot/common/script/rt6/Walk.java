@@ -2,6 +2,7 @@ package me.fru1t.rsbot.common.script.rt6;
 
 import java.util.EnumSet;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.Locatable;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Path;
@@ -127,7 +128,7 @@ public class Walk {
 	 * An injectable factory that creates Walk instances.
 	 */
 	public static class Factory {
-		private final ClientContext ctx;
+		private final Provider<ClientContext> ctxProvider;
 		private final Mouse mouseUtil;
 		private final WalkingLogic walkingLogic;
 		private final Condition condition;
@@ -135,12 +136,12 @@ public class Walk {
 
 		@Inject
 		public Factory(
-				@Singleton ClientContext ctx,
+				Provider<ClientContext> ctxProvider,
 				@Singleton Mouse mouseUtil,
-				@Singleton WalkingLogic walkingLogic,
+				WalkingLogic walkingLogic,
 				@Singleton Condition condition,
 				Timer waitTimer) {
-			this.ctx = ctx;
+			this.ctxProvider = ctxProvider;
 			this.mouseUtil = mouseUtil;
 			this.walkingLogic = walkingLogic;
 			this.condition = condition;
@@ -154,7 +155,7 @@ public class Walk {
 		 */
 		public Walk create(Path path) {
 			return new Walk(
-					ctx,
+					ctxProvider,
 					mouseUtil,
 					condition,
 					waitTimer,
@@ -169,7 +170,7 @@ public class Walk {
 		 * @return A new walk object.
 		 */
 		public Walk createUsingLocalPath(Locatable locatable) {
-			return create(ctx.movement.findPath(locatable));
+			return create(ctxProvider.get().movement.findPath(locatable));
 		}
 	}
 
@@ -181,7 +182,7 @@ public class Walk {
 	private static final Tuple2<Integer, Integer> WAIT_TIMER_DURATION_RANGE = Tuple2.of(400, 800);
 	private static final int WAIT_TIMER_POLL_FREQUENCY = 150;
 
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 	private final Mouse mouse;
 	private final WalkingLogic walkingLogic;
 	private final Condition condition;
@@ -190,14 +191,14 @@ public class Walk {
 	private final Path path;
 
 	private Walk(
-			@Singleton ClientContext ctx,
-			@Singleton Mouse mouseUtil,
+			Provider<ClientContext> ctxProvider,
+			@Singleton Mouse mouse,
 			@Singleton Condition condition,
 			Timer waitTimer,
 			WalkingLogic walkingLogic,
 			Path path) {
-		this.ctx = ctx;
-		this.mouse = mouseUtil;
+		this.ctxProvider = ctxProvider;
+		this.mouse = mouse;
 		this.walkingLogic = walkingLogic;
 		this.condition = condition;
 		this.path = path;
@@ -249,7 +250,7 @@ public class Walk {
 						int spamClicks = mouse.getClicks();
 						while (spamClicks-- > 1) {
 							// TODO: Add small mouse movement (+- 1/2/3 px per click)
-							ctx.input.click(true);
+							ctxProvider.get().input.click(true);
 							condition.sleepForSpamDelay();
 						}
 						return true;
@@ -281,17 +282,17 @@ public class Walk {
 					@Override
 					public Boolean ring() {
 						// TODO(v1): Does path#next grab the correct next tile to traverse to?
-						TileMatrix tile = path.next().matrix(ctx);
+						TileMatrix tile = path.next().matrix(ctxProvider.get());
 						if (!tile.inViewport()) {
-							ctx.camera.turnTo(tile);
+							ctxProvider.get().camera.turnTo(tile);
 						}
 						if (!tile.interact(WALK_INTERACT_TEXT)) {
 							return false;
 						}
 						int spamClicks = mouse.getClicks();
 						while (spamClicks-- > 1) {
-							if (ctx.menu.items()[0].equals(WALK_INTERACT_TEXT)) {
-								ctx.input.click(true);
+							if (ctxProvider.get().menu.items()[0].equals(WALK_INTERACT_TEXT)) {
+								ctxProvider.get().input.click(true);
 								condition.sleepForSpamDelay();
 							}
 						}
@@ -322,14 +323,14 @@ public class Walk {
 				new Callable<Boolean>() { /* Condition */
 					@Override
 					public Boolean ring() {
-						return ctx.players.local().tile().distanceTo(path.end())
+						return ctxProvider.get().players.local().tile().distanceTo(path.end())
 								<= CLOSE_ENOUGH_DISTANCE;
 					}
 				},
 				new Callable<Boolean>() { /* Timer Condition */
 					@Override
 					public Boolean ring() {
-						return ctx.players.local().inMotion();
+						return ctxProvider.get().players.local().inMotion();
 					}
 				},
 				waitTimer,
@@ -343,8 +344,9 @@ public class Walk {
 	 * @return True if the player is close enough or on the way. False otherwise.
 	 */
 	public boolean isCloseEnoughOrOnTheWay() {
-		return ctx.movement.destination().distanceTo(path.end()) <= CLOSE_ENOUGH_DISTANCE
-				|| ctx.players.local().tile().distanceTo(path.end()) <= CLOSE_ENOUGH_DISTANCE;
+		return ctxProvider.get().movement.destination().distanceTo(path.end()) <= CLOSE_ENOUGH_DISTANCE
+				|| ctxProvider.get().players.local().tile().distanceTo(path.end()) <=
+				CLOSE_ENOUGH_DISTANCE;
 	}
 
 	/**
@@ -366,7 +368,7 @@ public class Walk {
 			if (!Condition.wait(new Callable<Boolean>() {
 					@Override
 					public Boolean ring() {
-						return ctx.players.local().inMotion();
+						return ctxProvider.get().players.local().inMotion();
 					}
 				}, 150)) {
 				return false;

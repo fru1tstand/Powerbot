@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
@@ -25,7 +26,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
  * <p>TODO: Add human behavior between actions and waiting.
  */
 public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 	private final Mouse mouseUtil;
 	private final Health health;
 	private final Backpack backpack;
@@ -36,24 +37,26 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Inject
 	public SafeCrack(
-			@Singleton ClientContext ctx,
+			Provider<ClientContext> ctxProvider,
 			@Singleton Mouse spamClickUtil,
 			Health health,
 			Backpack backpack,
 			SafeLogic safeLogic,
 			Timer safecrackAnimationTimer) {
-		this.ctx = ctx;
+		this.ctxProvider = ctxProvider;
 		this.mouseUtil = spamClickUtil;
 		this.health = health;
 		this.backpack = backpack;
 		this.safeLogic = safeLogic;
 		this.safecrackAnimationTimer = safecrackAnimationTimer;
 
-		wallsafeGameObject = ctx.objects.nil();
+		wallsafeGameObject = ctxProvider.get().objects.nil();
 	}
 
 	@Override
 	public RoguesDenSafeCracker.State run() {
+		final ClientContext ctx = ctxProvider.get();
+
 		// Bank run?
 		// TODO: Add - Gamble (interact even when inventory is full)
 		// TODO: Add - Eat food to open inventory space

@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.common.script.rt6;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Interactive;
 
@@ -11,15 +12,15 @@ import me.fru1t.rsbot.common.framework.util.Condition;
 // TODO(v1 cleanup): Find usages of MouseUtil and convert to Mouse
 @Singleton
 public class Mouse extends me.fru1t.rsbot.common.script.Mouse<ClientContext> {
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 
 	@Inject
 	public Mouse(
-			@Singleton ClientContext ctx,
-			@Singleton Persona persona) {
-		super(persona);
+			Provider<ClientContext> ctxProvider,
+			Provider<Persona> personaProvider) {
+		super(personaProvider);
 
-		this.ctx = ctx;
+		this.ctxProvider = ctxProvider;
 	}
 
 	/**
@@ -47,10 +48,10 @@ public class Mouse extends me.fru1t.rsbot.common.script.Mouse<ClientContext> {
 				isFirstHover = false;
 				interactive.hover();
 			}
-			ctx.input.click(true);
+			ctxProvider.get().input.click(true);
 
 			if (clicks > 0) {
-				Condition.sleep(persona.getNextSpamDelay());
+				Condition.sleep(personaProvider.get().getNextSpamDelay());
 			}
 		}
 		return true;

@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.common.annotations.Inject;
@@ -11,19 +12,19 @@ import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.FoodLogic;
 
 public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
-	private final ClientContext ctx;
-	private final Settings settings;
+	private final Provider<ClientContext> ctxProvider;
+	private final Provider<Settings> settingsProvider;
 	private final FoodLogic foodLogic;
 	private final Backpack backpackUtil;
 
 	@Inject
 	public SafeEat(
-			@Singleton ClientContext ctx,
-			@Singleton Settings settings,
+			Provider<ClientContext> ctx,
+			Provider<Settings> settings,
 			@Singleton Backpack backpackUtil,
 			FoodLogic foodLogic) {
-		this.ctx = ctx;
-		this.settings = settings;
+		this.ctxProvider = ctx;
+		this.settingsProvider = settings;
 		this.foodLogic = foodLogic;
 		this.backpackUtil = backpackUtil;
 	}
@@ -31,12 +32,13 @@ public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 	@Override
 	public RoguesDenSafeCracker.State run() {
 		// Out of food?
-		if (ctx.backpack.select().id(settings.getFood().id).isEmpty()) {
+		if (ctxProvider.get().backpack.select().id(settingsProvider.get().getFood().id).isEmpty()) {
 			return RoguesDenSafeCracker.State.BANK_WALK;
 		}
 
 		return backpackUtil
-				.clickMultipleItemsWithSingleId(settings.getFood().id, foodLogic.numberToEat())
+				.clickMultipleItemsWithSingleId(settingsProvider.get().getFood().id, foodLogic
+				.numberToEat())
 				? RoguesDenSafeCracker.State.SAFE_CRACK : null;
 	}
 

@@ -5,8 +5,11 @@ import java.util.Stack;
 import me.fru1t.common.annotations.Singleton;
 
 /**
- * Keeps track of a script's status messages. These should only be used for decorational
- * purposes (script paint, debug), not script state management.
+ * Keeps track of a script's status messages. These should only be used for decoration
+ * purposes (script paint, debug) only. To track status of a script, use {@link RunState} instead.
+ *
+ * <p>All framework components are provided through Slick. To use this component, inject it with a
+ * Provider in the form of Provider&lt;Persona&gt;</p>
  */
 @Singleton
 public class Status {

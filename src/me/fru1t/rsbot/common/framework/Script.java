@@ -3,6 +3,9 @@ package me.fru1t.rsbot.common.framework;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.fru1t.common.annotations.Provides;
+import me.fru1t.rsbot.safecracker.Settings;
+import me.fru1t.slick.Module;
 import org.powerbot.script.ClientContext;
 import org.powerbot.script.PollingScript;
 
@@ -22,6 +25,36 @@ public abstract class Script<
 		C extends ClientContext<?>,
 		ST extends Enum<ST> & StateInterface<ST>,
 		T extends AbstractSettings> extends PollingScript<C> {
+	/**
+	 * Defines a standard slick module for a Script.
+	 */
+	public class ScriptModule implements Module {
+		@Provides
+		public Class<? extends ClientContext> provideClientContext() {
+			return ctx.getClass();
+		}
+
+		@Provides
+		public Class<Settings> provideSettings() {
+			return Settings.class;
+		}
+
+		@Provides
+		public Class<RunState> provideRunState() {
+			return RunState.class;
+		}
+
+		@Provides
+		public Class<Persona> providePersona() {
+			return Persona.class;
+		}
+
+		@Provides
+		public Class<Status> provideStatus() {
+			return Status.class;
+		}
+	}
+
 	/**
 	 * The number of failures to endure before resetting the script state
 	 */
@@ -46,19 +79,26 @@ public abstract class Script<
 
 	private int consecutiveFailures;
 
-	/**
-	 * Creates a new empty script
-	 */
 	protected Script() {
 		this.scriptActions = new HashMap<ST, Strategy<ST>>();
 		this.status = new Status();
 		this.state = new RunState<ST>();
-		this.slick = new Slick()
+		this.slick = new Slick(new ScriptModule())
 				.provide(ctx)
 				.provide(state)
 				.provide(status)
 				.provide(new Persona());
 
+		// Instantiate and validate all script states.
+		ST[] states = getResetState().getDeclaringClass().getEnumConstants();
+		for (ST state : states) {
+			if (state.getControllingClass() == null) {
+				throw new RuntimeException(String.format(
+						"%s state has no controlling class",
+						state.name()));
+			}
+			scriptActions.put(state, slick.get(state.getControllingClass()));
+		}
 	}
 
 	@Override
@@ -124,8 +164,8 @@ public abstract class Script<
 	 */
 	protected final void setSettings(T settings) {
 		if (!settings.isValid()) {
-			// TODO: Generate a more user friendly response. Sometimes !isValid is a user-specific
-			// error.
+			// TODO(v1): Generate a more user friendly response. Sometimes !isValid is a
+			// user-specific error.
 			throw new RuntimeException(String.format(
 					"%s: Something about the settings was not right. "
 							+ "Please post this error in the forum along with your settings so "
@@ -140,22 +180,6 @@ public abstract class Script<
 	 * Flips the switch. Tells the script to start running.
 	 */
 	protected final void scriptReady() {
-		// Verify all states are handled
-		ST[] states = getResetState().getDeclaringClass().getEnumConstants();
-		for (ST state : states) {
-			if (state.getControllingClass() == null) {
-				throw new RuntimeException(String.format(
-						"%s state has no controlling class",
-						state.name()));
-			}
-			scriptActions.put(state, slick.get(state.getControllingClass()));
-		}
-
-		//
-		if (scriptActions.size() == 0) {
-			throw new RuntimeException("The script was told to run, "
-					+ "but the script action map has no actions in it.");
-		}
 		state.update(getResetState());
 	}
 }

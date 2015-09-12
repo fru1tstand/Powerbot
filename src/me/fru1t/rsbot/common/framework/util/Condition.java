@@ -6,6 +6,7 @@ import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.common.util.Timer;
+import me.fru1t.slick.util.Provider;
 
 @Singleton
 // TODO(v1): Add early exit for stop/pause
@@ -55,11 +56,11 @@ public class Condition extends org.powerbot.script.Condition {
 		return wait(condition, Random.nextInt(waitRange));
 	}
 
-	private final Persona persona;
+	private final Provider<Persona> personaProvider;
 
 	@Inject
-	public Condition(@Singleton Persona persona) {
-		this.persona = persona;
+	public Condition(Provider<Persona> persona) {
+		this.personaProvider = persona;
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class Condition extends org.powerbot.script.Condition {
 	 */
 	// TODO(v1 cleanup): Find and remove instances of Condition#Sleep(Persona.getNextInteractDelay)
 	public void sleepForInteractDelay() {
-		sleep(persona.getNextInteractDelay());
+		sleep(personaProvider.get().getNextInteractDelay());
 	}
 
 	/**
@@ -75,6 +76,6 @@ public class Condition extends org.powerbot.script.Condition {
 	 */
 	// TODO(v1 cleanup): Find and remove instances of Condition#Sleep(Persona.getNextSpamDelay)
 	public void sleepForSpamDelay() {
-		sleep(persona.getNextSpamDelay());
+		sleep(personaProvider.get().getNextSpamDelay());
 	}
 }

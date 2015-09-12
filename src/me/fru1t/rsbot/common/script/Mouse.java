@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.common.script;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.common.annotations.Singleton;
@@ -30,7 +31,7 @@ public class Mouse<C extends ClientContext> {
 	private static final Tuple2<Integer, Integer> CLICKS_MEAN = Tuple2.of(1, 5);
 	private static final Tuple2<Double, Double> CLICKS_VARIANCE = Tuple2.of(1d, 5d);
 
-	protected final Persona persona;
+	protected final Provider<Persona> personaProvider;
 
 	private final boolean isSpamClickEnabled;
 	private final boolean isClickCountRandom;
@@ -38,8 +39,8 @@ public class Mouse<C extends ClientContext> {
 	private final int clickCountMean;
 	private int interactProbability;
 
-	protected Mouse(@Singleton Persona persona) {
-		this.persona = persona;
+	protected Mouse(Provider<Persona> personaProvider) {
+		this.personaProvider = personaProvider;
 
 		this.isSpamClickEnabled = Random.roll(IS_ENABLED_PROBABILITY);
 		this.isClickCountRandom = Random.roll(CLICK_COUNT_IS_RANDOM_PROBABILITY);
@@ -68,7 +69,7 @@ public class Mouse<C extends ClientContext> {
 				CLICKS_MEAN,
 				clickCountMean,
 				isVarianceFocusDependent
-						? persona.getFocusScaledDouble(null, CLICKS_VARIANCE)
+						? personaProvider.get().getFocusScaledDouble(null, CLICKS_VARIANCE)
 						: Random.nextDouble(CLICKS_VARIANCE));
 	}
 

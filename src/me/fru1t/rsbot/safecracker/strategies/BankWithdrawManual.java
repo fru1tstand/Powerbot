@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.common.annotations.Inject;
@@ -11,18 +12,18 @@ import me.fru1t.rsbot.common.script.rt6.Bank;
 import me.fru1t.rsbot.safecracker.Settings;
 
 public class BankWithdrawManual implements Strategy<RoguesDenSafeCracker.State> {
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
+	private final Provider<Settings> settingsProvider;
 	private final Bank bankUtil;
-	private final Settings settings;
 
 	@Inject
 	public BankWithdrawManual(
-			@Singleton ClientContext ctx,
-			@Singleton Bank bankUtil,
-			@Singleton Settings settings) {
-		this.ctx = ctx;
+			Provider<ClientContext> ctxProvider,
+			Provider<Settings> settingsProvider,
+			@Singleton Bank bankUtil) {
+		this.ctxProvider = ctxProvider;
+		this.settingsProvider = settingsProvider;
 		this.bankUtil = bankUtil;
-		this.settings = settings;
 	}
 
 	@Override
@@ -31,7 +32,9 @@ public class BankWithdrawManual implements Strategy<RoguesDenSafeCracker.State> 
 			return State.BANK_OPEN;
 		}
 
-		if (!ctx.bank.withdraw(settings.getFood().id, settings.getFoodQuantity())) {
+		if (!ctxProvider.get().bank.withdraw(
+				settingsProvider.get().getFood().id,
+				settingsProvider.get().getFoodQuantity())) {
 			return null;
 		}
 

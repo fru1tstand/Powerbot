@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import me.fru1t.common.annotations.Nullable;
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 
@@ -14,7 +16,7 @@ import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
 
 /**
- * Automatically selects an optimal safe to crack if settings.getPreferredSafe is set to
+ * Automatically selects an optimal safe to crack if settingsProvider.getPreferredSafe is set to
  * Safe.AUTOMATIC.
  *
  * <p>Consider:
@@ -29,21 +31,26 @@ public class SafeLogic {
 	 */
 	private static final int RANDOM_SAFE_PROBABILITY = 27;
 
-	private final ClientContext ctx;
-	private final Settings settings;
+	private final Provider<ClientContext> ctxProvider;
+	private final Provider<Settings> settingsProvider;
+	@Nullable
 	private RoguesDenSafeCracker.Safe safe;
 
 	@Inject
-	public SafeLogic(@Singleton ClientContext ctx, @Singleton Settings settings) {
-		this.ctx = ctx;
-		this.settings = settings;
-		newSafe();
+	public SafeLogic(
+			Provider<ClientContext> contextProvider,
+			Provider<Settings> settingsProvider) {
+		this.ctxProvider = contextProvider;
+		this.settingsProvider = settingsProvider;
 	}
 
 	/**
 	 * @return The safe to crack.
 	 */
 	public RoguesDenSafeCracker.Safe getSafe() {
+		if (safe == null) {
+			newSafe();
+		}
 		return safe;
 	}
 
@@ -53,7 +60,7 @@ public class SafeLogic {
 	 * @return If the player is standing at the current safe.
 	 */
 	public boolean isAtSafe() {
-		return safe.playerLocation.equals(ctx.players.local().tile());
+		return safe.playerLocation.equals(ctxProvider.get().players.local().tile());
 	}
 
 	/**
@@ -75,10 +82,10 @@ public class SafeLogic {
 	 * given distance.
 	 */
 	public boolean isAtOrMovingTowardsSafeWithTolerance(int distance) {
-		if (safe.playerLocation.distanceTo(ctx.players.local()) <= distance) {
+		if (safe.playerLocation.distanceTo(ctxProvider.get().players.local()) <= distance) {
 			return true;
 		}
-		if (safe.playerLocation.distanceTo(ctx.movement.destination()) <= distance) {
+		if (safe.playerLocation.distanceTo(ctxProvider.get().movement.destination()) <= distance) {
 			return true;
 		}
 
@@ -93,8 +100,8 @@ public class SafeLogic {
 	 * occupancy. Returns a random empty safe RANDOM_SAFE_PROBABILITY%.
 	 */
 	public void newSafe() {
-		if (settings.getPreferredSafe() != null) {
-			safe = settings.getPreferredSafe();
+		if (settingsProvider.get().getPreferredSafe() != null) {
+			safe = settingsProvider.get().getPreferredSafe();
 			return;
 		}
 
@@ -103,7 +110,7 @@ public class SafeLogic {
 			List<RoguesDenSafeCracker.Safe> availableSafes =
 					new ArrayList<RoguesDenSafeCracker.Safe>();
 			for (RoguesDenSafeCracker.Safe safe : RoguesDenSafeCracker.Safe.values()) {
-				if (ctx.players.select().at(safe.playerLocation).size() == 0) {
+				if (ctxProvider.get().players.select().at(safe.playerLocation).size() == 0) {
 					availableSafes.add(safe);
 				}
 			}
@@ -113,7 +120,7 @@ public class SafeLogic {
 		} else {
 			// Grab the nearest empty safe, or a random safe if none are empty
 			safe = null;
-			Iterator<GameObject> goIter = ctx.objects
+			Iterator<GameObject> goIter = ctxProvider.get().objects
 					.select()
 					.id(RoguesDenSafeCracker.SAFE_OBJECT_ID)
 					.nearest()
@@ -121,7 +128,7 @@ public class SafeLogic {
 			while(goIter.hasNext()) {
 				GameObject go = goIter.next();
 				RoguesDenSafeCracker.Safe s = RoguesDenSafeCracker.Safe.fromLocation(go);
-				if (s != null && ctx.players.select().at(s.playerLocation).size() == 0) {
+				if (s != null && ctxProvider.get().players.select().at(s.playerLocation).size() == 0) {
 					safe = s;
 					break;
 				}

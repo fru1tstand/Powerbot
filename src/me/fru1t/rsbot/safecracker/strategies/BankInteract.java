@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -17,20 +18,20 @@ import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
 
 public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
-	private final ClientContext ctx;
-	private final Settings settings;
+	private final Provider<ClientContext> ctxProvider;
+	private final Provider<Settings> settingsProvider;
 	private final Bank bankUtil;
 	private final DepositInventoryButton depositInventoryButton;
 
 	@Inject
 	public BankInteract(
-			@Singleton ClientContext ctx,
-			@Singleton Settings settings,
-			@Singleton Bank bankUtil,
+			Provider<ClientContext> ctxProvider,
+			Provider<Settings> settingsProvider,
+			@Singleton Bank bank,
 			DepositInventoryButton depositInventoryButton) {
-		this.ctx = ctx;
-		this.settings = settings;
-		this.bankUtil = bankUtil;
+		this.ctxProvider = ctxProvider;
+		this.settingsProvider = settingsProvider;
+		this.bankUtil = bank;
 		this.depositInventoryButton = depositInventoryButton;
 	}
 
@@ -47,8 +48,9 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 			// TODO(v1 cleanup): Is this method necessary?
 			Set<Integer> backpackSet = new HashSet<Integer>();
 //			ctx.backpack.select().addt;
-			while (!ctx.backpack.isEmpty()) {
-				backpackSet.add(ctx.backpack.poll().id());
+			// TODO(v1): Complete
+			while (!ctxProvider.get().backpack.isEmpty()) {
+				backpackSet.add(ctxProvider.get().backpack.poll().id());
 			}
 		}
 
@@ -56,10 +58,10 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 		if (Condition.wait(new Callable<Boolean>() {
 				@Override
 				public Boolean call() throws Exception {
-					return ctx.backpack.select().isEmpty()
-							|| settings.isBankStyle(
-									Settings.BankStyle.PRESET_1,
-									Settings.BankStyle.PRESET_2);
+					return ctxProvider.get().backpack.select().isEmpty()
+							|| settingsProvider.get().isBankStyle(
+							Settings.BankStyle.PRESET_1,
+							Settings.BankStyle.PRESET_2);
 				}
 			}, 150)) {
 			return null;
@@ -67,14 +69,16 @@ public class BankInteract implements Strategy<RoguesDenSafeCracker.State> {
 
 		// TODO: Extract to another action
 		// Withdraw
-		if (settings.isBankStyle(Settings.BankStyle.PRESET_1, Settings.BankStyle.PRESET_2)) {
-			if (!(settings.isBankStyle(Settings.BankStyle.PRESET_1)
+		if (settingsProvider.get()
+				.isBankStyle(Settings.BankStyle.PRESET_1, Settings.BankStyle.PRESET_2)) {
+			if (!(settingsProvider.get().isBankStyle(Settings.BankStyle.PRESET_1)
 					? bankUtil.clickPreset1() : bankUtil.clickPreset2())) {
 				return null;
 			}
 		} else {
 			// TODO: Add possbility of waiting for food to get into inventory
-			ctx.bank.withdraw(settings.getFood().id, settings.getFoodQuantity());
+			ctxProvider.get().bank.withdraw(settingsProvider.get().getFood().id,
+					settingsProvider.get().getFoodQuantity());
 		}
 
 		return RoguesDenSafeCracker.State.SAFE_WALK;

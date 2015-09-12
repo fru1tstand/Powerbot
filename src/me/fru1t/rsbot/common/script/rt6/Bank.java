@@ -2,6 +2,7 @@ package me.fru1t.rsbot.common.script.rt6;
 
 import java.awt.Point;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.Constants;
@@ -50,9 +51,12 @@ public class Bank {
 		 * @return Returns the location the mouse should move towards as a guess.
 		 */
 		public Point getPrediction(Component component) {
-			int maxPercentOffset = persona.getLazinessScaledInt(GUESS_PERCENT_TOLERANCE);
-			int xMaxOffset = ctx.game.dimensions().width * maxPercentOffset / 100 / 2;
-			int yMaxOffset = ctx.game.dimensions().height * maxPercentOffset / 100 / 2;
+			int maxPercentOffset =
+					personaProvider.get().getLazinessScaledInt(GUESS_PERCENT_TOLERANCE);
+			int xMaxOffset =
+					ctxProvider.get().game.dimensions().width * maxPercentOffset / 100 / 2;
+			int yMaxOffset =
+					ctxProvider.get().game.dimensions().height * maxPercentOffset / 100 / 2;
 			Point result = new Point();
 			result.setLocation(
 					component.centerPoint().getX() + Random.nextInt(-1 * xMaxOffset, xMaxOffset),
@@ -114,25 +118,25 @@ public class Bank {
 	private static final Tuple2<Integer, Integer> INTERACT_WAIT_RANGE = Tuple2.of(800, 2200);
 	private static final Tuple2<Integer, Integer> OPEN_WAIT_RANGE = Tuple2.of(1200, 2500);
 
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 	private final Mouse mouseUtil;
 	private final Timer bankOpenTimer;
-	private final Persona persona;
+	private final Provider<Persona> personaProvider;
 
 	private final WidgetHoverLogic widgetHoverLogic;
 
 	@Inject
 	public Bank(
-			@Singleton ClientContext ctx,
-			@Singleton Mouse interactUtil,
-			@Singleton Persona persona,
-			WidgetHoverLogic widgetHoverLogic,
+			Provider<ClientContext> ctxProvider,
+			Provider<Persona> personaProvider,
+			@Singleton Mouse mouse,
+//			WidgetHoverLogic widgetHoverLogic,
 			Timer bankOpenTimer) {
-		this.ctx = ctx;
-		this.mouseUtil = interactUtil;
+		this.ctxProvider = ctxProvider;
+		this.mouseUtil = mouse;
 		this.bankOpenTimer = bankOpenTimer;
-		this.widgetHoverLogic = widgetHoverLogic;
-		this.persona = persona;
+		this.widgetHoverLogic = new WidgetHoverLogic();
+		this.personaProvider = personaProvider;
 	}
 
 
@@ -147,13 +151,13 @@ public class Bank {
 				new Callable<Boolean>() {
 					@Override
 					public Boolean ring() {
-						return ctx.bank.opened();
+						return ctxProvider.get().bank.opened();
 					}
 				},
 				new Callable<Boolean>() {
 					@Override
 					public Boolean ring() {
-						return ctx.players.local().inMotion();
+						return ctxProvider.get().players.local().inMotion();
 					}
 
 				},
@@ -191,9 +195,9 @@ public class Bank {
 	private boolean clickComponent(int bankComponentId, Callable<Boolean> condition) {
 		Component component = getBankComponent(bankComponentId);
 
-		if (!ctx.bank.opened()) {
+		if (!ctxProvider.get().bank.opened()) {
 			if (widgetHoverLogic.shouldAttempt()) {
-				ctx.input.move(widgetHoverLogic.getPrediction(getDepositInventoryComponent()));
+				ctxProvider.get().input.move(widgetHoverLogic.getPrediction(getDepositInventoryComponent()));
 			}
 			if (!waitForBankToOpen()) {
 				return false;
@@ -221,7 +225,7 @@ public class Bank {
 				new Callable<Boolean>() {
 					@Override
 					public Boolean ring() {
-						return ctx.backpack.isEmpty();
+						return ctxProvider.get().backpack.isEmpty();
 					}
 				});
 	}
@@ -240,7 +244,7 @@ public class Bank {
 				new Callable<Boolean>() {
 					@Override
 					public Boolean ring() {
-						return !ctx.bank.opened();
+						return !ctxProvider.get().bank.opened();
 					}
 				});
 	}
@@ -259,7 +263,7 @@ public class Bank {
 				new Callable<Boolean>() {
 					@Override
 					public Boolean ring() {
-						return !ctx.bank.opened();
+						return !ctxProvider.get().bank.opened();
 					}
 				});
 	}
@@ -274,7 +278,7 @@ public class Bank {
 	 * @return The Component object associated to the passed component id.
 	 */
 	private Component getBankComponent(int bankComponentId) {
-		return ctx.widgets.component(Constants.BANK_WIDGET, bankComponentId);
+		return ctxProvider.get().widgets.component(Constants.BANK_WIDGET, bankComponentId);
 	}
 
 	// TODO(v1 cleanup): is this still needed?

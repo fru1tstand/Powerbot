@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.common.script.rt6;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.common.annotations.Inject;
@@ -86,12 +87,12 @@ public class Camera {
 		}
 	}
 
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 	private final MaybeFaceLogic maybeFaceLogic;
 
 	@Inject
-	public Camera(@Singleton ClientContext ctx, MaybeFaceLogic maybeFaceLogic) {
-		this.ctx = ctx;
+	public Camera(@Singleton Provider<ClientContext> ctxProvider, MaybeFaceLogic maybeFaceLogic) {
+		this.ctxProvider = ctxProvider;
 		this.maybeFaceLogic = maybeFaceLogic;
 	}
 
@@ -111,10 +112,11 @@ public class Camera {
 	 */
 	public void face(Direction direction) {
 		// TODO(v2): Mouse camera movement
-		if (ctx.camera.yaw() > direction.range.first && ctx.camera.yaw() < direction.range.second) {
+		if (ctxProvider.get().camera.yaw() > direction.range.first
+				&& ctxProvider.get().camera.yaw() < direction.range.second) {
 			return;
 		}
 
-		ctx.camera.angleTo(Random.nextInt(direction.range));
+		ctxProvider.get().camera.angleTo(Random.nextInt(direction.range));
 	}
 }

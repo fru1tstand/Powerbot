@@ -8,25 +8,26 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.script.rt6.Bank;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.Settings.BankStyle;
+import me.fru1t.slick.util.Provider;
 
 public class BankWithdrawWithPresets implements Strategy<RoguesDenSafeCracker.State> {
 	private final Bank bankUtil;
-	private final Settings settings;
-	
+	private final Provider<Settings> settingsProvider;
+
 	@Inject
 	public BankWithdrawWithPresets(
 			@Singleton Bank bankUtil,
-			@Singleton Settings settings) {
+			Provider<Settings> settingsProvider) {
 		this.bankUtil = bankUtil;
-		this.settings = settings;
+		this.settingsProvider = settingsProvider;
 	}
-	
+
 	@Override
 	public State run() {
 		// TODO(v2): Are there missing prerequisites that may lurk?
-		
+
 		// TODO(v1 cleanup): Implement convenience methods to clear up this mess
-		if (settings.isBankStyle(BankStyle.PRESET_1)) {
+		if (settingsProvider.get().isBankStyle(BankStyle.PRESET_1)) {
 			if (!bankUtil.clickPreset1()) {
 				return State.BANK_OPEN;
 			}
@@ -35,9 +36,9 @@ public class BankWithdrawWithPresets implements Strategy<RoguesDenSafeCracker.St
 				return State.BANK_OPEN;
 			}
 		}
-		
+
 		return State.SAFE_WALK;
 	}
-	
-	
+
+
 }

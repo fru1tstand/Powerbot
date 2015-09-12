@@ -4,11 +4,12 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
+import me.fru1t.slick.util.Provider;
 
 /**
  * A normal person will wait until the inventory is full (count 28), but on occasion a person
  * may haphazardly bank without a full inventory.
- * 
+ *
  * Consider:
  * A person is less likely to randomly bank when not clumsy and more attentive. If a random
  * banking event does occur, the count of items in the inventory is probably not skewed in
@@ -27,24 +28,24 @@ public class Backpack {
 	 * The absolute minimum number of items a player can be holding before banking.
 	 */
 	private static final int ABSOLUTE_MINIMUM_ITEM_COUNT = 14;
-	
-	
-	private final Persona persona;
+
+
+	private final Provider<Persona> personaProvider;
 	private int bankAmount;
 
 	@Inject
-	public Backpack(@Singleton Persona persona) {
-		this.persona = persona;
+	public Backpack(@Singleton Provider<Persona> persona) {
+		this.personaProvider = persona;
 		newBankAt();
 	}
-	
+
 	/**
 	 * @return The inventory count at which the player should bank at.
 	 */
 	public int bankAt() {
 		return bankAmount;
 	}
-	
+
 	/**
 	 * Generates a new bank amount. This should be called every bank event.
 	 */
@@ -52,7 +53,7 @@ public class Backpack {
 		bankAmount = 28;
 
 		// Focus cutoff
-		if (persona.focus() > ALWAYS_FULL_FOCUS_CUTOFF)
+		if (personaProvider.get().focus() > ALWAYS_FULL_FOCUS_CUTOFF)
 			return;
 
 		// Not 28 probability roll
@@ -60,7 +61,7 @@ public class Backpack {
 			return;
 
 		// Focus roll ( < FOCUS_CUTOFF% )
-		if (Random.roll(persona.focus()))
+		if (Random.roll(personaProvider.get().focus()))
 			return;
 
 		bankAmount = Random.nextInt(ABSOLUTE_MINIMUM_ITEM_COUNT, 29);

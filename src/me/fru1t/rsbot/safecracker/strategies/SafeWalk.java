@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
+import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.common.annotations.Inject;
@@ -18,7 +19,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.WalkLogic;
  * has completed this traverse.
  */
 public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
-	private final ClientContext ctx;
+	private final Provider<ClientContext> ctxProvider;
 	private final Backpack backpack;
 	private final WalkLogic walkLogic;
 	private final SafeLogic safeLogic;
@@ -26,7 +27,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Inject
 	public SafeWalk(
-			@Singleton ClientContext ctx,
+			@Singleton Provider<ClientContext> ctxProvider,
 			@Singleton Backpack backpack,
 			@Singleton SafeLogic safeLogic,
 			WalkLogic walkLogic,
@@ -34,7 +35,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 		this.backpack = backpack;
 		this.walkLogic = walkLogic;
 		this.safeLogic = safeLogic;
-		this.ctx = ctx;
+		this.ctxProvider = ctxProvider;
 		this.walkFactory = walkFactory;
 	}
 
@@ -58,7 +59,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 				new Callable<Boolean>() { /* Condition */
 					@Override
 					public Boolean ring() {
-						return ctx.objects
+						return ctxProvider.get().objects
 								.select()
 								.id(RoguesDenSafeCracker.SAFE_OBJECT_ID)
 								.at(safeLogic.getSafe().location)

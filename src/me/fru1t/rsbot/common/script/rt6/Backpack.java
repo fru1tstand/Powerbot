@@ -26,9 +26,9 @@ public class Backpack {
 
 	@Inject
 	public Backpack(
-			@Singleton Provider<ClientContext> ctxProvider,
+			Provider<ClientContext> ctxProvider,
 			@Singleton Mouse mouseUtil,
-			@Singleton Provider<Persona> personaProvider) {
+			Provider<Persona> personaProvider) {
 		this.ctxProvider = ctxProvider;
 		this.mouseUtil = mouseUtil;
 		this.personaProvider = personaProvider;

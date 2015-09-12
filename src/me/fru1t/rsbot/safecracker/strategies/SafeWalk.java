@@ -27,7 +27,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Inject
 	public SafeWalk(
-			@Singleton Provider<ClientContext> ctxProvider,
+			Provider<ClientContext> ctxProvider,
 			@Singleton Backpack backpack,
 			@Singleton SafeLogic safeLogic,
 			WalkLogic walkLogic,

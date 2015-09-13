@@ -13,8 +13,7 @@ import me.fru1t.rsbot.common.script.rt6.Mouse;
 import me.fru1t.rsbot.safecracker.strategies.logic.TurnToBanker;
 
 public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
-	// TODO(v1): Set correct banker id
-	public static final int BANKER_NPC_ID = -1;
+	public static final int BANKER_NPC_ID = 14707;
 
 	private final Provider<ClientContext> ctxProvider;
 	private final Mouse mouseUtil;

@@ -14,17 +14,7 @@ import me.fru1t.rsbot.common.script.rt6.Walk;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Npc;
 
-/**
- * TODO: Add bank interact while running
- */
 public class BankWalk implements Strategy<RoguesDenSafeCracker.State> {
-	private static final int RANDOMIZATION_TOLERANCE = 3;
-	// TODO(v1): Add correct area
-	private static Area destinationArea = new Area(new Tile(0, 0), new Tile(0, 0));
-	private static Tile[] fullPath = new Tile[] {
-
-	};
-
 	private final Walk.Factory walkFactory;
 	private final Provider<ClientContext> ctxProvider;
 	private final WalkLogic walkLogic;

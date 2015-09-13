@@ -36,8 +36,6 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final Timer safecrackAnimationTimer;
 	private final Camera camera;
 
-	private GameObject wallsafeGameObject;
-
 	@Inject
 	public SafeCrack(
 			Provider<ClientContext> ctxProvider,
@@ -54,8 +52,6 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		this.safeLogic = safeLogic;
 		this.safecrackAnimationTimer = safecrackAnimationTimer;
 		this.camera = camera;
-
-		this.wallsafeGameObject = ctxProvider.get().objects.nil();
 	}
 
 	@Override
@@ -79,17 +75,10 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 			return State.SAFE_EAT;
 		}
 
-		// Get safe
-		if (!safeLogic.getSafe().location.equals(wallsafeGameObject.tile())) {
-			wallsafeGameObject = ctx.objects.select()
-					.at(safeLogic.getSafe().location)
-					.id(RoguesDenSafeCracker.SAFE_OBJECT_ID).poll();
-			wallsafeGameObject.bounds(RoguesDenSafeCracker.SAFE_OBJECT_BOUNDS_MODIFIER);
-
-			// Catches nil
-			if (!wallsafeGameObject.valid()) {
-				return null;
-			}
+		// Check if safe is valid
+		final GameObject wallsafeGameObject = safeLogic.getSafeGameObject();
+		if (!wallsafeGameObject.valid()) {
+			return null;
 		}
 
 		if (!wallsafeGameObject.inViewport()) {

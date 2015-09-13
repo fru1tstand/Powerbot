@@ -14,10 +14,11 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.util.Random;
 import me.fru1t.rsbot.safecracker.Settings;
+import org.powerbot.script.rt6.Objects;
 
 /**
  * Automatically selects an optimal safe to crack if settingsProvider.getPreferredSafe is set to
- * Safe.AUTOMATIC.
+ * null
  *
  * <p>Consider:
  * Bot busters that occupy the same region to attempt to bait out the bot to switch safes.
@@ -35,6 +36,8 @@ public class SafeLogic {
 	private final Provider<Settings> settingsProvider;
 	@Nullable
 	private RoguesDenSafeCracker.Safe safe;
+	@Nullable
+	private GameObject safeGameObject;
 
 	@Inject
 	public SafeLogic(
@@ -42,17 +45,36 @@ public class SafeLogic {
 			Provider<Settings> settingsProvider) {
 		this.ctxProvider = contextProvider;
 		this.settingsProvider = settingsProvider;
+		this.safeGameObject = null;
 	}
 
 	/**
 	 * @return The safe to crack.
 	 */
-	// TODO(v1): Create #getSafeObject
 	public RoguesDenSafeCracker.Safe getSafe() {
 		if (safe == null) {
 			newSafe();
 		}
 		return safe;
+	}
+
+	/**
+	 * Returns the safe that should be used for interaction. Potentially returns GameObject.nil
+	 * if the safe couldn't be retrieved.
+	 *
+	 * @return The safe GameObject.
+	 */
+	public GameObject getSafeGameObject() {
+		if (safeGameObject == null
+				|| !safeGameObject.valid()
+				|| !safeGameObject.tile().equals(getSafe().location)) {
+			safeGameObject = ctxProvider.get().objects.select()
+					.id(RoguesDenSafeCracker.SAFE_OBJECT_ID)
+					.at(getSafe().location)
+					.poll();
+			safeGameObject.bounds(RoguesDenSafeCracker.SAFE_OBJECT_BOUNDS_MODIFIER);
+		}
+		return safeGameObject;
 	}
 
 	/**

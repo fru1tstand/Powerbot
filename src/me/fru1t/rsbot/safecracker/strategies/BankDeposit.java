@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
+import me.fru1t.rsbot.common.framework.components.Status;
 import me.fru1t.slick.util.Provider;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -16,30 +17,36 @@ import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
  */
 public class BankDeposit implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<ClientContext> ctxProvider;
+	private final Provider<Status> statusProvider;
 	private final Bank bank;
 	private final DepositInventoryButton depositInventoryButton;
 
 	@Inject
 	public BankDeposit(
 			Provider<ClientContext> ctxProvider,
+			Provider<Status> statusProvider,
 			@Singleton Bank bank,
 			DepositInventoryButton depositInventoryButton) {
 		this.ctxProvider = ctxProvider;
+		this.statusProvider = statusProvider;
 		this.bank = bank;
 		this.depositInventoryButton = depositInventoryButton;
 	}
 
 	@Override
 	public State run() {
-		// TODO(v2): More fail-safe catch states
+		// Note: Bank may not be open at this point
+		statusProvider.get().update("Depositing items from the backpack.");
+
+		// Check if inventory is already empty
 		if (ctxProvider.get().backpack.isEmpty()) {
+			statusProvider.get().update("The backpack is already empty.");
 			return State.BANK_WITHDRAW;
 		}
 
-		if (depositInventoryButton.shouldClick()) {
-			if (!bank.clickDepositInventory()) {
-				return State.BANK_OPEN;
-			}
+		// Deposit
+		if (depositInventoryButton.shouldClick() && !bank.depositInventory()) {
+			return State.BANK_OPEN;
 		}
 
 		return State.BANK_WITHDRAW;

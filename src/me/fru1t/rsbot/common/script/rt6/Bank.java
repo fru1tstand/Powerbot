@@ -65,56 +65,6 @@ public class Bank {
 		}
 	}
 
-	/**
-	 * Some people like using the deposit inventory button while others like manually depositing
-	 * all items. There is some fuzziness between as well.
-	 */
-	private class DepositInventoryLogic {
-		// TODO(v1 cleanup): Rename to something better
-		private static final int USE_BUTTON_PROBABILITY = 80;
-		private static final int ONLY_USE_BUTTON_PROBABILITY = 90;
-
-		private static final int SHOULD_DEPOSIT_ALL_PROBABILITY = 80;
-		private static final int ONLY_USE_DEPOSIT_ALL_PROBABILITY = 90;
-
-		private final boolean shouldUseButton;
-		private final boolean onlyUseButton;
-		private final boolean shouldDepositAll;
-		private final boolean onlyUseDepositAll;
-
-		@Inject
-		public DepositInventoryLogic() {
-			this.shouldUseButton = Random.roll(USE_BUTTON_PROBABILITY);
-			this.onlyUseButton = Random.roll(ONLY_USE_BUTTON_PROBABILITY);
-			this.shouldDepositAll = Random.roll(SHOULD_DEPOSIT_ALL_PROBABILITY);
-			this.onlyUseDepositAll = Random.roll(ONLY_USE_DEPOSIT_ALL_PROBABILITY);
-		}
-
-		/**
-		 * @return Returns if the user should use the deposit inventory button vs manual deposit.
-		 */
-		public boolean shouldUseButton() {
-			if (onlyUseButton) {
-				return shouldUseButton;
-			}
-
-			// TODO(v2): Revisit shouldUseButton multiple method algorithm
-			return Random.roll(80) ? shouldUseButton : !shouldUseButton;
-		}
-
-		/**
-		 * @return Returns if the user should deposit using the "all" menu button, or simply one at
-		 * a time.
-		 */
-		public boolean shouldDepositAll() {
-			if (onlyUseDepositAll) {
-				return shouldDepositAll;
-			}
-
-			return Random.roll(80) ? shouldDepositAll : !shouldDepositAll;
-		}
-	}
-
 	private static final Tuple2<Integer, Integer> INTERACT_WAIT_RANGE = Tuple2.of(800, 2200);
 	private static final Tuple2<Integer, Integer> OPEN_WAIT_RANGE = Tuple2.of(1200, 2500);
 
@@ -130,13 +80,13 @@ public class Bank {
 			Provider<ClientContext> ctxProvider,
 			Provider<Persona> personaProvider,
 			@Singleton Mouse mouse,
-//			WidgetHoverLogic widgetHoverLogic,
 			Timer bankOpenTimer) {
 		this.ctxProvider = ctxProvider;
 		this.mouseUtil = mouse;
 		this.bankOpenTimer = bankOpenTimer;
-		this.widgetHoverLogic = new WidgetHoverLogic();
 		this.personaProvider = personaProvider;
+
+		this.widgetHoverLogic = new WidgetHoverLogic();
 	}
 
 
@@ -173,13 +123,8 @@ public class Bank {
 	 * @return True if the items successfully deposited or the inventory was empty to begin with.
 	 */
 	public boolean depositInventory() {
-		// Deposit using button
-		if (!clickDepositInventory()) {
-			return false;
-		}
-
 		// TODO(v2): Add manual depositing
-		return true;
+		return clickDepositInventory();
 	}
 
 

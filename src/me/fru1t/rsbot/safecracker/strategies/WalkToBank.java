@@ -36,25 +36,31 @@ public class WalkToBank implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Override
 	public RoguesDenSafeCracker.State run() {
-		statusProvider.get().update("Banking: Walking to Benedict");
+		statusProvider.get().update("Walking towards Emerald Benedict");
+
+		// Bank already open?
+		if (ctxProvider.get().bank.opened()) {
+			statusProvider.get().update("The bank is already open");
+			return RoguesDenSafeCracker.State.BANK_DEPOSIT;
+		}
 
 		// Are we in rogue's den?
 		Npc banker = ctxProvider.get().npcs.select().id(OpenBank.BENEDICT_NPC_ID).poll();
 		if (!banker.valid()) {
-			statusProvider.get().update("Banking: 404 - Banker not found");
+			statusProvider.get().update("404: Banker not found");
 			return null;
 		}
 
 		// Is the banker already in the viewport?
 		if (banker.inViewport()) {
-			statusProvider.get().update("Banking: Benedict is already in view");
+			statusProvider.get().update("Emerald is already in view");
 			return RoguesDenSafeCracker.State.BANK_OPEN;
 		}
 
 		// Are we already headed towards the banker?
 		Walk walk = walkFactory.createUsingLocalPath(banker);
 		if (walk.isCloseEnoughOrOnTheWay()) {
-			statusProvider.get().update("Banking: Already moving towards Benedict");
+			statusProvider.get().update("We're already headed towards the banker");
 			return RoguesDenSafeCracker.State.BANK_OPEN;
 		}
 

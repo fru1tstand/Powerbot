@@ -35,18 +35,18 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Override
 	public State run() {
-		statusProvider.get().update("Banking: Interacting with Benedict");
+		statusProvider.get().update("Opening the bank");
 
 		// Check if already open
 		if (ctxProvider.get().bank.opened()) {
-			statusProvider.get().update("Banking: Bank already open");
+			statusProvider.get().update("The bank is already open");
 			return State.BANK_DEPOSIT;
 		}
 
 		// Check if present
 		Npc banker = ctxProvider.get().npcs.select().id(BENEDICT_NPC_ID).poll();
 		if (!banker.valid()) {
-			statusProvider.get().update("Banking: 404 - Banker not found");
+			statusProvider.get().update("404: Banker not found");
 			return null;
 		}
 
@@ -55,6 +55,7 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 
 		// Open
 		if (!mouse.click(banker)) {
+			statusProvider.get().update("Failed to open the bank");
 			return null;
 		}
 

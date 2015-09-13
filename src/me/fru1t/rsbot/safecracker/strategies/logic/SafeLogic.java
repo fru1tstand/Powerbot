@@ -47,6 +47,7 @@ public class SafeLogic {
 	/**
 	 * @return The safe to crack.
 	 */
+	// TODO(v1): Create #getSafeObject
 	public RoguesDenSafeCracker.Safe getSafe() {
 		if (safe == null) {
 			newSafe();

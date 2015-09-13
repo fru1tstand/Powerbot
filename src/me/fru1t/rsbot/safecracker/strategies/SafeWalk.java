@@ -30,7 +30,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 			Provider<ClientContext> ctxProvider,
 			@Singleton Backpack backpack,
 			@Singleton SafeLogic safeLogic,
-			WalkLogic walkLogic,
+			@Singleton WalkLogic walkLogic,
 			Walk.Factory walkFactory) {
 		this.backpack = backpack;
 		this.walkLogic = walkLogic;

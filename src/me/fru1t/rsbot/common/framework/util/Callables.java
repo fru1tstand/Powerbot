@@ -18,4 +18,38 @@ public final class Callables {
 			}
 		};
 	}
+
+	/**
+	 * Creates a boolean callable that checks if the passed interactive (actor, component,
+	 * gameobject, grounditem, item, tilematrix) is in the viewport.
+	 *
+	 * @param interactive The interactive to check.
+	 * @return True if the interactive is in the viewport. False otherwise.
+	 */
+	public static Callable<Boolean> inViewport(
+			final org.powerbot.script.rt6.Interactive interactive) {
+		return new Callable<Boolean>() {
+			@Override
+			public Boolean ring() {
+					return interactive.inViewport();
+				}
+			};
+	}
+
+	/**
+	 * Creates a boolean callable that checks if the passed interactive (actor, component,
+	 * gameboject, grounditem, item, tilematrix) is in the viewport.
+	 *
+	 * @param interactive The interactive to check.
+	 * @return True if the interactive is in the viewport. False otherwise.
+	 */
+	public static Callable<Boolean> inViewport(
+			final org.powerbot.script.rt4.Interactive interactive) {
+		return new Callable<Boolean>() {
+			@Override
+			public Boolean ring() {
+				return interactive.inViewport();
+			}
+		};
+	}
 }

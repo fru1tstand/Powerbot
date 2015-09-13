@@ -1,6 +1,7 @@
 package me.fru1t.rsbot.safecracker.strategies.logic;
 
 import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.common.script.rt6.Walk;
 import me.fru1t.rsbot.common.util.Probability;
 import me.fru1t.rsbot.common.util.Random;
@@ -9,6 +10,7 @@ import me.fru1t.rsbot.common.util.Random;
  * Provides logic for the walking methods.
  */
 // TODO(v2): Possibly move this logic over to the underlying util
+@Singleton
 public class WalkLogic {
 	public enum WalkMethod implements Probability {
 		// The user clicks on the minimap to traverse to the safe location

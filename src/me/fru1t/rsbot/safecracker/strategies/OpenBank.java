@@ -14,7 +14,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.TurnToBanker;
 
 public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 	// TODO(v1): Set correct banker id
-	private static final int BANKER_ID = -1;
+	public static final int BANKER_NPC_ID = -1;
 
 	private final Provider<ClientContext> ctxProvider;
 	private final Mouse mouseUtil;
@@ -32,7 +32,7 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Override
 	public State run() {
-		if (ctxProvider.get().npcs.select().id(BANKER_ID).size() == 0) {
+		if (ctxProvider.get().npcs.select().id(BANKER_NPC_ID).size() == 0) {
 			return null;
 		}
 
@@ -50,6 +50,4 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 
 		return State.BANK_DEPOSIT;
 	}
-
-
 }

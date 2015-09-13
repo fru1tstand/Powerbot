@@ -79,9 +79,11 @@ public class RoguesDenSafeCracker
 
 		public final Tile location;
 		public final Tile playerLocation;
-		private Safe(Tile location, Tile playerLocation, Camera.Direction direction) {
+		public final Camera.Direction cameraDirection;
+		Safe(Tile location, Tile playerLocation, Camera.Direction direction) {
 			this.location = location;
 			this.playerLocation = playerLocation;
+			this.cameraDirection = direction;
 		}
 
 		/**

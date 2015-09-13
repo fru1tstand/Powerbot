@@ -36,9 +36,8 @@ public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 			return RoguesDenSafeCracker.State.BANK_WALK;
 		}
 
-		return backpackUtil
-				.clickMultipleItemsWithSingleId(settingsProvider.get().getFood().id, foodLogic
-				.numberToEat())
+		return backpackUtil.clickMultipleItemsWithSingleId(
+						settingsProvider.get().getFood().id, foodLogic.numberToEat())
 				? RoguesDenSafeCracker.State.SAFE_CRACK : null;
 	}
 

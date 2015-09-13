@@ -36,6 +36,7 @@ public class Mouse extends me.fru1t.rsbot.common.script.Mouse<ClientContext> {
 	 * @return Returns true if no errors occurred, but does not guarantee that the interaction
 	 * completed successfully. Otherwise, false.
 	 */
+	// TODO(v2): Add right click interacting
 	public boolean click(Interactive interactive) {
 		if (!interactive.inViewport()) {
 			return false;

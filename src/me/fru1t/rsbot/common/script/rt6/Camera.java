@@ -1,6 +1,7 @@
 package me.fru1t.rsbot.common.script.rt6;
 
 import me.fru1t.slick.util.Provider;
+import org.powerbot.script.Locatable;
 import org.powerbot.script.rt6.ClientContext;
 
 import me.fru1t.common.annotations.Inject;
@@ -8,6 +9,7 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
+import org.powerbot.script.rt6.Interactive;
 
 /**
  * Provides utility methods that deal with the camera.
@@ -27,6 +29,7 @@ public class Camera {
 		NARROW_E(Tuple2.of(0, 40)),
 		NARROW_NE(Tuple2.of(0, 40)),
 
+		// Medium values overlap, and are set at absolute 90 degree angles.
 		MEDIUM_N(Tuple2.of(0, 90)),
 		MEDIUM_NW(Tuple2.of(0, 40)),
 		MEDIUM_W(Tuple2.of(0, 40)),
@@ -36,6 +39,7 @@ public class Camera {
 		MEDIUM_E(Tuple2.of(0, 40)),
 		MEDIUM_NE(Tuple2.of(0, 40)),
 
+		// Wide values overlap heavily and are set at absolute 180 degree angles.
 		WIDE_N(Tuple2.of(0, 180)),
 		WIDE_NW(Tuple2.of(0, 40)),
 		WIDE_W(Tuple2.of(0, 40)),
@@ -46,7 +50,7 @@ public class Camera {
 		WIDE_NE(Tuple2.of(0, 40));
 
 		private final Tuple2<Integer, Integer> range;
-		private Direction(Tuple2<Integer, Integer> range) {
+		Direction(Tuple2<Integer, Integer> range) {
 			this.range = range;
 		}
 
@@ -54,15 +58,14 @@ public class Camera {
 		 * Returns a random angle from within this direction's range.
 		 * @return A random angle from this direction's range.
 		 */
+		// TODO(v2): Gauss angle?
 		public int getRandomAngle() {
 			return Random.nextInt(range);
 		}
-
-		// TODO(v2): Gauss angle?
 	}
 
 	/**
-	 * Contains logic for the {@link Camera#maybeFace(Direction)} method.
+	 * Contains logic for the maybeFace methods.
 	 */
 	private static class MaybeFaceLogic {
 		private static final Tuple2<Integer, Integer> MIN_CUTOFF_RANGE = Tuple2.of(20, 50);
@@ -97,26 +100,78 @@ public class Camera {
 	}
 
 	/**
-	 * Sometimes turns the camera to the given direction.
+	 * Verifies that the camera is aimed toward the given interactive, locatable object, and
+	 * possibly adjusts the camera even if it is.
+	 *
+	 * @param interactiveLocatable The object to face.
+	 */
+	public <F extends org.powerbot.script.rt6.Interactive & Locatable> void maybeFace(
+			F interactiveLocatable) {
+		boolean shouldFace = false;
+		if (!interactiveLocatable.inViewport()) {
+			shouldFace = true;
+		}
+		if (maybeFaceLogic.shouldFace()) {
+			shouldFace = true;
+		}
+		if (shouldFace) {
+			ctxProvider.get().camera.turnTo(interactiveLocatable);
+		}
+	}
+
+	/**
+	 * Verifies that the camera is aimed toward the given interactive, locatable object, and
+	 * possibly adjusts the camera even if it is.
+	 *
+	 * @param interactiveLocatable The object to face.
+	 */
+	public <F extends org.powerbot.script.rt4.Interactive & Locatable> void maybeFace(
+			F interactiveLocatable) {
+		boolean shouldFace = false;
+		if (!interactiveLocatable.inViewport()) {
+			shouldFace = true;
+		}
+		if (maybeFaceLogic.shouldFace()) {
+			shouldFace = true;
+		}
+		if (shouldFace) {
+			ctxProvider.get().camera.turnTo(interactiveLocatable);
+		}
+	}
+
+	/**
+	 * Forces the camera angle to face towards the given direction. May or may not move the
+	 * camera if already facing.
+	 *
 	 * @param direction The direction to face.
 	 */
 	public void maybeFace(Direction direction) {
+		boolean shouldFace = false;
+		if (ctxProvider.get().camera.yaw() < direction.range.first
+				|| ctxProvider.get().camera.yaw() > direction.range.second) {
+			shouldFace = true;
+		}
 		if (maybeFaceLogic.shouldFace()) {
-			face(direction);
+			shouldFace = true;
+		}
+		if (shouldFace) {
+			ctxProvider.get().camera.angleTo(direction.getRandomAngle());
 		}
 	}
 
 	/**
 	 * Turns the camera to face the given direction.
+	 *
 	 * @param direction The direction to face.
+	 * @deprecated
 	 */
+	// TODO(v1 cleanup): Remove once all calls to #face are removed
+	@Deprecated
 	public void face(Direction direction) {
 		// TODO(v2): Mouse camera movement
 		if (ctxProvider.get().camera.yaw() > direction.range.first
 				&& ctxProvider.get().camera.yaw() < direction.range.second) {
 			return;
 		}
-
-		ctxProvider.get().camera.angleTo(Random.nextInt(direction.range));
 	}
 }

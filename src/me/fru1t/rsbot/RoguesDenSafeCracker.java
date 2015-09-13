@@ -1,7 +1,7 @@
 package me.fru1t.rsbot;
 
 import me.fru1t.rsbot.safecracker.strategies.BankDeposit;
-import me.fru1t.rsbot.safecracker.strategies.BankWalk;
+import me.fru1t.rsbot.safecracker.strategies.WalkToBank;
 import me.fru1t.rsbot.safecracker.strategies.OpenBank;
 import me.fru1t.rsbot.safecracker.strategies.SafeCrack;
 import me.fru1t.rsbot.safecracker.strategies.SafeEat;
@@ -41,7 +41,7 @@ public class RoguesDenSafeCracker
 	 */
 	public enum State implements StateInterface<State> {
 		// Bank
-		BANK_WALK(BankWalk.class),
+		WALK_TO_BANK(WalkToBank.class),
 		BANK_OPEN(OpenBank.class),
 		BANK_DEPOSIT(BankDeposit.class),
 		BANK_WITHDRAW(null),

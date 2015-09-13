@@ -40,7 +40,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 	@Override
 	public RoguesDenSafeCracker.State run() {
 		if (backpack.isFull()) {
-			return State.BANK_WALK;
+			return State.WALK_TO_BANK;
 		}
 
 		safeLogic.newSafe();

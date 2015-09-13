@@ -66,7 +66,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		// Bank run?
 		if (ctx.backpack.select().count() >= backpack.bankAt()) {
 			backpack.newBankAt();
-			return State.BANK_WALK;
+			return State.WALK_TO_BANK;
 		}
 
 		// Health low?

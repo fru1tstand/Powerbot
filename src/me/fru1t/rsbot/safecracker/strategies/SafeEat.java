@@ -33,7 +33,7 @@ public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 	public RoguesDenSafeCracker.State run() {
 		// Out of food?
 		if (ctxProvider.get().backpack.select().id(settingsProvider.get().getFood().id).isEmpty()) {
-			return RoguesDenSafeCracker.State.BANK_WALK;
+			return RoguesDenSafeCracker.State.WALK_TO_BANK;
 		}
 
 		return backpackUtil.clickMultipleItemsWithSingleId(

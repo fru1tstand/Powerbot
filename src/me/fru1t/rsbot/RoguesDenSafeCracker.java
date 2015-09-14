@@ -1,6 +1,7 @@
 package me.fru1t.rsbot;
 
 import me.fru1t.rsbot.safecracker.strategies.DepositToBank;
+import me.fru1t.rsbot.safecracker.strategies.Unknown;
 import me.fru1t.rsbot.safecracker.strategies.WithdrawFromBank;
 import me.fru1t.rsbot.safecracker.strategies.WalkToBank;
 import me.fru1t.rsbot.safecracker.strategies.OpenBank;
@@ -55,7 +56,7 @@ public class RoguesDenSafeCracker
 		EAT(Eat.class),
 
 		// Other
-		UNKNOWN(null);
+		UNKNOWN(Unknown.class);
 
 		private final Class<? extends Strategy<State>> controllingClass;
 		State(Class<? extends Strategy<State>> controllingClass) {

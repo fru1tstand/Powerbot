@@ -28,7 +28,7 @@ import org.powerbot.script.rt6.GameObject;
  *
  * <p>TODO(v2): Add human behavior between actions and waiting.
  */
-public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
+public class CrackSafe implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<ClientContext> ctxProvider;
 	private final Provider<Status> statusProvider;
 	private final Mouse mouse;
@@ -39,7 +39,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final Camera camera;
 
 	@Inject
-	public SafeCrack(
+	public CrackSafe(
 			Provider<ClientContext> ctxProvider,
 			Provider<Status> statusProvider,
 			@Singleton Mouse mouse,
@@ -79,7 +79,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		if (ctx.combatBar.health() < health.eatAt()) {
 			statusProvider.get().update("Health is low");
 			health.newEatAt();
-			return State.SAFE_EAT;
+			return State.EAT;
 		}
 
 		// Check if safe is valid. We also have to cache this gameobject as we'll be using it when
@@ -120,7 +120,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 				|| ctx.players.local().inMotion()
 				|| !ctx.players.local().tile().equals(safeLogic.getSafe().playerLocation)) {
 			statusProvider.get().update("Mistakes were made");
-			return State.SAFE_WALK;
+			return State.WALK_TO_SAFE;
 		}
 
 		// Waiting for the player to success or fail
@@ -151,7 +151,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		// Quick low health check before waiting
 		if (ctx.combatBar.health() < health.eatAt()) {
 			health.newEatAt();
-			return State.SAFE_EAT;
+			return State.EAT;
 		}
 
 		// Wait for safe reset
@@ -165,7 +165,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 			return null;
 		}
 
-		return State.SAFE_CRACK;
+		return State.CRACK_SAFE;
 	}
 
 }

@@ -1,12 +1,12 @@
 package me.fru1t.rsbot;
 
-import me.fru1t.rsbot.safecracker.strategies.BankDeposit;
-import me.fru1t.rsbot.safecracker.strategies.BankWithdraw;
+import me.fru1t.rsbot.safecracker.strategies.DepositToBank;
+import me.fru1t.rsbot.safecracker.strategies.WithdrawFromBank;
 import me.fru1t.rsbot.safecracker.strategies.WalkToBank;
 import me.fru1t.rsbot.safecracker.strategies.OpenBank;
-import me.fru1t.rsbot.safecracker.strategies.SafeCrack;
-import me.fru1t.rsbot.safecracker.strategies.SafeEat;
-import me.fru1t.rsbot.safecracker.strategies.SafeWalk;
+import me.fru1t.rsbot.safecracker.strategies.CrackSafe;
+import me.fru1t.rsbot.safecracker.strategies.Eat;
+import me.fru1t.rsbot.safecracker.strategies.WalkToSafe;
 import org.powerbot.script.Locatable;
 import org.powerbot.script.Script.Manifest;
 import org.powerbot.script.Tile;
@@ -19,8 +19,8 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.script.rt6.Camera;
 import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.StartupForm;
-import me.fru1t.rsbot.safecracker.strategies.BankWithdrawManual;
-import me.fru1t.rsbot.safecracker.strategies.BankWithdrawWithPresets;
+import me.fru1t.rsbot.safecracker.strategies.WithdrawFromBankManually;
+import me.fru1t.rsbot.safecracker.strategies.WithdrawFromBankWithPresets;
 
 @Manifest(
 		name = "Rogue's Den Safe Cracker",
@@ -43,16 +43,16 @@ public class RoguesDenSafeCracker
 	public enum State implements StateInterface<State> {
 		// Bank
 		WALK_TO_BANK(WalkToBank.class),
-		BANK_OPEN(OpenBank.class),
-		BANK_DEPOSIT(BankDeposit.class),
-		BANK_WITHDRAW(BankWithdraw.class),
-		BANK_WITHDRAW_WITH_PRESETS(BankWithdrawWithPresets.class),
-		BANK_WITHDRAW_MANUALLY(BankWithdrawManual.class),
+		OPEN_BANK(OpenBank.class),
+		DEPOSIT(DepositToBank.class),
+		WITHDRAW(WithdrawFromBank.class),
+		WITHDRAW_WITH_PRESETS(WithdrawFromBankWithPresets.class),
+		WITHDRAW_MANUALLY(WithdrawFromBankManually.class),
 
 		// Safe cracking
-		SAFE_WALK(SafeWalk.class),
-		SAFE_CRACK(SafeCrack.class),
-		SAFE_EAT(SafeEat.class),
+		WALK_TO_SAFE(WalkToSafe.class),
+		CRACK_SAFE(CrackSafe.class),
+		EAT(Eat.class),
 
 		// Other
 		UNKNOWN(null);

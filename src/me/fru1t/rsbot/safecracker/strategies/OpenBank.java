@@ -40,7 +40,7 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 		// Check if already open
 		if (ctxProvider.get().bank.opened()) {
 			statusProvider.get().update("The bank is already open");
-			return State.BANK_DEPOSIT;
+			return State.DEPOSIT;
 		}
 
 		// Check if present
@@ -59,6 +59,6 @@ public class OpenBank implements Strategy<RoguesDenSafeCracker.State> {
 			return null;
 		}
 
-		return State.BANK_DEPOSIT;
+		return State.DEPOSIT;
 	}
 }

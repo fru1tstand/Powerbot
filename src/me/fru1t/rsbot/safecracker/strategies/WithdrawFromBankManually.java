@@ -12,14 +12,14 @@ import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.script.rt6.Bank;
 import me.fru1t.rsbot.safecracker.Settings;
 
-public class BankWithdrawManual implements Strategy<RoguesDenSafeCracker.State> {
+public class WithdrawFromBankManually implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<ClientContext> ctxProvider;
 	private final Provider<Settings> settingsProvider;
 	private final Provider<Status> statusProvider;
 	private final Bank bankUtil;
 
 	@Inject
-	public BankWithdrawManual(
+	public WithdrawFromBankManually(
 			Provider<ClientContext> ctxProvider,
 			Provider<Settings> settingsProvider,
 			Provider<Status> statusProvider,
@@ -36,7 +36,7 @@ public class BankWithdrawManual implements Strategy<RoguesDenSafeCracker.State> 
 
 		if (!bankUtil.waitForBankToOpen()) {
 			statusProvider.get().update("The bank never opened");
-			return State.BANK_OPEN;
+			return State.OPEN_BANK;
 		}
 
 		if (!ctxProvider.get().bank.withdraw(
@@ -45,6 +45,6 @@ public class BankWithdrawManual implements Strategy<RoguesDenSafeCracker.State> 
 			return null;
 		}
 
-		return State.SAFE_WALK;
+		return State.WALK_TO_SAFE;
 	}
 }

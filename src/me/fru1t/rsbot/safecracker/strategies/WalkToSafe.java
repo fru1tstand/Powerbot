@@ -17,7 +17,7 @@ import me.fru1t.rsbot.safecracker.strategies.logic.WalkLogic;
  * Completes most (if not all) of a traverse to the safe to crack. Does not guarantee the player
  * has completed this traverse.
  */
-public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
+public class WalkToSafe implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<Status> statusProvider;
 	private final Backpack backpack;
 	private final WalkLogic walkLogic;
@@ -25,7 +25,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 	private final Walk.Factory walkFactory;
 
 	@Inject
-	public SafeWalk(
+	public WalkToSafe(
 			Provider<Status> statusProvider,
 			@Singleton Backpack backpack,
 			@Singleton SafeLogic safeLogic,
@@ -50,13 +50,13 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 		safeLogic.newSafe();
 		if (safeLogic.getSafeGameObject().inViewport()) {
 			statusProvider.get().update("The safe is already within view");
-			return RoguesDenSafeCracker.State.SAFE_CRACK;
+			return RoguesDenSafeCracker.State.CRACK_SAFE;
 		}
 
 		Walk walk = walkFactory.createUsingLocalPath(safeLogic.getSafe().location);
 		if (walk.isCloseEnoughOrOnTheWay()) {
 			statusProvider.get().update("We're already at or walking towards the safe");
-			return RoguesDenSafeCracker.State.SAFE_CRACK;
+			return RoguesDenSafeCracker.State.CRACK_SAFE;
 		}
 
 		if (!walk.walkUntil(
@@ -65,7 +65,7 @@ public class SafeWalk implements Strategy<RoguesDenSafeCracker.State> {
 			return null;
 		}
 
-		return RoguesDenSafeCracker.State.SAFE_CRACK;
+		return RoguesDenSafeCracker.State.CRACK_SAFE;
 	}
 
 }

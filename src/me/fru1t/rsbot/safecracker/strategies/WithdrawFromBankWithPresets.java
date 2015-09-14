@@ -11,13 +11,13 @@ import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.Settings.BankStyle;
 import me.fru1t.slick.util.Provider;
 
-public class BankWithdrawWithPresets implements Strategy<RoguesDenSafeCracker.State> {
+public class WithdrawFromBankWithPresets implements Strategy<RoguesDenSafeCracker.State> {
 	private final Bank bankUtil;
 	private final Provider<Settings> settingsProvider;
 	private final Provider<Status> statusProvider;
 
 	@Inject
-	public BankWithdrawWithPresets(
+	public WithdrawFromBankWithPresets(
 			Provider<Settings> settingsProvider,
 			Provider<Status> statusProvider,
 			@Singleton Bank bankUtil) {
@@ -33,15 +33,15 @@ public class BankWithdrawWithPresets implements Strategy<RoguesDenSafeCracker.St
 
 		if (settingsProvider.get().isBankStyle(BankStyle.PRESET_1)) {
 			if (!bankUtil.clickPreset1()) {
-				return State.BANK_OPEN;
+				return State.OPEN_BANK;
 			}
 		} else {
 			if (!bankUtil.clickPreset2()) {
-				return State.BANK_OPEN;
+				return State.OPEN_BANK;
 			}
 		}
 
-		return State.SAFE_WALK;
+		return State.WALK_TO_SAFE;
 	}
 
 

@@ -41,7 +41,7 @@ public class WalkToBank implements Strategy<RoguesDenSafeCracker.State> {
 		// Bank already open?
 		if (ctxProvider.get().bank.opened()) {
 			statusProvider.get().update("The bank is already open");
-			return RoguesDenSafeCracker.State.BANK_DEPOSIT;
+			return RoguesDenSafeCracker.State.DEPOSIT;
 		}
 
 		// Are we in rogue's den?
@@ -54,14 +54,14 @@ public class WalkToBank implements Strategy<RoguesDenSafeCracker.State> {
 		// Is the banker already in the viewport?
 		if (banker.inViewport()) {
 			statusProvider.get().update("Emerald is already in view");
-			return RoguesDenSafeCracker.State.BANK_OPEN;
+			return RoguesDenSafeCracker.State.OPEN_BANK;
 		}
 
 		// Are we already headed towards the banker?
 		Walk walk = walkFactory.createUsingLocalPath(banker);
 		if (walk.isCloseEnoughOrOnTheWay()) {
 			statusProvider.get().update("We're already headed towards the banker");
-			return RoguesDenSafeCracker.State.BANK_OPEN;
+			return RoguesDenSafeCracker.State.OPEN_BANK;
 		}
 
 		// Try to walk until the banker is in viewport or "close enough"
@@ -69,6 +69,6 @@ public class WalkToBank implements Strategy<RoguesDenSafeCracker.State> {
 			return null;
 		}
 
-		return RoguesDenSafeCracker.State.BANK_OPEN;
+		return RoguesDenSafeCracker.State.OPEN_BANK;
 	}
 }

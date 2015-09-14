@@ -10,14 +10,14 @@ import me.fru1t.rsbot.safecracker.Settings;
 import me.fru1t.rsbot.safecracker.strategies.logic.FoodLogic;
 import me.fru1t.slick.util.Provider;
 
-public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
+public class Eat implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<Settings> settingsProvider;
 	private final Provider<Status> statusProvider;
 	private final FoodLogic foodLogic;
 	private final Backpack backpack;
 
 	@Inject
-	public SafeEat(
+	public Eat(
 			Provider<Settings> settingsProvider,
 			Provider<Status> statusProvider,
 			@Singleton Backpack backpack,
@@ -38,7 +38,7 @@ public class SafeEat implements Strategy<RoguesDenSafeCracker.State> {
 		}
 
 		return backpack.clickNOf(settingsProvider.get().getFood().id, foodLogic.numberToEat())
-				? RoguesDenSafeCracker.State.SAFE_CRACK : null;
+				? RoguesDenSafeCracker.State.CRACK_SAFE : null;
 	}
 
 }

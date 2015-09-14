@@ -15,14 +15,14 @@ import me.fru1t.rsbot.safecracker.strategies.logic.DepositInventoryButton;
 /**
  * Does the bank depositing.
  */
-public class BankDeposit implements Strategy<RoguesDenSafeCracker.State> {
+public class DepositToBank implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<ClientContext> ctxProvider;
 	private final Provider<Status> statusProvider;
 	private final Bank bank;
 	private final DepositInventoryButton depositInventoryButton;
 
 	@Inject
-	public BankDeposit(
+	public DepositToBank(
 			Provider<ClientContext> ctxProvider,
 			Provider<Status> statusProvider,
 			@Singleton Bank bank,
@@ -41,14 +41,14 @@ public class BankDeposit implements Strategy<RoguesDenSafeCracker.State> {
 		// Check if inventory is already empty
 		if (ctxProvider.get().backpack.isEmpty()) {
 			statusProvider.get().update("The backpack is already empty.");
-			return State.BANK_WITHDRAW;
+			return State.WITHDRAW;
 		}
 
 		// Deposit
 		if (depositInventoryButton.shouldClick() && !bank.depositInventory()) {
-			return State.BANK_OPEN;
+			return State.OPEN_BANK;
 		}
 
-		return State.BANK_WITHDRAW;
+		return State.WITHDRAW;
 	}
 }

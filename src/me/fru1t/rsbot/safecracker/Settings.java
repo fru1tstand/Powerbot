@@ -4,57 +4,64 @@ import me.fru1t.common.annotations.Inject;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.AbstractSettings;
+import me.fru1t.rsbot.common.framework.ScriptException;
 import me.fru1t.rsbot.common.items.Food;
 
 @Singleton
 public class Settings extends AbstractSettings {
 	public enum BankStyle { CONSTANT, AUTOMATIC, PRESET_1, PRESET_2 }
-	
+
 	private BankStyle bankStyle;
-	private int foodQuantity;
 	private Food food;
 	private RoguesDenSafeCracker.Safe preferredSafe;
-	
+	private int foodQuantity;
+
 	/**
 	 * Simple constructor which sets default values to class fields.
 	 */
 	@Inject
 	public Settings() {
+		// TODO(v1 cleanup): Fix null
 		this.bankStyle = null;
 		this.preferredSafe = null;
 		this.foodQuantity = -1;
 		this.food = null;
 	}
-	
+
 	@Override
 	public boolean isValid() {
 		return bankStyle != null && foodQuantity > -1 && food != null && preferredSafe != null;
 	}
-	
+
 	/**
 	 * @return The current food to withdraw from the bank.
 	 */
 	public Food getFood() {
+		if (food == null) {
+			throw new ScriptException("Food settings were never set.");
+		}
 		return food;
 	}
-	
+
 	/**
 	 * Sets the food to the given list of food items.
-	 * @param food
+	 *
+	 * @param food The food item to give.
 	 */
 	public void setFood(Food food) {
 		this.food = food;
 	}
-	
+
 	/**
 	 * @return The preferred safe to crack.
 	 */
 	public RoguesDenSafeCracker.Safe getPreferredSafe() {
 		return preferredSafe;
 	}
-	
+
 	/**
 	 * Sets the preferred safe to crack.
+	 *
 	 * @param preferredSafe
 	 */
 	public void setPreferredSafe(RoguesDenSafeCracker.Safe preferredSafe) {
@@ -67,10 +74,11 @@ public class Settings extends AbstractSettings {
 	public BankStyle getBankStyle() {
 		return bankStyle;
 	}
-	
+
 	/**
 	 * Checks if the bank style is one of any of the given styles.
-	 * @param styles 
+	 *
+	 * @param styles
 	 * @return True if the bank styles are any of the provided. Otherwise, false.
 	 */
 	public boolean isBankStyle(BankStyle... styles) {
@@ -83,7 +91,17 @@ public class Settings extends AbstractSettings {
 	}
 
 	/**
+	 * Returns if the bank style is using a preset.
+	 *
+	 * @return True if the bank style is using a preset. Otherwise, false.
+	 */
+	public boolean isBankStyleUsingPresets() {
+		return isBankStyle(BankStyle.PRESET_1, BankStyle.PRESET_2);
+	}
+
+	/**
 	 * Sets the bank style
+	 *
 	 * @param bankStyle
 	 */
 	public void setBankStyle(BankStyle bankStyle) {
@@ -99,6 +117,7 @@ public class Settings extends AbstractSettings {
 
 	/**
 	 * Sets the food amount to withdraw. Only used if the bank style is constant.
+	 *
 	 * @param foodQuantity
 	 */
 	public void setFoodQuantity(int foodQuantity) {

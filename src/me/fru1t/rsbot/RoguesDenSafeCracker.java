@@ -1,6 +1,7 @@
 package me.fru1t.rsbot;
 
 import me.fru1t.rsbot.safecracker.strategies.BankDeposit;
+import me.fru1t.rsbot.safecracker.strategies.BankWithdraw;
 import me.fru1t.rsbot.safecracker.strategies.WalkToBank;
 import me.fru1t.rsbot.safecracker.strategies.OpenBank;
 import me.fru1t.rsbot.safecracker.strategies.SafeCrack;
@@ -44,7 +45,7 @@ public class RoguesDenSafeCracker
 		WALK_TO_BANK(WalkToBank.class),
 		BANK_OPEN(OpenBank.class),
 		BANK_DEPOSIT(BankDeposit.class),
-		BANK_WITHDRAW(null),
+		BANK_WITHDRAW(BankWithdraw.class),
 		BANK_WITHDRAW_WITH_PRESETS(BankWithdrawWithPresets.class),
 		BANK_WITHDRAW_MANUALLY(BankWithdrawManual.class),
 

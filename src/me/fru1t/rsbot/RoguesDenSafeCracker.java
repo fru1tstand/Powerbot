@@ -51,7 +51,6 @@ public class RoguesDenSafeCracker
 
 		// Safe cracking
 		SAFE_WALK(SafeWalk.class),
-
 		SAFE_CRACK(SafeCrack.class),
 		SAFE_EAT(SafeEat.class),
 

@@ -158,20 +158,4 @@ public class Camera {
 			ctxProvider.get().camera.angleTo(direction.getRandomAngle());
 		}
 	}
-
-	/**
-	 * Turns the camera to face the given direction.
-	 *
-	 * @param direction The direction to face.
-	 * @deprecated
-	 */
-	// TODO(v1 cleanup): Remove once all calls to #face are removed
-	@Deprecated
-	public void face(Direction direction) {
-		// TODO(v2): Mouse camera movement
-		if (ctxProvider.get().camera.yaw() > direction.range.first
-				&& ctxProvider.get().camera.yaw() < direction.range.second) {
-			return;
-		}
-	}
 }

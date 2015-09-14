@@ -5,6 +5,7 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.RoguesDenSafeCracker.State;
 import me.fru1t.rsbot.common.framework.Strategy;
+import me.fru1t.rsbot.common.framework.components.Status;
 import me.fru1t.rsbot.common.framework.util.Callable;
 import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.script.rt6.Camera;
@@ -29,6 +30,7 @@ import org.powerbot.script.rt6.GameObject;
  */
 public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<ClientContext> ctxProvider;
+	private final Provider<Status> statusProvider;
 	private final Mouse mouse;
 	private final Health health;
 	private final Backpack backpack;
@@ -39,13 +41,15 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 	@Inject
 	public SafeCrack(
 			Provider<ClientContext> ctxProvider,
+			Provider<Status> statusProvider,
 			@Singleton Mouse mouse,
+			@Singleton Camera camera,
 			Health health,
 			Backpack backpack,
 			SafeLogic safeLogic,
-			Timer safecrackAnimationTimer,
-			@Singleton Camera camera) {
+			Timer safecrackAnimationTimer) {
 		this.ctxProvider = ctxProvider;
+		this.statusProvider = statusProvider;
 		this.mouse = mouse;
 		this.health = health;
 		this.backpack = backpack;
@@ -56,6 +60,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 
 	@Override
 	public State run() {
+		statusProvider.get().update("Cracking safe");
 		final ClientContext ctx = ctxProvider.get();
 
 		// Bank run?
@@ -65,33 +70,38 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		// level?
 		// Bank run?
 		if (ctx.backpack.select().count() >= backpack.bankAt()) {
+			statusProvider.get().update("Backpack is full");
 			backpack.newBankAt();
 			return State.WALK_TO_BANK;
 		}
 
 		// Health low?
 		if (ctx.combatBar.health() < health.eatAt()) {
+			statusProvider.get().update("Health is low");
 			health.newEatAt();
 			return State.SAFE_EAT;
 		}
 
-		// Check if safe is valid
+		// Check if safe is valid. We also have to cache this gameobject as we'll be using it when
+		// it's invalid.
 		final GameObject wallsafeGameObject = safeLogic.getSafeGameObject();
 		if (!wallsafeGameObject.valid()) {
+			statusProvider.get().update("404: Safe not found");
 			return null;
 		}
 
-		if (!wallsafeGameObject.inViewport()) {
-			camera.face(safeLogic.getSafe().cameraDirection);
-			if (!wallsafeGameObject.inViewport()) {
-				ctx.camera.turnTo(wallsafeGameObject);
-			}
-		}
+		// Verify turn towards safe
+		statusProvider.get().update("Turning camera towards safe");
+		camera.maybeFace(wallsafeGameObject);
 
 		// Interact with safe
-		mouse.click(wallsafeGameObject);
+		statusProvider.get().update("Interacting with safe");
+		if (!mouse.click(wallsafeGameObject)) {
+			return null;
+		}
 
 		// Waiting for the player to interact or fail
+		statusProvider.get().update("Waiting for player interaction animation");
 		if (!Condition.wait(new Callable<Boolean>() {
 			@Override
 			public Boolean ring() {
@@ -101,6 +111,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 						|| !ctx.players.local().tile().equals(safeLogic.getSafe().playerLocation);
 			}
 		}, 100, 10)) { // 1000 ms
+			statusProvider.get().update("The player never interacted with the safe");
 			return null;
 		}
 
@@ -108,10 +119,12 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		if (!ctx.movement.destination().equals(Tile.NIL)
 				|| ctx.players.local().inMotion()
 				|| !ctx.players.local().tile().equals(safeLogic.getSafe().playerLocation)) {
-			return State.SAFE_WALK; // Mistakes were made.
+			statusProvider.get().update("Mistakes were made");
+			return State.SAFE_WALK;
 		}
 
 		// Waiting for the player to success or fail
+		statusProvider.get().update("Waiting for results");
 		if (!Condition.wait(
 				new Callable<Boolean>() {
 					@Override
@@ -131,6 +144,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 				safecrackAnimationTimer,
 				2000,
 				150)) {
+			statusProvider.get().update("Couldn't determine the result");
 			return null;
 		}
 
@@ -141,6 +155,7 @@ public class SafeCrack implements Strategy<RoguesDenSafeCracker.State> {
 		}
 
 		// Wait for safe reset
+		statusProvider.get().update("Waiting for wallsafe to reset");
 		if (!Condition.wait(new Callable<Boolean>() {
 			@Override
 			public Boolean ring() {

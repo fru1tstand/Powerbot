@@ -1,10 +1,10 @@
 package me.fru1t.rsbot.safecracker;
 
 import me.fru1t.common.annotations.Inject;
+import me.fru1t.common.annotations.Nullable;
 import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.AbstractSettings;
-import me.fru1t.rsbot.common.framework.ScriptException;
 import me.fru1t.rsbot.common.items.Food;
 
 @Singleton
@@ -13,19 +13,15 @@ public class Settings extends AbstractSettings {
 
 	private BankStyle bankStyle;
 	private Food food;
-	private RoguesDenSafeCracker.Safe preferredSafe;
+	@Nullable private RoguesDenSafeCracker.Safe preferredSafe;
 	private int foodQuantity;
 
-	/**
-	 * Simple constructor which sets default values to class fields.
-	 */
 	@Inject
 	public Settings() {
-		// TODO(v1 cleanup): Fix null
-		this.bankStyle = null;
+		this.bankStyle = BankStyle.AUTOMATIC;
+		this.food = Food.ANCHOVIES;
 		this.preferredSafe = null;
 		this.foodQuantity = -1;
-		this.food = null;
 	}
 
 	@Override
@@ -33,52 +29,36 @@ public class Settings extends AbstractSettings {
 		return bankStyle != null && foodQuantity > -1 && food != null && preferredSafe != null;
 	}
 
-	/**
-	 * @return The current food to withdraw from the bank.
-	 */
-	public Food getFood() {
-		if (food == null) {
-			throw new ScriptException("Food settings were never set.");
-		}
-		return food;
-	}
-
-	/**
-	 * Sets the food to the given list of food items.
-	 *
-	 * @param food The food item to give.
-	 */
-	public void setFood(Food food) {
-		this.food = food;
-	}
-
-	/**
-	 * @return The preferred safe to crack.
-	 */
+	@Nullable
 	public RoguesDenSafeCracker.Safe getPreferredSafe() {
 		return preferredSafe;
 	}
-
-	/**
-	 * Sets the preferred safe to crack.
-	 *
-	 * @param preferredSafe
-	 */
-	public void setPreferredSafe(RoguesDenSafeCracker.Safe preferredSafe) {
+	public void setPreferredSafe(@Nullable RoguesDenSafeCracker.Safe preferredSafe) {
 		this.preferredSafe = preferredSafe;
 	}
-
-	/**
-	 * @return The bank style.
-	 */
+	public Food getFood() {
+		return food;
+	}
+	public void setFood(Food food) {
+		this.food = food;
+	}
 	public BankStyle getBankStyle() {
 		return bankStyle;
+	}
+	public void setBankStyle(BankStyle bankStyle) {
+		this.bankStyle = bankStyle;
+	}
+	public int getFoodQuantity() {
+		return foodQuantity;
+	}
+	public void setFoodQuantity(int foodQuantity) {
+		this.foodQuantity = foodQuantity;
 	}
 
 	/**
 	 * Checks if the bank style is one of any of the given styles.
 	 *
-	 * @param styles
+	 * @param styles The BankStyles to check for
 	 * @return True if the bank styles are any of the provided. Otherwise, false.
 	 */
 	public boolean isBankStyle(BankStyle... styles) {
@@ -97,30 +77,5 @@ public class Settings extends AbstractSettings {
 	 */
 	public boolean isBankStyleUsingPresets() {
 		return isBankStyle(BankStyle.PRESET_1, BankStyle.PRESET_2);
-	}
-
-	/**
-	 * Sets the bank style
-	 *
-	 * @param bankStyle
-	 */
-	public void setBankStyle(BankStyle bankStyle) {
-		this.bankStyle = bankStyle;
-	}
-
-	/**
-	 * @return The food amount to withdraw (if BankStyle is constant).
-	 */
-	public int getFoodQuantity() {
-		return foodQuantity;
-	}
-
-	/**
-	 * Sets the food amount to withdraw. Only used if the bank style is constant.
-	 *
-	 * @param foodQuantity
-	 */
-	public void setFoodQuantity(int foodQuantity) {
-		this.foodQuantity = foodQuantity;
 	}
 }

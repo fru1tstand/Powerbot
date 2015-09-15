@@ -9,7 +9,6 @@ import me.fru1t.common.annotations.Singleton;
 import me.fru1t.common.collections.Tuple2;
 import me.fru1t.rsbot.common.framework.components.Persona;
 import me.fru1t.rsbot.common.util.Random;
-import org.powerbot.script.rt6.Interactive;
 
 /**
  * Provides utility methods that deal with the camera.
@@ -71,12 +70,12 @@ public class Camera {
 		private static final Tuple2<Integer, Integer> MIN_CUTOFF_RANGE = Tuple2.of(20, 50);
 		private static final Tuple2<Integer, Integer> MAX_CUTOFF_RANGE = Tuple2.of(60, 80);
 
-		private final Persona persona;
+		private final Provider<Persona> personaProvider;
 		private final Tuple2<Integer, Integer> focusCutoff;
 
 		@Inject
-		private MaybeFaceLogic(@Singleton Persona persona) {
-			this.persona = persona;
+		private MaybeFaceLogic(Provider<Persona> personaProvider) {
+			this.personaProvider = personaProvider;
 			this.focusCutoff =
 					Tuple2.of(Random.nextInt(MIN_CUTOFF_RANGE), Random.nextInt(MAX_CUTOFF_RANGE));
 		}
@@ -86,7 +85,8 @@ public class Camera {
 		 * @return Whether or not the camera should face.
 		 */
 		public boolean shouldFace() {
-			return Random.roll(persona.getFocusScaledInt(focusCutoff, Persona.MAX_RANGE));
+			return Random.roll(personaProvider.get()
+					.getFocusScaledInt(focusCutoff, Persona.MAX_RANGE));
 		}
 	}
 
@@ -94,7 +94,7 @@ public class Camera {
 	private final MaybeFaceLogic maybeFaceLogic;
 
 	@Inject
-	public Camera(@Singleton Provider<ClientContext> ctxProvider, MaybeFaceLogic maybeFaceLogic) {
+	public Camera(Provider<ClientContext> ctxProvider, MaybeFaceLogic maybeFaceLogic) {
 		this.ctxProvider = ctxProvider;
 		this.maybeFaceLogic = maybeFaceLogic;
 	}

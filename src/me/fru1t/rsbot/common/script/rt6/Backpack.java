@@ -20,16 +20,16 @@ public class Backpack {
 	private static final int MAX_BACKPACK_SIZE = 28;
 
 	private final Provider<ClientContext> ctxProvider;
-	private final Mouse mouseUtil;
+	private final Mouse mouse;
 	private final Condition condition;
 
 	@Inject
 	public Backpack(
 			Provider<ClientContext> ctxProvider,
-			@Singleton Mouse mouseUtil,
+			@Singleton Mouse mouse,
 			@Singleton Condition condition) {
 		this.ctxProvider = ctxProvider;
-		this.mouseUtil = mouseUtil;
+		this.mouse = mouse;
 		this.condition = condition;
 	}
 
@@ -71,7 +71,7 @@ public class Backpack {
 				if (!items.get(i).inViewport()) {
 					ctx.backpack.scroll(items.get(i));
 				}
-				mouseUtil.click(items.get(i));
+				mouse.click(items.get(i));
 				condition.sleepForInteractDelay();
 			}
 			condition.sleepForInteractDelay();

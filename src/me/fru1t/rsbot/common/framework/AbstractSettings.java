@@ -6,10 +6,11 @@ package me.fru1t.rsbot.common.framework;
 public abstract class AbstractSettings {
 	/**
 	 * Allows for a Javascript-like callback for when the settings are set.
+	 *
 	 * @param <T> The implementing setting's class.
 	 */
-	public static interface Callback<T extends AbstractSettings> {
-		public void call(T settings);
+	public interface Callback<T extends AbstractSettings> {
+		void call(T settings);
 	}
 
 	/**

@@ -11,7 +11,7 @@ import me.fru1t.rsbot.common.framework.util.Condition;
 import me.fru1t.rsbot.common.script.rt6.Camera;
 import me.fru1t.rsbot.common.script.rt6.Mouse;
 import me.fru1t.rsbot.common.util.Timer;
-import me.fru1t.rsbot.safecracker.strategies.logic.Backpack;
+import me.fru1t.rsbot.safecracker.strategies.logic.BackpackLogic;
 import me.fru1t.rsbot.safecracker.strategies.logic.Health;
 import me.fru1t.rsbot.safecracker.strategies.logic.SafeLogic;
 import me.fru1t.slick.util.Provider;
@@ -33,7 +33,7 @@ public class CrackSafe implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<Status> statusProvider;
 	private final Mouse mouse;
 	private final Health health;
-	private final Backpack backpack;
+	private final BackpackLogic backpackLogic;
 	private final SafeLogic safeLogic;
 	private final Timer safecrackAnimationTimer;
 	private final Camera camera;
@@ -44,15 +44,15 @@ public class CrackSafe implements Strategy<RoguesDenSafeCracker.State> {
 			Provider<Status> statusProvider,
 			@Singleton Mouse mouse,
 			@Singleton Camera camera,
+			@Singleton SafeLogic safeLogic,
 			Health health,
-			Backpack backpack,
-			SafeLogic safeLogic,
+			BackpackLogic backpackLogic,
 			Timer safecrackAnimationTimer) {
 		this.ctxProvider = ctxProvider;
 		this.statusProvider = statusProvider;
 		this.mouse = mouse;
 		this.health = health;
-		this.backpack = backpack;
+		this.backpackLogic = backpackLogic;
 		this.safeLogic = safeLogic;
 		this.safecrackAnimationTimer = safecrackAnimationTimer;
 		this.camera = camera;
@@ -69,9 +69,9 @@ public class CrackSafe implements Strategy<RoguesDenSafeCracker.State> {
 		// Things to consider: More likely to gamble or eat to clear inventory when near a new
 		// level?
 		// Bank run?
-		if (ctx.backpack.select().count() >= backpack.bankAt()) {
+		if (ctx.backpack.select().count() >= backpackLogic.bankAt()) {
 			statusProvider.get().update("Backpack is full");
-			backpack.newBankAt();
+			backpackLogic.newBankAt();
 			return State.WALK_TO_BANK;
 		}
 

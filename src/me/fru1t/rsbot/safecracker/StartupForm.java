@@ -19,11 +19,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import me.fru1t.common.annotations.Inject;
-import me.fru1t.common.annotations.Singleton;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.AbstractSettings;
 import me.fru1t.rsbot.common.framework.AbstractStartupForm;
 import me.fru1t.rsbot.common.items.Food;
+import me.fru1t.slick.util.Provider;
 
 
 public class StartupForm extends AbstractStartupForm<Settings> {
@@ -32,27 +32,22 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 		new StartupForm();
 	}
 
+	// For testing
+	private StartupForm() {
+		super();
+	}
+
 	private JFrame settingsForm;
 
 	/**
 	 * Create the application.
 	 */
 	@Inject
-	public StartupForm(@Singleton AbstractSettings.Callback<Settings> callback) {
+	public StartupForm(Provider<AbstractSettings.Callback<Settings>> callback) {
 		super(callback);
 
 		this.initialize();
 		this.settingsForm.setVisible(true);
-	}
-
-	/**
-	 * Testing
-	 */
-	private StartupForm() {
-		this(new AbstractSettings.Callback<Settings>() {
-			@Override
-			public void call(Settings settings) { }
-		});
 	}
 
 	/**
@@ -234,7 +229,8 @@ public class StartupForm extends AbstractStartupForm<Settings> {
 					settings.setFoodQuantity((Integer) foodAmountSpinner.getModel().getValue());
 					settings.setFood((Food) foodSelectorComboBox.getSelectedItem());
 					settingsForm.dispose();
-					callback.call(settings);
+
+					setSettings(settings);
 				}
 			});
 		}

@@ -1,5 +1,6 @@
 package me.fru1t.rsbot.safecracker.strategies;
 
+import me.fru1t.common.annotations.Inject;
 import me.fru1t.rsbot.RoguesDenSafeCracker;
 import me.fru1t.rsbot.common.framework.Strategy;
 import me.fru1t.rsbot.common.framework.components.Status;
@@ -14,6 +15,7 @@ public class Unknown implements Strategy<RoguesDenSafeCracker.State> {
 	private final Provider<ClientContext> ctxProvider;
 	private final Provider<Status> statusProvider;
 
+	@Inject
 	public Unknown(
 			Provider<ClientContext> ctxProvider,
 			Provider<Status> statusProvider) {

@@ -15,7 +15,7 @@ import me.fru1t.slick.util.Provider;
  * banking event does occur, the count of items in the inventory is probably not skewed in
  * either direction.
  */
-public class Backpack {
+public class BackpackLogic {
 	/**
 	 * The minimum amount of focus a player can have before starting to randomly bank.
 	 */
@@ -34,7 +34,7 @@ public class Backpack {
 	private int bankAmount;
 
 	@Inject
-	public Backpack(@Singleton Provider<Persona> persona) {
+	public BackpackLogic(Provider<Persona> persona) {
 		this.personaProvider = persona;
 		newBankAt();
 	}

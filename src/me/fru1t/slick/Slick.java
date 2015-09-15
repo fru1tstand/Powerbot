@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -164,8 +165,13 @@ public class Slick {
 
 			// Is a provider?
 			if (dependencies[i].equals(Provider.class)) {
-				Class<?> providedClass = getProvidedClassFromType(types[i]);
-				fulfillments[i] = getInstanceFromProviders(providedClass);
+				// Get provided type
+				Type providedType = ((ParameterizedType) types[i]).getActualTypeArguments()[0];
+				// If provided type is generic, get raw type then cast, otherwise, just cast.
+				Class<?> providerClass = (providedType instanceof ParameterizedType)
+						? (Class<?>) ((ParameterizedType) providedType).getRawType()
+						: (Class<?>) providedType;
+				fulfillments[i] = getInstanceFromProviders(providerClass);
 				continue;
 			}
 
@@ -179,7 +185,7 @@ public class Slick {
 				try {
 					fulfillments[i] = get(dependencies[i]);
 				} catch (SlickException se) {
-					// Catch and rethrow for easier deubgging
+					// Catch and rethrow for easier debugging
 					throw new SlickException(
 							String.format(
 									"%s\n\t...Failed to fulfill %s required by %s",
@@ -261,36 +267,6 @@ public class Slick {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Returns the class that represents the object the provider provides.
-	 *
-	 * <p>Yeah. I know. Don't judge. Strings. Types. Ugh. This mess. Why java. Why...</p>
-	 *
-	 * @param providerType The provider to check.
-	 * @return The class the provider provides an instance of.
-	 */
-	private Class<?> getProvidedClassFromType(Type providerType) {
-		String typeString = providerType.toString();
-		if (!typeString.contains(PROVIDER_FULLY_QUALIFIED)) {
-			throw new SlickException(String.format(
-					"\n\t%s is not a provider, but was used as one.",
-					typeString));
-		}
-		String fullyQualifiedGeneric = typeString.substring(
-				typeString.lastIndexOf('<') + 1,
-				typeString.lastIndexOf('>'));
-
-		try {
-			return Class.forName(fullyQualifiedGeneric);
-		} catch (ClassNotFoundException e) {
-			throw new SlickException(String.format(
-					"\n\tClass %s not found for %s",
-					fullyQualifiedGeneric,
-					typeString
-			));
-		}
 	}
 
 	/**

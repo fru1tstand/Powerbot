@@ -145,7 +145,7 @@ public abstract class Script<
 		status.update("Waiting for user input");
 		// Isolate the startup form and callback from our main instance of slick as there's no need
 		// to pollute it.
-		new Slick()
+		new Slick(new AbstractStartupForm.StartupFormModule())
 				// Provide the form's required callback
 				.provide(new AbstractSettings.Callback<T>() {
 					@Override
